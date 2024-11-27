@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
+:root {
+  height: 100%;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -70,6 +76,16 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+}
+
+.cl-internal-1dauvpw,
+.cl-internal-1hp5nqm {
+  display: none;
+}
+
+.cl-userPreviewSecondaryIdentifier {
+  font-size: 12px;
+  color: rgb(199, 199, 199);
 }
 
 @layer base {
