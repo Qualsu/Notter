@@ -16,7 +16,7 @@ export function Navbar(){
 
     return (
         <div className={cn(
-            "z-50 bg-background fixed top-0 flex items-center w-full p-6 h-14 bg-amber-50 dark:bg-zinc-950",
+            "z-50 bg-background fixed top-0 flex items-center w-full p-6 h-14 dark:bg-zinc-950",
             scrolled && "border-b shadow-sm"
         )}>
             <a href="/">
