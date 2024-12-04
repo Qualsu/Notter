@@ -5,7 +5,7 @@ export default defineSchema({
     documents: defineTable({
         title: v.string(),
         userId: v.string(),
-        isAcrhives: v.boolean(),
+        isAcrhived: v.boolean(),
         parentDocument: v.optional(v.id("documents")),
         content: v.optional(v.string()),
         coverImage: v.optional(v.string()),

@@ -1,8 +1,13 @@
 "use client"
 
-import { ChevronDown, ChevronRight, LucideIcon } from "lucide-react"
+import { ChevronDown, ChevronRight, LucideIcon, Plus } from "lucide-react"
 import { Id } from "../../../../convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import { useMutation } from "convex/react"
+import { api } from "../../../../convex/_generated/api"
 
 interface ItemProps {
     id?: Id<"documents">
@@ -29,6 +34,36 @@ export function Item({
     onExpand,
     expanded
 }: ItemProps){
+    const router = useRouter();
+    const create = useMutation(api.document.create)
+
+    const handleExpand = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        event.stopPropagation()
+        onExpand?.()
+    }
+
+    const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        event.stopPropagation()
+        if (!id) return
+    
+        const promise = create({ title: "Новая заметка", parentDocument: id }).then(
+          (documentId) => {
+            if (!expanded) {
+              onExpand?.()
+            }
+            // router.push(`/dashboard/${documentId}`) // redirect to docId
+          }
+        )
+    
+        toast.promise(promise, {
+            loading: "Создания заметки...",
+            success: "Заметка успешно создана!",
+            error: "Не удалось создать заметку"
+        })
+      }
+
     const ChevronIcon = expanded ? ChevronDown : ChevronRight
 
     return (
@@ -45,7 +80,7 @@ export function Item({
                 <div 
                     role="button" 
                     className="h-full rounded-sm hover:bg-neutral-600 mr-1"
-                    onClick={() => {}}
+                    onClick={handleExpand}
                 >
                     <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50"/>
                 </div>
@@ -66,7 +101,33 @@ export function Item({
                     <span className="text-xs">Ctrl</span>K
                 </kbd>
             )}
+
+            {!!id && (
+                <div className="ml-auto flex items-center gap-x-2">
+                    <div 
+                        role="button" 
+                        onClick={onCreate} 
+                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-600"
+                    >
+                        <Plus className="h-4 w-4 text-muted-foreground"/>
+                    </div>
+                </div>
+            )}
             
+        </div>
+    )
+}
+
+Item.Skeleton = function ItemSkeleton({level}: {level?: number}){
+    return (
+        <div
+            style={{
+                paddingLeft: level ? `${(level * 12) + 25}px` : "12px"
+            }}
+            className="flex gap-x-2 py-[3px]"
+        >
+            <Skeleton className="h-4 w-4"/>
+            <Skeleton className="h-4 w-[30%]"/>
         </div>
     )
 }
