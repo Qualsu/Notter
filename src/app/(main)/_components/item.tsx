@@ -131,11 +131,11 @@ export function Item({
                         <DropdownMenuContent className="w-60" align="start" side="right" forceMount>
                             <DropdownMenuItem onClick={onArchive}>
                                 <Trash className="h-4 w-4 mr-2"/>
-                                Delete
+                                Удалить
                             </DropdownMenuItem>
                             <DropdownMenuSeparator/>
                                 <div className="text-xs text-muted-foreground p-2">
-                                    Last edited by: {user?.username}
+                                    Последнее изменение от: {user?.username}
                                 </div>
                         </DropdownMenuContent>
                     </DropdownMenu>
