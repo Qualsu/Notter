@@ -36,9 +36,10 @@ export function Item({
     onExpand,
     expanded
 }: ItemProps){
-    const router = useRouter();
+    const router = useRouter()
     const create = useMutation(api.document.create)
     const archive = useMutation(api.document.archive)
+    const update = useMutation(api.document.update)
     const {user} = useUser()
 
     const onArchive = (
@@ -46,7 +47,12 @@ export function Item({
     ) => {
         event.stopPropagation()
         if(!id) return
+        update({
+            id: id,
+            isPublished: false
+        })
         const promise = archive({id})
+            .then(() => router.push("/dashboard"))
 
         toast.promise(promise, {
             loading: "Перемещаем в архив...",
@@ -71,7 +77,7 @@ export function Item({
             if (!expanded) {
               onExpand?.()
             }
-            // router.push(`/dashboard/${documentId}`) // redirect to docId
+            router.push(`/dashboard/${documentId}`)
           }
         )
     
@@ -108,7 +114,7 @@ export function Item({
                     {documentIcon}
                 </div>
             ) : (
-                <Icon className="shrink-0 h-[18px] mr-2 text-muted-foreground"/>
+                <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground"/>
             )}
             
             <span className="truncate">

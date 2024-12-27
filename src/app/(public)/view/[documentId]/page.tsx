@@ -12,6 +12,7 @@ import { Toolbar } from "@/components/toolbar"
 import { Cover } from "@/components/cover" 
 import { redirect } from "next/navigation"
 import { useOrigin } from "../../../../../hooks/use-origin"
+import Error404 from "@/app/errorPage"
 
 interface DocumentIdPageProps {
   params: {
@@ -23,27 +24,17 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   const Editor = useMemo(
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
-  ) 
-  
+  )
   const origin = useOrigin()
       
-  if(origin === "https://notter.site" || origin === "http://nttr.pw"){
+  if(origin !== "https://notter.site"){
       redirect("https://notter.tech")
   }
 
   const document = useQuery(api.document.getById, {
     documentId: params.documentId
-  }) 
-
-  const update = useMutation(api.document.update) 
-
-  const onChange = (content: string) => {
-    update({
-      id: params.documentId,
-      content
-    }) 
-  } 
-
+  })
+  
   if (document === undefined) {
     return (
       <div>
@@ -64,12 +55,16 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
     return <div>Not found</div> 
   }
 
+  if(!document.isPublished){
+    return <Error404/>
+  }
+
   return (
     <div className="pb-40">
-      <Cover url={document.coverImage} preview={document.isAcrhived ? false : true}/>
+      <Cover url={document.coverImage} preview/>
       <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
-        <Toolbar initialData={document} preview={document.isAcrhived ? true : false}/>
-        <Editor onChange={onChange} initialContent={document.content} editable={document.isAcrhived ? false : true}/>
+        <Toolbar initialData={document} preview/>
+        <Editor onChange={() => {}} initialContent={document.content} editable={false}/>
       </div>
     </div>
   ) 

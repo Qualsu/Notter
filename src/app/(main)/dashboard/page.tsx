@@ -7,12 +7,21 @@ import { PlusCircle } from "lucide-react"
 import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { toast } from "sonner"
+import { redirect, useRouter } from "next/navigation"
+import { useOrigin } from "../../../../hooks/use-origin"
 
 export default function Dashboard() {
     const create = useMutation(api.document.create)
+    const router = useRouter()
+    const origin = useOrigin()
+    
+    if(origin === "https://notter.site" || origin === "http://nttr.pw"){
+        redirect("https://notter.tech")
+    }
 
     const onCreate = () => {
         const promise = create({ title: "Новая заметка" })
+            .then((documentId) => router.push(`/dashboard/${documentId}`))
         
         toast.promise(promise, {
             loading: "Создания заметки...",

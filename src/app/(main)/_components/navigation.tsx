@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils"
 import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings2, Trash } from "lucide-react"
-import { useParams, usePathname } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import { ElementRef, useEffect, useRef, useState } from "react"
 import { useMediaQuery } from 'usehooks-ts'
 import { UserItem } from "./user-item"
@@ -18,6 +18,7 @@ import { useSettings } from "../../../../hooks/use-settings"
 import { Navbar } from "./navbar"
 
 export function Navigation(){
+    const router = useRouter()
     const settings = useSettings()
     const seacrh = useSearch()
     const params = useParams()
@@ -112,6 +113,7 @@ export function Navigation(){
 
     const handleCreate = () => {
         const promise = create({title: "Новая заметка"})
+            .then((documentId) => router.push(`/dashboard/${documentId}`))
 
         toast.promise(promise, {
             loading: "Создания заметки...",

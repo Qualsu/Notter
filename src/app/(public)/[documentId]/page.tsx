@@ -1,21 +1,22 @@
 "use client" 
 
 import dynamic from "next/dynamic" 
-import { useMemo } from "react" 
+import { useEffect, useMemo, useState } from "react" 
 
 import { Skeleton } from "@/components/ui/skeleton" 
 
 import { useMutation, useQuery } from "convex/react" 
-import { Id } from "../../../../../convex/_generated/dataModel" 
-import { api } from "../../../../../convex/_generated/api" 
 import { Toolbar } from "@/components/toolbar" 
 import { Cover } from "@/components/cover" 
 import { redirect } from "next/navigation"
-import { useOrigin } from "../../../../../hooks/use-origin"
+import { api } from "../../../../convex/_generated/api"
+import { useOrigin } from "../../../../hooks/use-origin"
+import Error404 from "@/app/errorPage"
+import { Id } from "../../../../convex/_generated/dataModel"
 
 interface DocumentIdPageProps {
   params: {
-    documentId: Id<"documents"> 
+    documentId: string
   } 
 }
 
@@ -24,25 +25,16 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   ) 
-  
+
   const origin = useOrigin()
       
-  if(origin === "https://notter.site" || origin === "http://nttr.pw"){
+  if(origin !== "https://nttr.pw"){
       redirect("https://notter.tech")
   }
 
-  const document = useQuery(api.document.getById, {
-    documentId: params.documentId
-  }) 
-
-  const update = useMutation(api.document.update) 
-
-  const onChange = (content: string) => {
-    update({
-      id: params.documentId,
-      content
-    }) 
-  } 
+  const document = useQuery(api.document.getByShortId, {
+    shortId: params.documentId
+  })
 
   if (document === undefined) {
     return (
@@ -60,16 +52,16 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
     ) 
   }
 
-  if (document === null) {
-    return <div>Not found</div> 
+  if(!document.isPublished || document === null){
+    return <Error404/>
   }
 
   return (
     <div className="pb-40">
-      <Cover url={document.coverImage} preview={document.isAcrhived ? false : true}/>
+      <Cover url={document.coverImage} preview/>
       <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
-        <Toolbar initialData={document} preview={document.isAcrhived ? true : false}/>
-        <Editor onChange={onChange} initialContent={document.content} editable={document.isAcrhived ? false : true}/>
+        <Toolbar initialData={document} preview/>
+        <Editor onChange={() => {}} initialContent={document.content} editable={false}/>
       </div>
     </div>
   ) 

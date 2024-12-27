@@ -1,6 +1,7 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
 import { Doc, Id } from "./_generated/dataModel"
+import { generateRandomId } from "./genId"
 
 export const archive = mutation({
     args: {id: v.id("documents")},
@@ -91,6 +92,7 @@ export const create = mutation({
         const document = await ctx.db.insert("documents", {
             title: args.title,
             parentDocument: args.parentDocument,
+            shortId: generateRandomId(),
             userId,
             isAcrhived: false,
             isPublished: false
@@ -255,6 +257,19 @@ export const getById = query({
   
       return document
     }
+})
+
+export const getByShortId = query({
+  args: {shortId: v.optional(v.string())},
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+    
+    const documents = await ctx.db.query("documents")
+      .filter((q) => q.eq(q.field("shortId"), args.shortId))
+      .collect()
+
+    return documents[0]
+  }
 })
 
 export const update = mutation({
