@@ -76,7 +76,7 @@ export function Publish({ initialData }: PublishProps){
     <Popover>
       <PopoverTrigger asChild>
         <Button size="sm" variant="ghost">
-          Publish
+          Опубликовать
           {initialData.isPublished && (
             <Globe className="h-4 w-4 text-sky-500" />
           )}

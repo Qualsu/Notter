@@ -123,7 +123,7 @@ const DragAndDrop = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="relative">
         {disabled && (
-          <div className="absolute inset-y-0 z-50 flex h-full w-full items-center justify-center bg-background/80">
+          <div className="absolute inset-y-0 z-[99999] flex h-full w-full items-center justify-center bg-background/80">
             <Loader2 className="animate-spin w-8 h-8"/>
           </div>
         )}

@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
 import { ModeToggle } from "../mode-toggle" 
 import { useSettings } from "../../../hooks/use-settings" 
 import { Label } from "../ui/label" 
+import { Separator } from "@radix-ui/react-dropdown-menu"
+import { SignOutButton } from "@clerk/nextjs"
 
 export function SettingsModal(){
   const settings = useSettings() 
@@ -15,13 +17,17 @@ export function SettingsModal(){
         </DialogHeader>
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-1">
-            <Label>Appearance</Label>
+            <Label>Тема</Label>
             <span className="text-[0.8rem] text-muted-foreground">
               Настройте Notter, для комфортной работы
             </span>
           </div>
           <ModeToggle />
         </div>
+        <Separator/>
+        <SignOutButton>
+            Выйти из аккаунта
+        </SignOutButton>
       </DialogContent>
     </Dialog>
   ) 
