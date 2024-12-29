@@ -54,7 +54,7 @@ export function SearchCommand(){
 
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
-      <CommandInput placeholder={`Search ${user?.username}'s Notter`} />
+      <CommandInput placeholder={`Поиск по заметкам`} />
       <CommandList>
         <CommandEmpty>Ничего не найдено</CommandEmpty>
         <CommandGroup heading="Заметки">

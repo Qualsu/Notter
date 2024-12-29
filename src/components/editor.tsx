@@ -1,6 +1,6 @@
 "use client" 
 
-import { BlockNoteEditor, PartialBlock } from "@blocknote/core" 
+import { BlockNoteEditor, BlockNoteSchema, defaultBlockSpecs, PartialBlock } from "@blocknote/core" 
 import { useCreateBlockNote } from "@blocknote/react" 
 import { BlockNoteView, lightDefaultTheme, Theme } from "@blocknote/mantine"
 import { useTheme } from "next-themes" 
@@ -24,11 +24,20 @@ export default function Editor({ onChange, initialContent, editable }: EditorPro
     return res.url 
   } 
 
+  const { audio, file, video, ...remainingBlockSpecs } = defaultBlockSpecs;
+
+  const schema = BlockNoteSchema.create({
+    blockSpecs: {
+      ...remainingBlockSpecs,
+    },
+  });
+  
   const editor: BlockNoteEditor = useCreateBlockNote({
     initialContent: initialContent
-      ? (JSON.parse(initialContent) as PartialBlock[])
-      : undefined,
-    uploadFile: handleUpload
+    ? (JSON.parse(initialContent) as PartialBlock[])
+    : undefined,
+    uploadFile: handleUpload,
+    // schema,
   }) 
 
   const handleEditorChange = () => {

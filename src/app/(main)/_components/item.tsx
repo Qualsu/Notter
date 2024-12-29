@@ -6,10 +6,11 @@ import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useUser } from "@clerk/clerk-react"
+import { useState } from "react"
 
 interface ItemProps {
     id?: Id<"documents">
@@ -41,6 +42,7 @@ export function Item({
     const archive = useMutation(api.document.archive)
     const update = useMutation(api.document.update)
     const {user} = useUser()
+    const [isDragging, setIsDragging] = useState(false)
 
     const onArchive = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -89,15 +91,47 @@ export function Item({
       }
 
     const ChevronIcon = expanded ? ChevronDown : ChevronRight
+    
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+        if (id) {
+            event.dataTransfer.setData("text/plain", id as Id<"documents">)
+            event.dataTransfer.effectAllowed = "move"
+            setIsDragging(true)
+        }
+    }
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault()
+        const draggedId = event.dataTransfer.getData("text/plain")
+        
+        if (draggedId && id && draggedId != id) {
+            const promise = update({ 
+                id: draggedId as Id<"documents">, 
+                parentDocument: id as Id<"documents"> 
+            })
+            
+            toast.promise(promise, {
+                loading: "Перемещаем...",
+                success: "Заметка успешно перемещена!",
+                error: "Не удалось переместить заметку"
+            })
+        }
+
+        setIsDragging(false)
+    }
 
     return (
         <div 
             onClick={onClick} 
             role="button" 
             style={{paddingLeft: level ? `${(level * 12) + 12}px` : "12px"}} 
-            className={cn("group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
+            className={cn(`group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium`,
             active && "bg-primary/5 text-primary"
             )}
+            draggable={id === undefined ? false : true}
+            onDragStart={handleDragStart}
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
         >
             
             {!!id && (
@@ -130,7 +164,7 @@ export function Item({
                 <div className="ml-auto flex items-center gap-x-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                            <div role="button" className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-600">
+                            <div role="button" className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary/5">
                                 <MoreHorizontal className="h-4 w-4 text-muted-foreground"/>
                             </div>
                         </DropdownMenuTrigger>
@@ -148,7 +182,7 @@ export function Item({
                     <div 
                         role="button" 
                         onClick={onCreate} 
-                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-600"
+                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-600 hover:bg-primary/5"
                     >
                         <Plus className="h-4 w-4 text-muted-foreground"/>
                     </div>

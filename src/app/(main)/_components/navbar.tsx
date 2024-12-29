@@ -47,7 +47,7 @@ export function Navbar({ isCollapsed, onResetWidth }: NavbarProps){
                 )}
                 <div className="flex w-full items-center justify-between">
                     <Title initialData={document} />
-                    <div className="flex items-center gap-x-2">
+                    <div className="flex items-center gap-x-2 justify-between">
                         {!document.isAcrhived && (
                             <Publish initialData={document} />
                         )}

@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings2, Trash } from "lucide-react"
+import { Archive, ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings2, Trash } from "lucide-react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { ElementRef, useEffect, useRef, useState } from "react"
 import { useMediaQuery } from 'usehooks-ts'
@@ -88,7 +88,7 @@ export function Navigation(){
             sidebarRef.current.style.width = isMobile ? "100%" : "240px"
             navbarRef.current.style.setProperty(
                 "width",
-                isMobile ? "0" : "calc(100%-240px)"
+                isMobile ? "0" : ""
             )
             navbarRef.current.style.setProperty(
                 "left", 
@@ -135,7 +135,7 @@ export function Navigation(){
                 onClick={collapse}
                 role="button" 
                 className={cn(
-                    "h-6 w-6 text-muted-foreground rounded-sm dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition",
+                    "h-6 w-6 text-muted-foreground rounded-sm hover:bg-primary/5 dark:hover:bg-primary/10 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition",
                     isMobile && "opacity-100"
                 )}>
                     <ChevronsLeft className="h-6 w-6"/>
@@ -143,28 +143,28 @@ export function Navigation(){
                 <div>
                     <UserItem/>
                     <Item
-                        label="Search"
+                        label="Поиск"
                         icon={Search}
                         isSearch
                         onClick={seacrh.onOpen}
                     />
                     <Item
-                        label="Setting"
+                        label="Настройки"
                         icon={Settings2}
                         onClick={settings.onOpen}
                     />
                     <Item 
                         onClick={handleCreate} 
-                        label="New Page" 
+                        label="Новая заметка" 
                         icon={PlusCircle}
                     />
                 </div>
                 <div className="mt-4">
                     <DocumentList/>
-                    <Item onClick={handleCreate} icon={Plus} label="Add a page"/>
+                    <Item onClick={handleCreate} icon={Plus} label="Добавить заметку"/>
                     <Popover>
                         <PopoverTrigger className="w-full mt-4">
-                            <Item label="Trash" icon={Trash} />
+                            <Item label="Архив" icon={Archive} />
                         </PopoverTrigger>
                         <PopoverContent className="p-0 w-72 z-[99999]" side={isMobile ? "bottom" : "right"}>
                             <TrashBox />
@@ -190,7 +190,7 @@ export function Navigation(){
                     />
                 ) : (
                     <nav className="bg-transparent px-3 py-2 w-full">
-                        {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 text-muted-foreground"/>}
+                        {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 text-muted-foreground hover:bg-primary/5 dark:hover:bg-primary/10"/>}
                     </nav>
                 )}
 

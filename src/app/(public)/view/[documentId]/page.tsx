@@ -27,9 +27,9 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   )
   const origin = useOrigin()
       
-  if(origin !== "https://notter.site"){
-      redirect("https://notter.tech")
-  }
+  // if(origin !== "https://notter.site"){
+  //     redirect("https://notter.tech")
+  // }
 
   const document = useQuery(api.document.getById, {
     documentId: params.documentId

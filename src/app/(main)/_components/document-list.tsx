@@ -64,7 +64,7 @@ export function DocumentList({
                     level === 0 && "hidden"
                 )}
             >
-                Нету страниц
+                Нету заметок
             </p>
             {documents?.map((document) => (
                 <div key={document._id}>

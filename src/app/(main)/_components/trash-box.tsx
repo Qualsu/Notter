@@ -9,11 +9,13 @@ import { api } from "../../../../convex/_generated/api"
 import { Id } from "../../../../convex/_generated/dataModel" 
 import { Input } from "@/components/ui/input" 
 import { ConfirmModal } from "@/components/modal/confirm-modal" 
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 
 export function TrashBox(){
   const router = useRouter() 
   const params = useParams() 
-  const documents = useQuery(api.document.getTrash) 
+  const documents = useQuery(api.document.getTrash)
   const restore = useMutation(api.document.restore) 
   const remove = useMutation(api.document.remove) 
 
@@ -53,7 +55,20 @@ export function TrashBox(){
     if (params.documentId === documentId) {
       router.push("/dashboard") 
     }
-  } 
+  }
+
+  const removeAll = () => {
+    let promise: any
+    documents?.map((document) => {
+      promise = remove({ id: document._id })
+    })
+
+    toast.promise(promise, {
+      loading: "Очищаем...",
+      success: "Архив очищен!",
+      error: "Не удалось очистить",
+    }) 
+  }
 
   if (documents === undefined) {
     return (
@@ -96,22 +111,35 @@ export function TrashBox(){
             <div className="flex items-center">
               <button
                 onClick={(e) => onRestore(e, document._id)}
-                className="rounded-sm p-2 hover:bg-neutral-600"
+                className="rounded-sm p-2 dark:hover:bg-neutral-600 hover:bg-primary/5"
                 aria-label="Восстановить заметку"
               >
                 <Undo className="h-4 w-4 text-muted-foreground " />
               </button>
               <ConfirmModal onConfirm={() => onRemove(document._id)}>
                 <button
-                  className="rounded-sm p-2 hover:bg-neutral-600"
+                  className="rounded-sm p-2 dark:hover:bg-neutral-600 hover:bg-primary/5"
                   aria-label="Удалить безвозвратно"
                 >
-                  <Trash className="h-4 w-4 text-muted-foreground " />
+                  <Trash className="h-4 w-4 text-muted-foreground"/>
                 </button>
               </ConfirmModal>
             </div>
           </button>
         ))}
+        
+        {filteredDocuments?.length !== 0 && (
+          <>
+            <Separator className="my-2"/>
+            <ConfirmModal onConfirm={() => removeAll()}>
+              <div className="flex justify-center items-center">
+                <Button className="w-40 h-8">
+                  Очистить
+                </Button>
+              </div>
+            </ConfirmModal>
+          </>
+        )}
       </div>
     </section>
   ) 

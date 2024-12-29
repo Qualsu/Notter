@@ -28,9 +28,9 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
 
   const origin = useOrigin()
       
-  if(origin !== "https://nttr.pw"){
-      redirect("https://notter.tech")
-  }
+  // if(origin !== "https://nttr.pw"){
+  //     redirect("https://notter.tech")
+  // }
 
   const document = useQuery(api.document.getByShortId, {
     shortId: params.documentId
