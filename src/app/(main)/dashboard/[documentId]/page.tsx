@@ -46,7 +46,8 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
     update({
       id: params.documentId,
       content,
-      userId: orgId
+      userId: orgId,
+      lastEditor: user?.username as string
     }) 
   } 
 

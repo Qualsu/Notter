@@ -16,7 +16,7 @@ export default function Error404(){
         alt="error"
       />
       <div className="flex flex-col">
-        <h1 className="text-7xl font-medium my-3">404</h1>
+        <h1 className="text-7xl font-medium m-2">404</h1>
         <Button asChild size="lg">
             <Link href="/">На главную</Link>
         </Button>

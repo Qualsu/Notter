@@ -51,7 +51,8 @@ export function CoverImageModal(){
       await update({
         id: params.documentId as Id<"documents">,
         coverImage: res.url,
-        userId: orgId
+        userId: orgId,
+        lastEditor: user?.username as string
       }) 
 
       onClose() 

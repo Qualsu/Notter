@@ -100,7 +100,7 @@ export function Menu({ documentId }: MenuProps){
         <DropdownMenuSeparator />
       </Protect>
         <div className="p-2 text-xs text-muted-foreground">
-            Последнее изменение от: {user?.username}
+            Последнее изменение от: {document?.lastEditor}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

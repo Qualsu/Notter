@@ -1,18 +1,14 @@
 "use client" 
 
 import dynamic from "next/dynamic" 
-import { useEffect, useMemo, useState } from "react" 
-
+import { useMemo } from "react" 
 import { Skeleton } from "@/components/ui/skeleton" 
-
-import { useMutation, useQuery } from "convex/react" 
+import { useQuery } from "convex/react" 
 import { Toolbar } from "@/components/toolbar" 
 import { Cover } from "@/components/cover" 
-import { redirect } from "next/navigation"
 import { api } from "../../../../convex/_generated/api"
 import { useOrigin } from "../../../../hooks/use-origin"
 import Error404 from "@/app/errorPage"
-import { Id } from "../../../../convex/_generated/dataModel"
 
 interface DocumentIdPageProps {
   params: {
@@ -52,7 +48,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
     ) 
   }
 
-  if(!document.isPublished || document === null){
+  if(!document?.isPublished || document === null){
     return <Error404/>
   }
 

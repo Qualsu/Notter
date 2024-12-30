@@ -23,6 +23,7 @@ interface ItemProps {
     label: string
     onClick?: () => void
     icon: LucideIcon
+    lastEditor: string
 }
 
 export function Item({
@@ -35,7 +36,8 @@ export function Item({
     isSearch,
     level = 0,
     onExpand,
-    expanded
+    expanded,
+    lastEditor
 }: ItemProps){
     const router = useRouter()
     const create = useMutation(api.document.create)
@@ -54,7 +56,8 @@ export function Item({
         update({
             id: id,
             isPublished: false,
-            userId: orgId
+            userId: orgId,
+            lastEditor: user?.username as string
         })
         const promise = archive({
             id, 
@@ -83,7 +86,8 @@ export function Item({
         const promise = create({
             title: "Новая заметка",
             parentDocument: id,
-            userId: orgId
+            userId: orgId,
+            lastEditor: user?.username as string
         }).then(
           (documentId) => {
             if (!expanded) {
@@ -118,7 +122,8 @@ export function Item({
             const promise = update({ 
                 id: draggedId as Id<"documents">, 
                 parentDocument: id as Id<"documents">,
-                userId: orgId
+                userId: orgId,
+                lastEditor: user?.username as string
             })
             
             toast.promise(promise, {
@@ -195,7 +200,7 @@ export function Item({
                                 <DropdownMenuSeparator/>
                             </Protect>
                                 <div className="text-xs text-muted-foreground p-2">
-                                    Последнее изменение от: {user?.username}
+                                    Последнее изменение от: {lastEditor}
                                 </div>
                         </DropdownMenuContent>
                     </DropdownMenu>

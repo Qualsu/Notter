@@ -28,6 +28,7 @@ export function Navigation(){
     const { organization } = useOrganization()
     const isMobile = useMediaQuery("(max-width: 768px)")
     const create = useMutation(api.document.create)
+    const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
 
     const isResizingRef = useRef(false)
     const sidebarRef = useRef<ElementRef<"aside">>(null)
@@ -117,7 +118,8 @@ export function Navigation(){
     const handleCreate = () => {
         const promise = create({
             title: "Новая заметка",
-            userId: organization?.id !== undefined ? organization?.id as string : user?.id as string
+            userId: orgId,
+            lastEditor: user?.username as string
         })
             .then((documentId) => router.push(`/dashboard/${documentId}`))
 

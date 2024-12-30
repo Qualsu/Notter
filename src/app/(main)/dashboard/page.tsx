@@ -9,18 +9,26 @@ import { api } from "../../../../convex/_generated/api"
 import { toast } from "sonner"
 import { redirect, useRouter } from "next/navigation"
 import { useOrigin } from "../../../../hooks/use-origin"
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 export default function Dashboard() {
     const create = useMutation(api.document.create)
     const router = useRouter()
     const origin = useOrigin()
+    const { user } = useUser()
+    const { organization } = useOrganization()
+    const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
     
     if(origin === "https://notter.site" || origin === "http://nttr.pw"){
         redirect("https://notter.tech")
     }
 
     const onCreate = () => {
-        const promise = create({ title: "Новая заметка" })
+        const promise = create({ 
+            title: "Новая заметка",
+            userId: orgId,
+            lastEditor: user?.username as string
+        })
             .then((documentId) => router.push(`/dashboard/${documentId}`))
         
         toast.promise(promise, {

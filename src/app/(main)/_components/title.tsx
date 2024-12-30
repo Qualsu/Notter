@@ -40,7 +40,8 @@ export function Title({ initialData }: TitleProps){
         update({
           id: initialData._id,
           title: event.target.value || "Новая заметка",
-          userId: orgId
+          userId: orgId,
+          lastEditor: user?.username as string
         }) 
       } 
     

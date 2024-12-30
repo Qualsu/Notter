@@ -79,7 +79,8 @@ export const create = mutation({
     args: {
         title: v.string(),
         parentDocument: v.optional(v.id("documents")),
-        userId: v.string()
+        userId: v.string(),
+        lastEditor: v.string()
     },
     handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
@@ -96,7 +97,8 @@ export const create = mutation({
             shortId: generateRandomId(),
             userId: args.userId,
             isAcrhived: false,
-            isPublished: false
+            isPublished: false,
+            lastEditor: args.lastEditor
         })
 
         return document
@@ -287,7 +289,8 @@ export const update = mutation({
       icon: v.optional(v.string()),
       isPublished: v.optional(v.boolean()),
       parentDocument: v.optional(v.id("documents")),
-      userId: v.string()
+      userId: v.string(),
+      lastEditor: v.string()
     },
     handler: async (ctx, args) => {
       const identity = await ctx.auth.getUserIdentity()

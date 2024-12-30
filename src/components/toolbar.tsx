@@ -47,7 +47,8 @@ export function Toolbar({ initialData, preview }: ToolbarProps){
     update({
       id: initialData._id,
       title: value || "Новая заметка",
-      userId: orgId
+      userId: orgId,
+      lastEditor: user?.username as string
     }) 
   } 
 
@@ -62,7 +63,8 @@ export function Toolbar({ initialData, preview }: ToolbarProps){
     update({
       id: initialData._id,
       icon,
-      userId: orgId
+      userId: orgId,
+      lastEditor: user?.username as string
     }) 
   } 
 
