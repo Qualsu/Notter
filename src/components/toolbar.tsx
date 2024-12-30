@@ -9,6 +9,7 @@ import { Doc } from "../../convex/_generated/dataModel"
 import { api } from "../../convex/_generated/api" 
 import { IconPicker } from "./icon-picker" 
 import { useCoverImage } from "../../hooks/use-cover-image" 
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 interface ToolbarProps {
   initialData: Doc<"documents"> 
@@ -20,6 +21,10 @@ export function Toolbar({ initialData, preview }: ToolbarProps){
 
   const [isEditing, setIsEditing] = useState(false) 
   const [value, setValue] = useState(initialData.title) 
+
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
 
   const update = useMutation(api.document.update) 
   const removeIcon = useMutation(api.document.removeIcon)
@@ -42,6 +47,7 @@ export function Toolbar({ initialData, preview }: ToolbarProps){
     update({
       id: initialData._id,
       title: value || "Новая заметка",
+      userId: orgId
     }) 
   } 
 
@@ -56,12 +62,14 @@ export function Toolbar({ initialData, preview }: ToolbarProps){
     update({
       id: initialData._id,
       icon,
+      userId: orgId
     }) 
   } 
 
   const onRemoveIcon = () => {
     removeIcon({
       id: initialData._id,
+      userId: orgId
     }) 
   } 
 

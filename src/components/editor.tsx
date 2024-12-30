@@ -41,8 +41,8 @@ export default function Editor({ onChange, initialContent, editable }: EditorPro
   }) 
 
   const handleEditorChange = () => {
-    onChange(JSON.stringify(editor.document, null, 2)) 
-  } 
+    onChange(JSON.stringify(editor.document, null, 2))
+  }
 
   return (
     <div>

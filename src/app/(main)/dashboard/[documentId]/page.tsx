@@ -29,22 +29,24 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   const origin = useOrigin()
   const { user } = useUser()
   const { organization } = useOrganization()
-  
+  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
+
   if(origin === "https://notter.site" || origin === "http://nttr.pw"){
       redirect("https://notter.tech")
   }
 
   const document = useQuery(api.document.getById, {
     documentId: params.documentId,
-    userId: organization?.id !== undefined ? organization?.id as string : user?.id as string
-  }) 
+    userId: orgId
+  })
 
   const update = useMutation(api.document.update) 
-
+  
   const onChange = (content: string) => {
     update({
       id: params.documentId,
-      content
+      content,
+      userId: orgId
     }) 
   } 
 
@@ -70,7 +72,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
 
   return (
     <div className="pb-40">
-      <Cover url={document.coverImage} preview={document.isAcrhived ? false : true}/>
+      <Cover url={document.coverImage} preview={document.isAcrhived ? true : false}/>
       <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
         <Toolbar initialData={document} preview={document.isAcrhived ? true : false}/>
         <Editor onChange={onChange} initialContent={document.content} editable={document.isAcrhived ? false : true}/>

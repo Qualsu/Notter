@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useOrganization, useUser } from "@clerk/nextjs"
+import { Protect, useOrganization, useUser } from "@clerk/nextjs"
 import { useState } from "react"
 
 interface ItemProps {
@@ -53,7 +53,8 @@ export function Item({
         if(!id) return
         update({
             id: id,
-            isPublished: false
+            isPublished: false,
+            userId: orgId
         })
         const promise = archive({
             id, 
@@ -116,7 +117,8 @@ export function Item({
         if (draggedId && id && draggedId != id) {
             const promise = update({ 
                 id: draggedId as Id<"documents">, 
-                parentDocument: id as Id<"documents"> 
+                parentDocument: id as Id<"documents">,
+                userId: orgId
             })
             
             toast.promise(promise, {
@@ -178,11 +180,20 @@ export function Item({
                             </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-60" align="start" side="right" forceMount>
-                            <DropdownMenuItem onClick={onArchive}>
-                                <Trash className="h-4 w-4 mr-2"/>
-                                Удалить
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator/>
+                            <Protect
+                                condition={(check) => {
+                                    return check({
+                                        role: "org:admin"
+                                    }) || organization?.id === undefined
+                                }}
+                                fallback={<></>}
+                            >
+                                <DropdownMenuItem onClick={onArchive}>
+                                    <Trash className="h-4 w-4 mr-2"/>
+                                    Удалить
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator/>
+                            </Protect>
                                 <div className="text-xs text-muted-foreground p-2">
                                     Последнее изменение от: {user?.username}
                                 </div>

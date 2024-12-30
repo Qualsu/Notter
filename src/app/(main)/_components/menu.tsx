@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton" 
 import { Id } from "../../../../convex/_generated/dataModel" 
 import { api } from "../../../../convex/_generated/api" 
+import { Protect } from "@clerk/nextjs"
 
 interface MenuProps {
   documentId: Id<"documents"> 
@@ -76,6 +77,14 @@ export function Menu({ documentId }: MenuProps){
         alignOffset={8}
         forceMount
       >
+      <Protect
+          condition={(check) => {
+              return check({
+                  role: "org:admin"
+              }) || document?.userId === user?.id
+          }}
+          fallback={<></>}
+      >
         {!document?.isAcrhived ? (
             <DropdownMenuItem onClick={onArchive}>
                 <Trash className="mr-2 h-4 w-4" />
@@ -89,6 +98,7 @@ export function Menu({ documentId }: MenuProps){
         )}
 
         <DropdownMenuSeparator />
+      </Protect>
         <div className="p-2 text-xs text-muted-foreground">
             Последнее изменение от: {user?.username}
         </div>

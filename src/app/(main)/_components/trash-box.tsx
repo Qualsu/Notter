@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { ConfirmModal } from "@/components/modal/confirm-modal" 
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { useOrganization, useUser } from "@clerk/nextjs"
+import { Protect, useOrganization, useUser } from "@clerk/nextjs"
 
 export function TrashBox(){
   const router = useRouter() 
@@ -124,6 +124,14 @@ export function TrashBox(){
           >
             <span className="truncate pl-2">{document.title}</span>
             <div className="flex items-center">
+              <Protect
+                    condition={(check) => {
+                        return check({
+                            role: "org:admin"
+                        }) || document?.userId === user?.id
+                    }}
+                    fallback={<></>}
+              >
               <button
                 onClick={(e) => onRestore(e, document._id)}
                 className="rounded-sm p-2 dark:hover:bg-neutral-600 hover:bg-primary/5"
@@ -131,30 +139,40 @@ export function TrashBox(){
               >
                 <Undo className="h-4 w-4 text-muted-foreground " />
               </button>
-              <ConfirmModal onConfirm={() => onRemove(document._id)}>
-                <button
-                  className="rounded-sm p-2 dark:hover:bg-neutral-600 hover:bg-primary/5"
-                  aria-label="Удалить безвозвратно"
-                >
-                  <Trash className="h-4 w-4 text-muted-foreground"/>
-                </button>
-              </ConfirmModal>
+                <ConfirmModal onConfirm={() => onRemove(document._id)}>
+                  <button
+                    className="rounded-sm p-2 dark:hover:bg-neutral-600 hover:bg-primary/5"
+                    aria-label="Удалить безвозвратно"
+                  >
+                    <Trash className="h-4 w-4 text-muted-foreground"/>
+                  </button>
+                </ConfirmModal>
+              </Protect>
             </div>
           </button>
         ))}
         
-        {filteredDocuments?.length !== 0 && (
-          <>
-            <Separator className="my-2"/>
-            <ConfirmModal onConfirm={() => removeAll()}>
-              <div className="flex justify-center items-center">
-                <Button className="w-40 h-8">
-                  Очистить
-                </Button>
-              </div>
-            </ConfirmModal>
-          </>
-        )}
+        <Protect
+            condition={(check) => {
+                return check({
+                    role: "org:admin"
+                }) || organization?.id === undefined
+            }}
+            fallback={<></>}
+        >
+          {filteredDocuments?.length !== 0 && (
+            <>
+              <Separator className="my-2"/>
+              <ConfirmModal onConfirm={() => removeAll()}>
+                <div className="flex justify-center items-center">
+                  <Button className="w-40 h-8">
+                    Очистить <Trash/>
+                  </Button>
+                </div>
+              </ConfirmModal>
+            </>
+          )}
+        </Protect>
       </div>
     </section>
   ) 

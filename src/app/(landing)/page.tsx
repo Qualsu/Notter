@@ -5,14 +5,10 @@ import { useOrigin } from "../../../hooks/use-origin";
 import { Footer } from "./_components/footer";
 import { Heading } from "./_components/heading";
 import { Images } from "./_components/images";
-import { useOrganization } from "@clerk/clerk-react";
 
 export default function Landing() {
 
   const origin = useOrigin()
-  const { organization } = useOrganization()
-  console.log(organization?.id)
-
   if(origin === "https://notter.site" || origin === "http://nttr.pw"){
     redirect("https://notter.tech")
   }

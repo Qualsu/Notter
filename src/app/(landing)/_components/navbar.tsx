@@ -9,6 +9,7 @@ import { useConvexAuth } from "convex/react";
 import { SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { SignedIn } from "@clerk/nextjs";
 
 export function Navbar(){
     const scrolled = useScrollTop()
@@ -22,21 +23,22 @@ export function Navbar(){
             <a href="/">
                 <Image src={logoImg} height="40" alt="KenyCloud Logo" className="drop-shadow-xl"/>
             </a>
-            <div className="md:ml-auto justify-end w-full flex items-center gap-x-2">
+            <div className="md:ml-auto justify-end w-full flex items-center gap-x-1">
                 {isLoading && (
                     <div className="animate-spin mr-4">
                         <Loader2/>
                     </div>
                 )}
                 
-                {isAuthenticated && (
+                {!isLoading && (
                     <>
-                        <a href="/dashboard" className="hidden sm:block">
-                            <Button variant="ghost">Перейти {"->"}</Button>
-                        </a>
-                        <div className="mr-4">
-                            <UserButton/>
-                        </div>
+                        <SignedIn>
+                            <a href="/dashboard" className="hidden sm:block">
+                                <Button variant="ghost">Перейти {"->"}</Button>
+                            </a>
+                            <div className="mr-4"><UserButton/></div>
+                        </SignedIn>
+
                         <SignedOut>
                             <SignInButton>
                                 <a href="/auth/sign-in">

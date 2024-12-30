@@ -14,6 +14,7 @@ import { Doc } from "../../../../convex/_generated/dataModel"
 import { api } from "../../../../convex/_generated/api" 
 import { Checkbox } from "@/components/ui/checkbox"
 import { useOrigin } from "../../../../hooks/use-origin"
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 interface PublishProps {
   initialData: Doc<"documents"> 
@@ -22,7 +23,9 @@ interface PublishProps {
 export function Publish({ initialData }: PublishProps){
   const origin = useOrigin() 
   const update = useMutation(api.document.update) 
-
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
   const [copied, setCopied] = useState(false) 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isShortUrl, setIsShortUrl] = useState(false)
@@ -39,6 +42,7 @@ export function Publish({ initialData }: PublishProps){
     const promise = update({
       id: initialData._id,
       isPublished: true,
+      userId: orgId
     }).finally(() => setIsSubmitting(false)) 
 
     toast.promise(promise, {
@@ -54,6 +58,7 @@ export function Publish({ initialData }: PublishProps){
     const promise = update({
       id: initialData._id,
       isPublished: false,
+      userId: orgId
     }).finally(() => setIsSubmitting(false)) 
 
     toast.promise(promise, {

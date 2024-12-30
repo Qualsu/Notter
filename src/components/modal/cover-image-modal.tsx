@@ -14,6 +14,7 @@ import { api } from "../../../convex/_generated/api"
 import { Id } from "../../../convex/_generated/dataModel" 
 import { useEdgeStore } from "@/lib/edgestore" 
 import { DragAndDrop } from "../drag-and-drop" 
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 export function CoverImageModal(){
   const params = useParams() 
@@ -24,6 +25,10 @@ export function CoverImageModal(){
   const update = useMutation(api.document.update) 
   const coverImage = useCoverImage() 
   const { edgestore } = useEdgeStore() 
+
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
 
   const onClose = () => {
     setFile(undefined) 
@@ -45,7 +50,8 @@ export function CoverImageModal(){
 
       await update({
         id: params.documentId as Id<"documents">,
-        coverImage: res.url
+        coverImage: res.url,
+        userId: orgId
       }) 
 
       onClose() 

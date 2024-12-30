@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import { api } from "../../../../convex/_generated/api" 
 import { ConfirmModal } from "@/components/modal/confirm-modal" 
 import { Id } from "../../../../convex/_generated/dataModel" 
+import { Protect, useOrganization, useUser } from "@clerk/nextjs"
 
 interface BannerProps {
   documentId: Id<"documents"> 
@@ -16,9 +17,15 @@ export function Banner({ documentId }: BannerProps){
   const router = useRouter() 
   const remove = useMutation(api.document.remove) 
   const restore = useMutation(api.document.restore) 
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
 
   const onRemove = () => {
-    const promise = remove({ id: documentId }) 
+    const promise = remove({
+      id: documentId,
+      userId: orgId
+    }) 
 
     toast.promise(promise, {
         loading: "Удаляем заметку...",
@@ -30,7 +37,10 @@ export function Banner({ documentId }: BannerProps){
   } 
 
   const onRestore = () => {
-    const promise = restore({ id: documentId }) 
+    const promise = restore({
+      id: documentId,
+      userId: orgId
+    }) 
 
     toast.promise(promise, {
         loading: "Восстановляем...",
@@ -42,25 +52,34 @@ export function Banner({ documentId }: BannerProps){
   return (
     <div className="flex w-full items-center justify-center gap-x-2 bg-rose-500 p-2 text-center text-sm text-white">
       <p>
-        Эта заметка была удалена
+        Эта заметка перемещена в архив
       </p>
-      <Button
-        size="sm"
-        onClick={onRestore}
-        variant="outline"
-        className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
+      <Protect
+          condition={(check) => {
+              return check({
+                  role: "org:admin"
+              }) || organization?.id === undefined
+          }}
+          fallback={<></>}
       >
-        Восстановить
-      </Button>
-      <ConfirmModal onConfirm={onRemove}>
         <Button
           size="sm"
+          onClick={onRestore}
           variant="outline"
           className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
         >
-          Удалить безвозвратно
+          Восстановить
         </Button>
-      </ConfirmModal>
+        <ConfirmModal onConfirm={onRemove}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
+          >
+            Удалить безвозвратно
+          </Button>
+        </ConfirmModal>
+      </Protect>
     </div>
   ) 
 } 
