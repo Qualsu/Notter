@@ -12,6 +12,7 @@ import { Toolbar } from "@/components/toolbar"
 import { Cover } from "@/components/cover" 
 import { redirect } from "next/navigation"
 import { useOrigin } from "../../../../../hooks/use-origin"
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 interface DocumentIdPageProps {
   params: {
@@ -26,13 +27,16 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   ) 
   
   const origin = useOrigin()
-      
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  
   if(origin === "https://notter.site" || origin === "http://nttr.pw"){
       redirect("https://notter.tech")
   }
 
   const document = useQuery(api.document.getById, {
-    documentId: params.documentId
+    documentId: params.documentId,
+    userId: organization?.id !== undefined ? organization?.id as string : user?.id as string
   }) 
 
   const update = useMutation(api.document.update) 

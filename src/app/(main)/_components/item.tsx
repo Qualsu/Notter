@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useUser } from "@clerk/clerk-react"
+import { useOrganization, useUser } from "@clerk/nextjs"
 import { useState } from "react"
 
 interface ItemProps {
@@ -41,7 +41,9 @@ export function Item({
     const create = useMutation(api.document.create)
     const archive = useMutation(api.document.archive)
     const update = useMutation(api.document.update)
-    const {user} = useUser()
+    const { user } = useUser()
+    const { organization } = useOrganization()
+    const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
     const [isDragging, setIsDragging] = useState(false)
 
     const onArchive = (
@@ -53,8 +55,11 @@ export function Item({
             id: id,
             isPublished: false
         })
-        const promise = archive({id})
-            .then(() => router.push("/dashboard"))
+        const promise = archive({
+            id, 
+            userId: orgId
+        })
+        .then(() => router.push("/dashboard"))
 
         toast.promise(promise, {
             loading: "Перемещаем в архив...",
@@ -74,7 +79,11 @@ export function Item({
         event.stopPropagation()
         if (!id) return
     
-        const promise = create({ title: "Новая заметка", parentDocument: id }).then(
+        const promise = create({
+            title: "Новая заметка",
+            parentDocument: id,
+            userId: orgId
+        }).then(
           (documentId) => {
             if (!expanded) {
               onExpand?.()

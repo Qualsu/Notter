@@ -96,6 +96,10 @@ body,
   --bn-colors-disabled-background: #0a0a0a;
 }
 
+.cl-organizationSwitcherPopoverCard {
+  z-index: 999999;
+}
+
 @layer base {
   * {
     @apply border-border;

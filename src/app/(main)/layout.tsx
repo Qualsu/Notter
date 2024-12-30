@@ -2,9 +2,10 @@
 
 import { useConvexAuth } from "convex/react"
 import { Loader2 } from "lucide-react"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { Navigation } from "./_components/navigation"
 import { SearchCommand } from "@/components/search-command"
+import { useEffect } from "react"
 
 export default function MainLayout({
     children,
@@ -12,6 +13,13 @@ export default function MainLayout({
     children: React.ReactNode
   }) {
     const { isAuthenticated, isLoading } = useConvexAuth()
+    const router = useRouter()
+
+    useEffect(() => {
+      if (!isLoading && isAuthenticated) {
+          router.push("/dashboard")
+      }
+    }, [isLoading, isAuthenticated, router])
 
     if (isLoading){
         return (

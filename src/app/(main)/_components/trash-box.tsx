@@ -11,11 +11,17 @@ import { Input } from "@/components/ui/input"
 import { ConfirmModal } from "@/components/modal/confirm-modal" 
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 export function TrashBox(){
   const router = useRouter() 
   const params = useParams() 
-  const documents = useQuery(api.document.getTrash)
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
+  const documents = useQuery(api.document.getTrash, {
+    userId: orgId
+  })
   const restore = useMutation(api.document.restore) 
   const remove = useMutation(api.document.remove) 
 
@@ -34,7 +40,10 @@ export function TrashBox(){
     documentId: Id<"documents">,
   ) => {
     event.stopPropagation() 
-    const promise = restore({ id: documentId }) 
+    const promise = restore({
+      id: documentId,
+      userId: orgId
+    }) 
 
     toast.promise(promise, {
       loading: "Восстановляем...",
@@ -44,7 +53,10 @@ export function TrashBox(){
   } 
 
   const onRemove = (documentId: Id<"documents">) => {
-    const promise = remove({ id: documentId }) 
+    const promise = remove({
+      id: documentId,
+      userId: orgId
+    }) 
 
     toast.promise(promise, {
       loading: "Удаляем заметку...",
@@ -60,7 +72,10 @@ export function TrashBox(){
   const removeAll = () => {
     let promise: any
     documents?.map((document) => {
-      promise = remove({ id: document._id })
+      promise = remove({
+        id: document._id,
+        userId: orgId
+      }) 
     })
 
     toast.promise(promise, {

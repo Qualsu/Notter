@@ -4,7 +4,10 @@ import { Doc, Id } from "./_generated/dataModel"
 import { generateRandomId } from "./genId"
 
 export const archive = mutation({
-    args: {id: v.id("documents")},
+    args: {
+      id: v.id("documents"),
+      userId: v.string()
+    },
     handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
 
@@ -12,21 +15,19 @@ export const archive = mutation({
             throw new Error("Not authenticated")
         }
 
-        const userId = identify.subject
-
         const existingDocument = await ctx.db.get(args.id)
 
         if(!existingDocument){
             throw new Error("404")
         }
 
-        if(existingDocument.userId !== userId){
+        if(existingDocument.userId !== args.userId){
             throw new Error("401")
         }
 
         const recursiveArchive = async (documentId: Id<"documents">) => {
             const children = await ctx.db.query("documents").withIndex("by_user_parent", (q) => (
-                q.eq("userId", userId).eq("parentDocument", documentId)
+                q.eq("userId", args.userId).eq("parentDocument", documentId)
             )).collect()
 
             for(const child of children){
@@ -50,7 +51,8 @@ export const archive = mutation({
 
 export const getSidebar = query({
     args: {
-        parentDocument: v.optional(v.id("documents"))
+        parentDocument: v.optional(v.id("documents")),
+        userId: v.string()
     },
     handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
@@ -59,11 +61,9 @@ export const getSidebar = query({
             throw new Error("Not authenticated")
         }
 
-        const userId = identify.subject
-
         const documents = await ctx.db.query("documents")
             .withIndex("by_user_parent", (q) => q
-                .eq("userId", userId)
+                .eq("userId", args.userId)
                 .eq("parentDocument", args.parentDocument)
             ).filter((q) => 
                 q.eq(q.field("isAcrhived"), false)
@@ -78,7 +78,8 @@ export const getSidebar = query({
 export const create = mutation({
     args: {
         title: v.string(),
-        parentDocument: v.optional(v.id("documents"))
+        parentDocument: v.optional(v.id("documents")),
+        userId: v.string()
     },
     handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
@@ -87,13 +88,13 @@ export const create = mutation({
             throw new Error("Not authenticated")
         }
 
-        const userId = identify.subject
+        // const userId = identify.subject
 
         const document = await ctx.db.insert("documents", {
             title: args.title,
             parentDocument: args.parentDocument,
             shortId: generateRandomId(),
-            userId,
+            userId: args.userId,
             isAcrhived: false,
             isPublished: false
         })
@@ -103,18 +104,19 @@ export const create = mutation({
 })
 
 export const getTrash = query({
-    handler: async(ctx) => {
+    args: {
+      userId: v.string()
+    },
+    handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
 
         if (!identify){
             throw new Error("Not authenticated")
         }
 
-        const userId = identify.subject
-
         const documents = await ctx.db.query("documents")
             .withIndex("by_user", (q) => q
-                .eq("userId", userId)
+                .eq("userId", args.userId)
             ).filter((q) =>
                 q.eq(q.field("isAcrhived"), true)
             )
@@ -126,7 +128,10 @@ export const getTrash = query({
 })
 
 export const restore = mutation({
-    args: {id: v.id("documents")},
+    args: {
+      id: v.id("documents"),
+      userId: v.string()
+    },
     handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
 
@@ -134,22 +139,20 @@ export const restore = mutation({
             throw new Error("Not authenticated")
         }
 
-        const userId = identify.subject
-
         const existingDocument = await ctx.db.get(args.id)
 
         if(!existingDocument) {
             throw new Error("Not found")
         }
 
-        if(existingDocument.userId !== userId) {
+        if(existingDocument.userId !== args.userId) {
             throw new Error("Unauthorized")
         }
 
         const recursiveRestore = async (documentId: Id<"documents">) => {
             const children = await ctx.db.query("documents")
                 .withIndex("by_user_parent", (q) => q
-                    .eq("userId", userId)
+                    .eq("userId", args.userId)
                     .eq("parentDocument", documentId)
                 )
                 .collect()
@@ -183,7 +186,10 @@ export const restore = mutation({
 })
 
 export const remove = mutation({
-    args: {id: v.id("documents")},
+    args: {
+      id: v.id("documents"),
+      userId: v.string()
+    },
     handler: async (ctx, args) => {
       const identity = await ctx.auth.getUserIdentity()
   
@@ -191,15 +197,13 @@ export const remove = mutation({
         throw new Error("Not authenticated")
       }
   
-      const userId = identity.subject
-  
       const exisingDocument = await ctx.db.get(args.id)
   
       if (!exisingDocument) {
         throw new Error("Document not found")
       }
   
-      if (exisingDocument.userId !== userId) {
+      if (exisingDocument.userId !== args.userId) {
         throw new Error("Not authorized")
       }
   
@@ -231,7 +235,10 @@ export const getSearch = query({
   })
 
 export const getById = query({
-    args: {documentId: v.id("documents")},
+    args: {
+      documentId: v.id("documents"),
+      userId: v.string()
+    },
     handler: async (ctx, args) => {
       const identity = await ctx.auth.getUserIdentity()
   
@@ -248,10 +255,8 @@ export const getById = query({
       if (!identity) {
         throw new Error("Not authenticated")
       }
-  
-      const userId = identity.subject
-  
-      if (document.userId !== userId) {
+    
+      if (document.userId !== args.userId) {
         throw new Error("Not authorized")
       }
   

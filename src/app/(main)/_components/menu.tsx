@@ -1,7 +1,7 @@
 "use client" 
 
 import { useRouter } from "next/navigation" 
-import { useUser } from "@clerk/clerk-react" 
+import { useOrganization, useUser } from "@clerk/clerk-react" 
 import { useMutation, useQuery } from "convex/react" 
 import { toast } from "sonner" 
 import {
@@ -23,16 +23,21 @@ interface MenuProps {
 
 export function Menu({ documentId }: MenuProps){
   const router = useRouter() 
-  const { user } = useUser() 
-
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
   const archive = useMutation(api.document.archive)
   const restore = useMutation(api.document.restore)
   const document = useQuery(api.document.getById, {
-    documentId: documentId as Id<"documents">
+    documentId: documentId as Id<"documents">,
+    userId: orgId
   })
 
   const onArchive = () => {
-    const promise = archive({ id: documentId })
+    const promise = archive({
+      id: documentId,
+      userId: orgId
+    })
 
     toast.promise(promise, {
         loading: "Перемещаем в архив...",
@@ -44,7 +49,10 @@ export function Menu({ documentId }: MenuProps){
   }
 
   const onRestore = () => {
-    const promise = restore({ id: documentId }) 
+    const promise = restore({
+      id: documentId,
+      userId: orgId
+    }) 
 
     toast.promise(promise, {
         loading: "Восстановляем...",

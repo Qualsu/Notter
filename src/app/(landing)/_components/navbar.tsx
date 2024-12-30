@@ -34,7 +34,9 @@ export function Navbar(){
                         <a href="/dashboard" className="hidden sm:block">
                             <Button variant="ghost">Перейти {"->"}</Button>
                         </a>
-                        <div className="mr-4"><UserButton/></div>
+                        <div className="mr-4">
+                            <UserButton/>
+                        </div>
                         <SignedOut>
                             <SignInButton>
                                 <a href="/auth/sign-in">

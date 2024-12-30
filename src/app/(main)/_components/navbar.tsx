@@ -9,6 +9,7 @@ import { Title } from "./title";
 import { Banner } from "./banner";
 import { Menu } from "./menu";
 import { Publish } from "./publish";
+import { useOrganization, useUser } from "@clerk/nextjs";
 
 interface NavbarProps{
     isCollapsed: boolean
@@ -17,8 +18,11 @@ interface NavbarProps{
 
 export function Navbar({ isCollapsed, onResetWidth }: NavbarProps){
     const params = useParams()
+    const { user } = useUser()
+    const { organization } = useOrganization()
     const document = useQuery(api.document.getById, {
-        documentId: params.documentId as Id<"documents">
+        documentId: params.documentId as Id<"documents">,
+        userId: organization?.id !== undefined ? organization?.id as string : user?.id as string
     })
 
     if(document === undefined){

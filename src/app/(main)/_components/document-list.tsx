@@ -9,6 +9,7 @@ import { api } from "../../../../convex/_generated/api"
 import { Item } from "./item"
 import { cn } from "@/lib/utils"
 import { FileIcon } from "lucide-react"
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 interface DocumentListProps {
     parentDocumentId?: Id<"documents">
@@ -22,6 +23,8 @@ export function DocumentList({
 }: DocumentListProps){
     const params = useParams()
     const router = useRouter()
+    const { user } = useUser()
+    const { organization } = useOrganization()
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
     const onExpand = (documentId: string) => {
@@ -32,7 +35,8 @@ export function DocumentList({
     }
 
     const documents = useQuery(api.document.getSidebar, {
-        parentDocument: parentDocumentId
+        parentDocument: parentDocumentId,
+        userId: organization?.id !== undefined ? organization?.id as string : user?.id as string
     })
 
     const onRedirect = (documentId: string) => {
