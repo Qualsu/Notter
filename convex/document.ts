@@ -97,7 +97,7 @@ export const create = mutation({
           .collect()
 
         if (documentCount.length >= 75){
-          throw new Error("Rate limited 75 note")
+          throw new Error("Rate limited note")
         }
 
         await limitCreateDocument(ctx, args.userId)

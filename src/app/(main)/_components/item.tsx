@@ -97,7 +97,7 @@ export function Item({
         }).catch((error) => {
             if (error.message.includes("Rate limit exceeded")) {
                 toast.error("Вы превысили лимит на создание документов. Попробуйте позже")
-            } else if (error.message.includes("Rate limited 75 note")){
+            } else if (error.message.includes("Rate limited note")){
                 toast.error("Вы достигли лимита в 75 заметок")
             } else {
                 toast.error("Не удалось создать заметку")
