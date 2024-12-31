@@ -29,14 +29,28 @@ export default function Dashboard() {
             userId: orgId,
             lastEditor: user?.username as string
         })
-            .then((documentId) => router.push(`/dashboard/${documentId}`))
+            .then((documentId) => {
+                router.push(`/dashboard/${documentId}`);
+                return documentId
+            })
+            .catch((error) => {
+                if (error.message.includes("Rate limit exceeded")) {
+                    toast.error("Вы превысили лимит на создание документов. Попробуйте позже")
+                } else if (error.message.includes("Rate limited 75 note")){
+                    toast.error("Вы достигли лимита в 75 заметок")
+                } else {
+                    toast.error("Не удалось создать заметку")
+                }
+                throw error
+            })
         
         toast.promise(promise, {
-            loading: "Создания заметки...",
+            loading: "Создание заметки...",
             success: "Заметка успешно создана!",
             error: "Не удалось создать заметку"
         })
     }
+    
     
     return (
         <div className="h-full flex flex-col items-center justify-center space-y-4">

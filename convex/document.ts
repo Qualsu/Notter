@@ -2,6 +2,7 @@ import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
 import { Doc, Id } from "./_generated/dataModel"
 import { generateRandomId } from "./genId"
+import { limitCreateDocument } from "./rateLimits"
 
 export const archive = mutation({
     args: {
@@ -89,7 +90,17 @@ export const create = mutation({
             throw new Error("Not authenticated")
         }
 
-        // const userId = identify.subject
+        const documentCount = await ctx.db
+          .query("documents")
+          .withIndex("by_user", (q) => q.eq("userId", args.userId))
+          .order("desc")
+          .collect()
+
+        if (documentCount.length >= 75){
+          throw new Error("Rate limited 75 note")
+        }
+
+        await limitCreateDocument(ctx, args.userId)
 
         const document = await ctx.db.insert("documents", {
             title: args.title,

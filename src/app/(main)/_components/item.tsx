@@ -23,7 +23,7 @@ interface ItemProps {
     label: string
     onClick?: () => void
     icon: LucideIcon
-    lastEditor: string
+    lastEditor?: string
 }
 
 export function Item({
@@ -80,29 +80,37 @@ export function Item({
     }
 
     const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        event.stopPropagation()
-        if (!id) return
+        event.stopPropagation();
+        if (!id) return;
     
         const promise = create({
             title: "Новая заметка",
             parentDocument: id,
             userId: orgId,
             lastEditor: user?.username as string
-        }).then(
-          (documentId) => {
+        }).then((documentId) => {
             if (!expanded) {
-              onExpand?.()
+                onExpand?.()
             }
             router.push(`/dashboard/${documentId}`)
-          }
-        )
-    
+            return documentId
+        }).catch((error) => {
+            if (error.message.includes("Rate limit exceeded")) {
+                toast.error("Вы превысили лимит на создание документов. Попробуйте позже")
+            } else if (error.message.includes("Rate limited 75 note")){
+                toast.error("Вы достигли лимита в 75 заметок")
+            } else {
+                toast.error("Не удалось создать заметку")
+            }
+            throw error
+        })
+
         toast.promise(promise, {
-            loading: "Создания заметки...",
+            loading: "Создание заметки...",
             success: "Заметка успешно создана!",
             error: "Не удалось создать заметку"
         })
-      }
+    }    
 
     const ChevronIcon = expanded ? ChevronDown : ChevronRight
     
@@ -153,7 +161,7 @@ export function Item({
             {!!id && (
                 <div 
                     role="button" 
-                    className="h-full rounded-sm hover:bg-neutral-600 mr-1"
+                    className="h-full rounded-sm hover:bg-primary/5 mr-1"
                     onClick={handleExpand}
                 >
                     <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50"/>
@@ -207,7 +215,7 @@ export function Item({
                     <div 
                         role="button" 
                         onClick={onCreate} 
-                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-600 hover:bg-primary/5"
+                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary/5"
                     >
                         <Plus className="h-4 w-4 text-muted-foreground"/>
                     </div>
