@@ -10,7 +10,6 @@ import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
-import { useState } from "react"
 
 interface ItemProps {
     id?: Id<"documents">
@@ -46,7 +45,6 @@ export function Item({
     const { user } = useUser()
     const { organization } = useOrganization()
     const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
-    const [isDragging, setIsDragging] = useState(false)
 
     const onArchive = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -118,7 +116,6 @@ export function Item({
         if (id) {
             event.dataTransfer.setData("text/plain", id as Id<"documents">)
             event.dataTransfer.effectAllowed = "move"
-            setIsDragging(true)
         }
     }
 
@@ -140,8 +137,6 @@ export function Item({
                 error: "Не удалось переместить заметку"
             })
         }
-
-        setIsDragging(false)
     }
 
     return (

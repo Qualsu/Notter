@@ -6,7 +6,7 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { ElementRef, useEffect, useRef, useState } from "react"
 import { useMediaQuery } from 'usehooks-ts'
 import { UserItem } from "./user-item"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { Item } from "./item"
 import { toast } from "sonner"
@@ -16,7 +16,8 @@ import { TrashBox } from "./trash-box"
 import { useSearch } from "../../../../hooks/use-search"
 import { useSettings } from "../../../../hooks/use-settings"
 import { Navbar } from "./navbar"
-import { OrganizationSwitcher, useOrganization, useUser } from "@clerk/clerk-react"
+import { useOrganization, useUser } from "@clerk/clerk-react"
+import { Id } from "../../../../convex/_generated/dataModel"
 
 export function Navigation(){
     const router = useRouter()
@@ -28,6 +29,7 @@ export function Navigation(){
     const { organization } = useOrganization()
     const isMobile = useMediaQuery("(max-width: 768px)")
     const create = useMutation(api.document.create)
+    const update = useMutation(api.document.update)
     const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
 
     const isResizingRef = useRef(false)
@@ -99,7 +101,6 @@ export function Navigation(){
                 isMobile ? "100%" : "240px"
             )
             setTimeout(() => setIsResetting(false), 300)
-
         }
     }
 
@@ -142,6 +143,26 @@ export function Navigation(){
             error: "Не удалось создать заметку"
         })
     }
+    
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const draggedId = event.dataTransfer.getData("text/plain");
+        
+        if (draggedId) {
+            const promise = update({
+                id: draggedId as Id<"documents">,
+                userId: orgId,
+                parentDocument: null,
+                lastEditor: user?.username as string
+            });
+    
+            toast.promise(promise, {
+                loading: "Перемещаем...",
+                success: "Заметка успешно перемещена!",
+                error: "Не удалось переместить заметку"
+            })
+        }
+    };
 
     return (
         <>
@@ -151,7 +172,8 @@ export function Navigation(){
                 "group/sidebar h-full bg-secondary overflow-y-auto relative flex w-60 flex-col z-[99999]",
                 isResetting && "transition-all ease-in-out duration-300",
                 isMobile && "w-0"
-            )}>
+            )}
+            >
                 <div 
                 onClick={collapse}
                 role="button" 
@@ -161,7 +183,13 @@ export function Navigation(){
                 )}>
                     <ChevronsLeft className="h-6 w-6"/>
                 </div>
-                <div>
+                <div
+                    onDragOver={(e) => {
+                        e.preventDefault()
+                        e.dataTransfer.dropEffect = 'move'
+                    }} 
+                    onDrop={handleDrop}
+                >
                     <UserItem/>
                     <Item
                         label="Поиск"

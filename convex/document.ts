@@ -96,7 +96,7 @@ export const create = mutation({
           .order("desc")
           .collect()
 
-        if (documentCount.length >= 75){
+        if (documentCount.length >= 100){
           throw new Error("Rate limited note")
         }
 
@@ -246,7 +246,7 @@ export const getSearch = query({
   
       return documents
     }
-  })
+})
 
 export const getById = query({
     args: {
@@ -281,8 +281,6 @@ export const getById = query({
 export const getByShortId = query({
   args: {shortId: v.optional(v.string())},
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity()
-    
     const documents = await ctx.db.query("documents")
       .filter((q) => q.eq(q.field("shortId"), args.shortId))
       .collect()
@@ -299,7 +297,7 @@ export const update = mutation({
       coverImage: v.optional(v.string()),
       icon: v.optional(v.string()),
       isPublished: v.optional(v.boolean()),
-      parentDocument: v.optional(v.id("documents")),
+      parentDocument: v.optional(v.union(v.id("documents"), v.null())),
       userId: v.string(),
       lastEditor: v.string()
     },
@@ -321,11 +319,16 @@ export const update = mutation({
       if (existingDocument.userId !== args.userId) {
         throw new Error("Unauthorized")
       }
-  
+      
+      if (rest.parentDocument === null) {
+        rest.parentDocument = undefined
+        args.parentDocument = undefined
+      }
+      
       const document = await ctx.db.patch(args.id, {
-        ...rest
+        ...rest,
       })
-  
+      
       return document
     }
 })

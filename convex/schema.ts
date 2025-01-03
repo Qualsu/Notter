@@ -7,7 +7,7 @@ export default defineSchema({
         userId: v.string(),
         shortId: v.string(),
         isAcrhived: v.boolean(),
-        parentDocument: v.optional(v.id("documents")),
+        parentDocument: v.optional(v.union(v.id("documents"), v.null())),
         content: v.optional(v.string()),
         coverImage: v.optional(v.string()),
         icon: v.optional(v.string()),
