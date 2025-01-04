@@ -7,7 +7,7 @@ export function Heading() {
     const {isAuthenticated} = useConvexAuth()
 
     return (
-      <div className="space-y-4 text-center">
+      <div className="space-y-4 text-center m-auto">
           <h1 className="max-w-3xl text-4xl sm:text-5xl md:text-6xl font-bold mx-auto">
               Новый уровень построения задач. Встречайте <span className="text-yellow-300">N</span><span className="text-zinc-300">otter</span>
           </h1>

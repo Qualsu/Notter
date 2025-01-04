@@ -6,6 +6,7 @@ import { redirect, useRouter } from "next/navigation"
 import { Navigation } from "./_components/navigation"
 import { SearchCommand } from "@/components/search-command"
 import { useEffect } from "react"
+import { useOrganization, useUser } from "@clerk/nextjs"
 
 export default function MainLayout({
     children,
@@ -14,12 +15,15 @@ export default function MainLayout({
   }) {
     const { isAuthenticated, isLoading } = useConvexAuth()
     const router = useRouter()
-
+    const { user } = useUser()
+    const { organization } = useOrganization()
+    const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
+    
     useEffect(() => {
-      if (!isLoading && isAuthenticated) {
+      if (!isLoading && isAuthenticated || orgId !== user?.id || orgId !== organization?.id) {
           router.push("/dashboard")
       }
-    }, [isLoading, isAuthenticated, router])
+    }, [isLoading, isAuthenticated, router, orgId, user, organization])
 
     if (isLoading){
         return (

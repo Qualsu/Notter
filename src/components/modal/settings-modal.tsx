@@ -6,9 +6,12 @@ import { useSettings } from "../../../hooks/use-settings"
 import { Label } from "../ui/label" 
 import { Separator } from "@radix-ui/react-dropdown-menu"
 import { SignOutButton } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 
 export function SettingsModal(){
   const settings = useSettings() 
+  const router = useRouter()
+
   return (
     <Dialog open={settings.isOpen} onOpenChange={settings.onClose}>
       <DialogContent>
@@ -25,9 +28,11 @@ export function SettingsModal(){
           <ModeToggle />
         </div>
         <Separator/>
-        <SignOutButton>
-            Выйти из аккаунта
-        </SignOutButton>
+        <div onClick={() => {router.push("/")}}>
+          <SignOutButton>
+              Выйти из аккаунта
+          </SignOutButton>
+        </div>
       </DialogContent>
     </Dialog>
   ) 
