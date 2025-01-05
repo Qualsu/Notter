@@ -289,6 +289,16 @@ export const getByShortId = query({
   }
 })
 
+export const getTestPage = query({
+  handler: async (ctx) => {
+    const document = await ctx.db.query("documents")
+      .filter((q) => q.eq(q.field("shortId"), "TEST-PAGE"))
+      .collect()
+
+    return document[0]
+  }
+})
+
 export const update = mutation({
     args: {
       id: v.id("documents"),
