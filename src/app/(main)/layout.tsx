@@ -20,10 +20,10 @@ export default function MainLayout({
     const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
     
     useEffect(() => {
-      if (!isLoading && isAuthenticated || orgId !== user?.id || orgId !== organization?.id) {
+      if (!isLoading && isAuthenticated) {
           router.push("/dashboard")
       }
-    }, [isLoading, isAuthenticated, router, orgId, user, organization])
+    }, [isLoading, isAuthenticated, router])
 
     if (isLoading){
         return (

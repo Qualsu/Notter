@@ -58,26 +58,28 @@ export function SearchCommand(){
 
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
-      <CommandInput placeholder={`Поиск по заметкам`} />
+      <CommandInput placeholder="Поиск по заметкам"/>
       <CommandList>
         <CommandEmpty>Ничего не найдено</CommandEmpty>
-        <CommandGroup heading="Заметки">
-          {documents?.map((document) => (
-            <CommandItem
-              key={document._id}
-              value={document.title}
-              title={document.title}
-              onSelect={() => onSelect(document._id)}
-            >
-              {document.icon ? (
-                <p className="mr-2 text-[1.125rem]">{document.icon}</p>
-              ) : (
-                <File className="mr-2 h-4 w-4" />
-              )}
-              <span>{document.title}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {documents && documents.length > 0 && (
+          <CommandGroup heading="Заметки">
+            {documents?.map((document) => (
+              <CommandItem
+                key={document._id}
+                value={document.title}
+                title={document.title}
+                onSelect={() => onSelect(document._id)}
+              >
+                {document.icon ? (
+                  <p className="mr-2 text-[1.125rem]">{document.icon}</p>
+                ) : (
+                  <File className="mr-2 h-4 w-4" />
+                )}
+                <span>{document.title}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
       </CommandList>
     </CommandDialog>
   ) 

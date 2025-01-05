@@ -28,7 +28,7 @@ export function SettingsModal(){
           <ModeToggle />
         </div>
         <Separator/>
-        <div onClick={() => {router.push("/")}}>
+        <div onClick={() => {router.push("/")}} className="m-auto">
           <SignOutButton>
               Выйти из аккаунта
           </SignOutButton>

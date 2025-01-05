@@ -2,7 +2,7 @@
 
 import { BlockNoteEditor, BlockNoteSchema, defaultBlockSpecs, PartialBlock } from "@blocknote/core" 
 import { useCreateBlockNote } from "@blocknote/react" 
-import { BlockNoteView, lightDefaultTheme, Theme } from "@blocknote/mantine"
+import { BlockNoteView } from "@blocknote/mantine"
 import { useTheme } from "next-themes" 
 import { useEdgeStore } from "@/lib/edgestore" 
 import "@blocknote/core/style.css" 
