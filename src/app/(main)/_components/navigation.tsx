@@ -132,6 +132,7 @@ export function Navigation(){
                 } else if (error.message.includes("Rate limited note")){
                     toast.error("Вы достигли лимита в 75 заметок")
                 } else {
+                    console.error(error)
                     toast.error("Не удалось создать заметку")
                 }
                 throw error

@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from "lucide-react"
+import { Archive, ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from "lucide-react"
 import { Id } from "../../../../convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -197,8 +197,8 @@ export function Item({
                                 fallback={<></>}
                             >
                                 <DropdownMenuItem onClick={onArchive}>
-                                    <Trash className="h-4 w-4 mr-2"/>
-                                    Удалить
+                                    <Archive className="h-4 w-4"/>
+                                    Архивировать
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator/>
                             </Protect>

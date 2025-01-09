@@ -18,19 +18,19 @@ export function About(){
                 imgDark={lampDark}
             />
             <Card
-                name="Функциональность"
+                name="Функционально"
                 description="Большой функционал которого должно хватить для простых и средних задач"
                 img={options}
                 imgDark={optionsDark}
             />
             <Card
-                name="Работа в команде"
+                name="Работай в команде"
                 description="В Notter присутствует поддержка организаций из Qual ID для работы с командой"
                 img={people}
                 imgDark={peopleDark}
             />
             <Card
-                name="Синхронизация"
+                name="Синхронизируй"
                 description="Синхронизируя данные, вы можете работать с любого устройства"
                 img={sync}
                 imgDark={syncDark}

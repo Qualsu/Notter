@@ -36,7 +36,7 @@ export function Title({ initialData }: TitleProps){
       } 
     
       const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setTitle(event.target.value) 
+        setTitle(event.target.value)
         update({
           id: initialData._id,
           title: event.target.value || "Новая заметка",

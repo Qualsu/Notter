@@ -79,9 +79,25 @@ body,
   }
 }
 
-.cl-internal-1dauvpw,
-.cl-internal-1hp5nqm {
+.cl-internal-1hp5nqm,
+.cl-internal-lk7758 {
   display: none;
+}
+
+.cl-internal-13hl4in::before {
+  content: "";
+  display: inline-block;
+  width: 100px;
+  height: 50px;
+  background-image: url("https://id.qual.su/_next/static/media/QualID.6000d61a.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: drop-shadow(2px 2px 0.1rem rgba(0, 0, 0, 0.25));
+}
+
+.cl-internal-13u79ez {
+  background: none;
 }
 
 .cl-userPreviewSecondaryIdentifier {

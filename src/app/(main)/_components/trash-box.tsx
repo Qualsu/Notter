@@ -70,6 +70,9 @@ export function TrashBox(){
   }
 
   const removeAll = () => {
+
+    router.push("/dashboard")
+
     let promise: any
     documents?.map((document) => {
       promise = remove({

@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu" 
-import { MoreHorizontal, Trash, Undo } from "lucide-react" 
+import { Archive, MoreHorizontal, Trash, Undo } from "lucide-react" 
 import { Button } from "@/components/ui/button" 
 import { Skeleton } from "@/components/ui/skeleton" 
 import { Id } from "../../../../convex/_generated/dataModel" 
@@ -87,12 +87,12 @@ export function Menu({ documentId }: MenuProps){
       >
         {!document?.isAcrhived ? (
             <DropdownMenuItem onClick={onArchive}>
-                <Trash className="mr-2 h-4 w-4" />
-                Удалить
+                <Archive className="h-4 w-4" />
+                Архивировать
             </DropdownMenuItem>
         ) : (
             <DropdownMenuItem onClick={onRestore}>
-                <Undo className="mr-2 h-4 w-4" />
+                <Undo className="h-4 w-4" />
                 Восстановить
             </DropdownMenuItem>
         )}
