@@ -63,6 +63,8 @@ export function Item({
         })
         .then(() => router.push("/dashboard"))
 
+        console.log(promise)
+
         toast.promise(promise, {
             loading: "Перемещаем в архив...",
             success: "Заметка перемещена в архив!",
@@ -102,6 +104,8 @@ export function Item({
             }
             throw error
         })
+
+        console.log(promise)
 
         toast.promise(promise, {
             loading: "Создание заметки...",

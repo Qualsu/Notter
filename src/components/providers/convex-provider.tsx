@@ -17,7 +17,7 @@ export default function ConvexClientProvider({
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
-    if (savedTheme === 'dark') {
+    if (savedTheme === 'dark' || savedTheme === null) {
       setBaseTheme(dark)
     } else {
       setBaseTheme(undefined)
