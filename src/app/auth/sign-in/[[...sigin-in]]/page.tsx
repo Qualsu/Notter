@@ -1,5 +1,6 @@
 import { SignIn } from '@clerk/nextjs';
 import { Metadata } from 'next';
+import "../../style.css"
 
 export const metadata: Metadata = {
   title: "Notter | Qual ID Auth",
