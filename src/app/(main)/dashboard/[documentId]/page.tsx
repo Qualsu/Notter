@@ -10,8 +10,6 @@ import { Id } from "../../../../../convex/_generated/dataModel"
 import { api } from "../../../../../convex/_generated/api" 
 import { Toolbar } from "@/components/toolbar" 
 import { Cover } from "@/components/cover" 
-import { redirect } from "next/navigation"
-import { useOrigin } from "../../../../../hooks/use-origin"
 import { useOrganization, useUser } from "@clerk/nextjs"
 
 interface DocumentIdPageProps {
@@ -26,14 +24,9 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
     []
   ) 
   
-  const origin = useOrigin()
   const { user } = useUser()
   const { organization } = useOrganization()
   const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
-
-  if(origin === "https://notter.site" || origin === "http://nttr.pw"){
-      redirect("https://notter.tech")
-  }
 
   const document = useQuery(api.document.getById, {
     documentId: params.documentId,

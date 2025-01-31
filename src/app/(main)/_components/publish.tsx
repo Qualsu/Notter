@@ -34,7 +34,7 @@ export function Publish({ initialData }: PublishProps){
     setIsShortUrl((prev) => !prev)
   }
 
-  const url = isShortUrl ? `https://nttr.pw/${initialData.shortId}` : `https://notter.site/view/${initialData._id}`
+  const url = isShortUrl ? `${origin}/${initialData.shortId}` : `${origin}/view/${initialData._id}`
 
   const onPublish = () => {
     setIsSubmitting(true) 

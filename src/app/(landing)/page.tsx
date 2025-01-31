@@ -1,22 +1,12 @@
 "use client"
 
-import { redirect } from "next/navigation";
-import { useOrigin } from "../../../hooks/use-origin";
 import { Footer } from "./_components/footer";
 import { Heading } from "./_components/heading";
 import { About } from "./_components/about";
-import Editor from "@/components/editor";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import { Arrow } from "./_components/arrow";
 
 export default function Landing() {
-
-  const origin = useOrigin()
-
-  if(origin === "https://notter.site" || origin === "http://nttr.pw"){
-    redirect("https://notter.tech")
-  }
 
   const content = useQuery(api.document.getTestPage)
 

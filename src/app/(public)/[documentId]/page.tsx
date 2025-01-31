@@ -7,7 +7,6 @@ import { useQuery } from "convex/react"
 import { Toolbar } from "@/components/toolbar" 
 import { Cover } from "@/components/cover" 
 import { api } from "../../../../convex/_generated/api"
-import { useOrigin } from "../../../../hooks/use-origin"
 import Error404 from "@/app/errorPage"
 import { Separator } from "@/components/ui/separator"
 
@@ -22,12 +21,6 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
     () => dynamic(() => import("@/components/editor"), { ssr: false }),
     []
   ) 
-
-  const origin = useOrigin()
-      
-  // if(origin !== "https://nttr.pw"){
-  //     redirect("https://notter.tech")
-  // }
 
   const document = useQuery(api.document.getByShortId, {
     shortId: params.documentId

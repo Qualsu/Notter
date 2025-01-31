@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import EmptyImage from "../../../../public/image/Landing.png"
+import EmptyImage from "../../../../public/image/Empty.png"
 import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react"
 import { useMutation } from "convex/react"
@@ -14,15 +14,10 @@ import { useOrganization, useUser } from "@clerk/nextjs"
 export default function Dashboard() {
     const create = useMutation(api.document.create)
     const router = useRouter()
-    const origin = useOrigin()
     const { user } = useUser()
     const { organization } = useOrganization()
     const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
     
-    if(origin === "https://notter.site" || origin === "http://nttr.pw"){
-        redirect("https://notter.tech")
-    }
-
     const onCreate = () => {
         const promise = create({ 
             title: "Новая заметка",
@@ -57,7 +52,7 @@ export default function Dashboard() {
         <div className="h-full flex flex-col items-center justify-center space-y-4">
             <Image 
                 src={EmptyImage}
-                width="300"
+                width="400"
                 alt="Empty"
 
             />
