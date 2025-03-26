@@ -50,20 +50,20 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   }
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Cover url={document.coverImage} preview/>
-      <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
+      <div className="mx-auto md:max-w-3xl lg:max-w-4xl flex-grow">
         <Toolbar initialData={document} preview/>
         <Editor onChange={() => {}} initialContent={document.content} editable={false}/>
-        <Separator/>
       </div>
-      <footer className="pb-1">
-          <p className="text-center my-5 text-primary/30">
-            Заметка создана в 
-            <a className="ml-1 opacity-50 hover:opacity-100 hover:underline" href="https://notter.tech">
-              <span className="text-yellow-300">N</span><span className="text-zinc-300">otter</span>
-            </a>
-          </p>
+      <footer>
+        <Separator/>
+        <p className="text-center my-5 text-primary/30">
+          Заметка создана в 
+          <a className="ml-1 opacity-50 hover:opacity-100 hover:underline" href="https://notter.tech">
+            <span className="text-yellow-300">N</span><span className="text-zinc-300">otter</span>
+          </a>
+        </p>
       </footer>
     </div>
   ) 
