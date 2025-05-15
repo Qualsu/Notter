@@ -38,7 +38,7 @@ export default function MainLayout({
     }
 
     return (
-      <div className="h-full flex">
+      <div className="h-full flex overflow-hidden">
         <Navigation/>
         <main className="flex-1 h-full overflow-y-auto">
             <SearchCommand/>

@@ -50,7 +50,10 @@ export function Banner({ documentId }: BannerProps){
   } 
 
   return (
-    <div className="flex w-full items-center justify-center gap-x-2 bg-rose-500 p-2 text-center text-sm text-white">
+    <div
+      className="fixed w-full z-[100000] flex flex-col md:flex-row justify-center gap-2 bg-rose-500 p-2 text-center text-sm text-white"
+      style={{ minHeight: 40 }}
+    >
       <p>
         Эта заметка перемещена в архив
       </p>

@@ -125,7 +125,7 @@ export function TrashBox(){
             className="flex w-full items-center justify-between rounded-sm text-sm text-primary hover:bg-primary/5"
             aria-label="Заметки"
           >
-            <span className="truncate pl-2">{document.title}</span>
+            <span className="truncate pl-2 my-3">{document.title}</span>
             <div className="flex items-center">
               <Protect
                     condition={(check) => {

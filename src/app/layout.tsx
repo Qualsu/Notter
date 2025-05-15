@@ -11,7 +11,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Notter',
-  description: 'Notter by Qualsu',
+  description: "Новый уровень построения задач. Встречайте Notter",
+  manifest: '/manifest.json',
   icons: {
     icon: "https://combative-moose-852.convex.site/getImage?storageId=kg20r77k2jdafrwmw8am9tseb575dp7c"
   }

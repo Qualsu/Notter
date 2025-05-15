@@ -227,12 +227,13 @@ export function Navigation(){
                 className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0"/>
             </aside>
             <div 
-            ref={navbarRef}
-            className={cn(
-                "absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]",
-                isResetting && "transition-all ease-in-out duration-300",
-                isMobile && "left-0 w-full"
-            )}>
+                ref={navbarRef}
+                className={cn(
+                    "absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]",
+                    isResetting && "transition-all ease-in-out duration-300",
+                    isMobile && "left-0 w-full"
+                )}
+            >
                 {!!params.documentId ? (
                     <Navbar
                         isCollapsed={isCollapsed}
@@ -243,7 +244,6 @@ export function Navigation(){
                         {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 text-muted-foreground hover:bg-primary/5 dark:hover:bg-primary/10"/>}
                     </nav>
                 )}
-
             </div>
         </>
     )
