@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useOrganization, useUser } from "@clerk/nextjs"
+import Twemoji from 'react-twemoji';
 
 interface TitleProps{
     initialData: Doc<"documents">
@@ -52,6 +53,7 @@ export function Title({ initialData }: TitleProps){
       } 
 
     return (
+      <Twemoji options={{ className: 'twemoji' }}>
         <div className="flex items-center gap-x-1">
             {!!initialData.icon && <p>{initialData.icon}</p>}
             {isEditing ? (
@@ -75,6 +77,7 @@ export function Title({ initialData }: TitleProps){
                 </Button>
             )}
         </div>
+        </Twemoji>
     )
 }
 

@@ -116,6 +116,16 @@ body,
   z-index: 999999;
 }
 
+.twemoji{
+  width: 20px;
+  height: 20px;
+}
+
+.twemoji-lg{
+  width: 60px;
+  height: 60px;
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -49,40 +49,44 @@ export function Banner({ documentId }: BannerProps){
     }) 
   } 
 
-  return (
+    return (
     <div
-      className="fixed w-full z-[100000] flex flex-col md:flex-row justify-center gap-2 bg-rose-500 p-2 text-center text-sm text-white"
+      className="fixed w-full z-[100000] flex justify-center bg-rose-500 p-0"
       style={{ minHeight: 40 }}
     >
-      <p>
-        Эта заметка перемещена в архив
-      </p>
-      <Protect
+      <div className="flex flex-col md:flex-row items-center gap-3 w-full max-w-2xl px-4 py-2 text-center md:text-left text-sm text-white">
+        <p className="mb-2 md:mb-0">
+          Эта заметка перемещена в архив
+        </p>
+        <Protect
           condition={(check) => {
-              return check({
-                  role: "org:admin"
-              }) || organization?.id === undefined
+            return check({
+              role: "org:admin"
+            }) || organization?.id === undefined
           }}
           fallback={<></>}
-      >
-        <Button
-          size="sm"
-          onClick={onRestore}
-          variant="outline"
-          className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
         >
-          Восстановить
-        </Button>
-        <ConfirmModal onConfirm={onRemove}>
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
-          >
-            Удалить безвозвратно
-          </Button>
-        </ConfirmModal>
-      </Protect>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={onRestore}
+              variant="outline"
+              className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
+            >
+              Восстановить
+            </Button>
+            <ConfirmModal onConfirm={onRemove}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
+              >
+                Удалить безвозвратно
+              </Button>
+            </ConfirmModal>
+          </div>
+        </Protect>
+      </div>
     </div>
-  ) 
+  )
 } 

@@ -10,6 +10,7 @@ import { Item } from "./item"
 import { cn } from "@/lib/utils"
 import { FileIcon } from "lucide-react"
 import { useOrganization, useUser } from "@clerk/nextjs"
+import Twemoji from 'react-twemoji';
 
 interface DocumentListProps {
     parentDocumentId?: Id<"documents">
@@ -70,25 +71,27 @@ export function DocumentList({
             >
                 Нету заметок
             </p>
-            {documents?.map((document) => (
-                <div key={document._id}>
-                <Item
-                    id={document._id}
-                    onClick={() => onRedirect(document._id)}
-                    label={document.title}
-                    icon={FileIcon}
-                    documentIcon={document.icon}
-                    active={params.documentId === document._id}
-                    level={level}
-                    onExpand={() => onExpand(document._id)}
-                    expanded={expanded[document._id]}
-                    lastEditor={document.lastEditor as string}
-                />
-                {expanded[document._id] && (
-                    <DocumentList parentDocumentId={document._id} level={level + 1} />
-                )}
-                </div>
-            ))}
+            <Twemoji options={{ className: 'twemoji' }}>
+                {documents?.map((document) => (
+                    <div key={document._id}>
+                        <Item
+                            id={document._id}
+                            onClick={() => onRedirect(document._id)}
+                            label={document.title}
+                            icon={FileIcon}
+                            documentIcon={document.icon}
+                            active={params.documentId === document._id}
+                            level={level}
+                            onExpand={() => onExpand(document._id)}
+                            expanded={expanded[document._id]}
+                            lastEditor={document.lastEditor as string}
+                        />
+                        {expanded[document._id] && (
+                            <DocumentList parentDocumentId={document._id} level={level + 1} />
+                        )}
+                    </div>
+                ))}
+            </Twemoji>
         </>
     )
 }

@@ -7,7 +7,7 @@ import { Toaster } from 'sonner';
 import { ModalProvider } from '@/components/providers/modal-provider'
 import { EdgeStoreProvider } from '@/lib/edgestore'
 
-const inter = Inter({ subsets: ['latin'] })
+const font = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Notter',
@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={font.className}>
         <ConvexClientProvider>
           <EdgeStoreProvider>
             <ThemeProvider

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/command" 
 import { api } from "../../convex/_generated/api" 
 import { useSearch } from "../../hooks/use-search" 
+import Twemoji from 'react-twemoji';
 
 export function SearchCommand(){
   const { user } = useUser() 
@@ -70,11 +71,13 @@ export function SearchCommand(){
                 title={document.title}
                 onSelect={() => onSelect(document._id)}
               >
-                {document.icon ? (
-                  <p className="mr-2 text-[1.125rem]">{document.icon}</p>
-                ) : (
-                  <File className="mr-2 h-4 w-4" />
-                )}
+                <Twemoji options={{ className: 'twemoji' }}>
+                  {document.icon ? (
+                    <p className="mr-2 text-[1.125rem]">{document.icon}</p>
+                  ) : (
+                    <File className="mr-2 h-4 w-4" />
+                  )}
+                </Twemoji>
                 <span>{document.title}</span>
               </CommandItem>
             ))}

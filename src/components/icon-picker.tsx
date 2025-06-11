@@ -38,6 +38,7 @@ export function IconPicker({
           height={350}
           theme={theme}
           onEmojiClick={(data) => onChange(data.emoji)}
+          emojiStyle="twitter"
         />
       </PopoverContent>
     </Popover>
