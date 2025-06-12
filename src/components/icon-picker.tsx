@@ -1,6 +1,6 @@
 "use client"
 
-import EmojiPicker, { Theme } from "emoji-picker-react" 
+import EmojiPicker, { Theme, EmojiStyle } from "emoji-picker-react" 
 import { useTheme } from "next-themes" 
 
 import {
@@ -38,7 +38,7 @@ export function IconPicker({
           height={350}
           theme={theme}
           onEmojiClick={(data) => onChange(data.emoji)}
-          emojiStyle="twitter"
+          emojiStyle={EmojiStyle.TWITTER}
         />
       </PopoverContent>
     </Popover>
