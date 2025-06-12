@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/popover" 
 import { useMutation } from "convex/react" 
 import { useState } from "react" 
-import { toast } from "sonner" 
+import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button" 
 import { Check, Copy, Globe } from "lucide-react" 
 import { Doc } from "../../../../convex/_generated/dataModel" 
@@ -80,56 +80,55 @@ export function Publish({ initialData }: PublishProps){
   } 
 
   return (
-    <Protect
-        condition={(check) => {
-            return check({
-                role: "org:admin"
-            }) || organization?.id === undefined
-        }}
-        fallback={<></>}
-    >
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button size="sm" variant="ghost">
-            Опубликовать
-            {initialData.isPublished && (
-              <Globe className="h-4 w-4 text-sky-500" />
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-72" align="end" alignOffset={8} forceMount>
-          {initialData.isPublished ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-x-2">
-                <Globe className=" h-4 w-4 animate-pulse text-sky-500" />
-                <p className="text-xs font-medium text-sky-500">
-                  Эта заметка находится в открытом доступе
-                </p>
-              </div>
-              <div className="flex items-center">
-                <input
-                  value={url}
-                  className="h-8 flex-1 rounded-l-md border bg-muted px-2 text-xs"
-                  disabled
-                />
-                <Button
-                  onClick={onCopy}
-                  disabled={copied}
-                  className="h-8 rounded-l-none"
-                >
-                  {copied ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
+    <Popover>
+      <PopoverTrigger>
+        <Button size="sm" variant="ghost">
+          Опубликовать
+          {initialData.isPublished && (
+            <Globe className="h-4 w-4 text-sky-500" />
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-72" align="end" alignOffset={8} forceMount>
+        {initialData.isPublished ? (
+          <div className="space-y-4">
+            <div className="flex items-center gap-x-2">
+              <Globe className=" h-4 w-4 animate-pulse text-sky-500" />
+              <p className="text-xs font-medium text-sky-500">
+                Эта заметка находится в открытом доступе
+              </p>
+            </div>
+            <div className="flex items-center">
+              <input
+                value={url}
+                className="h-8 flex-1 rounded-l-md border bg-muted px-2 text-xs"
+                disabled
+              />
+              <Button
+                onClick={onCopy}
+                disabled={copied}
+                className="h-8 rounded-l-none"
+              >
+                {copied ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
 
-              <div className="flex flex-row items-center">
-                  <Checkbox checked={isShortUrl} onCheckedChange={handleCheckboxChange}/> 
-                  <p className="ml-1 text-xs">Сократить ссылку</p>
-              </div>
-
+            <div className="flex flex-row items-center">
+                <Checkbox checked={isShortUrl} onCheckedChange={handleCheckboxChange}/> 
+                <p className="ml-1 text-xs">Сократить ссылку</p>
+            </div>
+            <Protect
+                condition={(check) => {
+                    return check({
+                        role: "org:admin"
+                    }) || organization?.id === undefined
+                }}
+                fallback={<></>}
+            >
               <Button
                 size="sm"
                 className="w-full text-xs"
@@ -138,12 +137,25 @@ export function Publish({ initialData }: PublishProps){
               >
                 Отменить публикацию
               </Button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center">
-              <Globe className="mb-2 h-8 w-8 text-muted-foreground " />
-              <p>Поделитесь свой заметкой</p>
-              <span className="mb-4 text-xs text-muted-foreground">
+            </Protect>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center">
+            <Globe className="mb-2 h-8 w-8 text-muted-foreground " />
+            <p>Поделитесь свой заметкой</p>
+            <Protect
+              condition={(check) => {
+                return check({
+                  role: "org:admin"
+                }) || organization?.id === undefined
+              }}
+              fallback={
+              <span className="text-[0.7rem] text-muted-foreground text-center w-full block">
+                Публиковать могут только администраторы организации
+              </span>
+              }
+            >
+              <span className="mb-2 text-xs text-muted-foreground">
                 Поделитесь своими мыслями с другими
               </span>
               <Button
@@ -154,10 +166,10 @@ export function Publish({ initialData }: PublishProps){
               >
                 Опубликовать
               </Button>
-            </div>
-          )}
-        </PopoverContent>
-      </Popover>
-    </Protect>
+            </Protect>
+          </div>
+        )}
+      </PopoverContent>
+    </Popover>
   ) 
 } 

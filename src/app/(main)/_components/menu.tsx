@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation" 
 import { useOrganization, useUser } from "@clerk/clerk-react" 
 import { useMutation, useQuery } from "convex/react" 
-import { toast } from "sonner" 
+import { toast } from "react-hot-toast"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,7 +99,10 @@ export function Menu({ documentId }: MenuProps){
 
         <DropdownMenuSeparator />
       </Protect>
-        <div className="p-2 text-xs text-muted-foreground">
+        <div className="p-1 text-xs text-muted-foreground">
+            Заметка создана: {document?.userName}
+        </div>
+        <div className="p-1 text-xs text-muted-foreground">
             Последнее изменение от: {document?.lastEditor}
         </div>
       </DropdownMenuContent>

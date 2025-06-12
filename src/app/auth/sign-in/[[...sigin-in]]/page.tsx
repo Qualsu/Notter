@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import "../../style.css"
 
 export const metadata: Metadata = {
-  title: "Notter | Qual ID Auth",
+  title: "Qual ID Auth",
   description: "SignIn",
   icons: {
     icon: 'https://id.qual.su/_next/static/media/ID.7c4a7838.svg',

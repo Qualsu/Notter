@@ -27,6 +27,7 @@ export function SearchCommand(){
     userId: orgId
   }) 
   const [isMounted, setIsMounted] = useState(false) 
+  const [searchValue, setSearchValue] = useState("");
 
   const toggle = useSearch((store) => store.toggle) 
   const isOpen = useSearch((store) => store.isOpen) 
@@ -57,14 +58,25 @@ export function SearchCommand(){
     return null 
   }
 
+  const filteredDocuments = documents?.filter((document) => {
+    if (!searchValue.trim()) return true;
+    const queryWords = searchValue.toLowerCase().split(/\s+/).filter(Boolean);
+    const title = document.title.toLowerCase();
+    return queryWords.every(word => title.includes(word));
+  });
+
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
-      <CommandInput placeholder="Поиск по заметкам"/>
+      <CommandInput
+        placeholder="Поиск по заметкам"
+        value={searchValue}
+        onValueChange={setSearchValue}
+      />
       <CommandList>
         <CommandEmpty>Ничего не найдено</CommandEmpty>
-        {documents && documents.length > 0 && (
+        {filteredDocuments && filteredDocuments.length > 0 && (
           <CommandGroup heading="Заметки">
-            {documents?.map((document) => (
+            {filteredDocuments.map((document) => (
               <CommandItem
                 key={document._id}
                 value={document.title}
@@ -85,5 +97,5 @@ export function SearchCommand(){
         )}
       </CommandList>
     </CommandDialog>
-  ) 
+  )
 } 

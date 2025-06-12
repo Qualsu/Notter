@@ -43,11 +43,17 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   }
 
   if(!document?.isPublished || document === null){
-    return <Error404/>
+    return (
+        <>
+          <title>Not Found</title>
+          <Error404/>
+        </>
+    )
   }
 
   return (
     <div className="flex flex-col min-h-screen">
+      <title>{document.title}</title>
       <Cover url={document.coverImage} preview />
       <div className="mx-auto md:max-w-3xl lg:max-w-4xl flex-grow w-full">
         <Toolbar initialData={document} preview />

@@ -107,6 +107,7 @@ export const create = mutation({
             parentDocument: args.parentDocument,
             shortId: generateRandomId(),
             userId: args.userId,
+            userName: args.lastEditor,
             isAcrhived: false,
             isPublished: false,
             lastEditor: args.lastEditor
