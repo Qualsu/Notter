@@ -4,7 +4,7 @@ import { Archive, ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, T
 import { Id } from "../../../../convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "sonner"
+import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
@@ -179,7 +179,7 @@ export function Item({
             </span>
             {isSearch && (
                 <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted/20 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                    <span className="text-xs">Ctrl</span>Q
+                    <span className="text-xs">Ctrl</span>S
                 </kbd>
             )}
 

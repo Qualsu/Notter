@@ -42,7 +42,7 @@ export const ConfirmModal = ({ children, onConfirm }: ConfirmmModalProps) => {
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className="bg-red-500 hover:bg-red-900"
+            className="bg-red-500 hover:bg-red-900 text-white"
           >
             Подтвердить
           </AlertDialogAction>

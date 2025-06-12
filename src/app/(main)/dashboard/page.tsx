@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react"
 import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
-import { toast } from "sonner"
-import { redirect, useRouter } from "next/navigation"
-import { useOrigin } from "../../../../hooks/use-origin"
+import { toast } from "react-hot-toast"
+import { useRouter } from "next/navigation"
 import { useOrganization, useUser } from "@clerk/nextjs"
 
 export default function Dashboard() {
