@@ -79,8 +79,11 @@ body,
   }
 }
 
-.cl-internal-1hp5nqm,
-.cl-internal-lk7758 {
+.cl-internal-1k7jtru, .cl-internal-15hkgn2 {
+  background: none;
+}
+
+.cl-internal-fcx671, .cl-internal-1j1lbor {
   display: none;
 }
 
@@ -94,10 +97,6 @@ body,
   background-repeat: no-repeat;
   background-position: center;
   filter: drop-shadow(2px 2px 0.1rem rgba(0, 0, 0, 0.25));
-}
-
-.cl-internal-13u79ez {
-  background: none;
 }
 
 .cl-userPreviewSecondaryIdentifier {
