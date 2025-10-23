@@ -3,7 +3,9 @@ const nextConfig = {
     images: {
         domains: [
             "files.edgestore.dev",
-            "keny.cloud"
+            "img.clerk.com",
+            "media.discordapp.net",
+            "localhost"
         ]
     }
 }

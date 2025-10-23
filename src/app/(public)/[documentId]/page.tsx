@@ -62,8 +62,8 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
       <footer className="mt-auto w-full">
         <Separator />
         <p className="text-center my-5 text-primary/30">
-          Заметка создана в
-          <a className="ml-1 opacity-50 hover:opacity-100 hover:underline transition-opacity duration-300 font-bold" href="/">
+          Заметка создана <a href={`/profile/${document.userName}`} className="hover:underline hover:text-primary/50 transition-colors duration-300">{document.userName}</a> в
+          <a className="ml-1 opacity-50 hover:opacity-100 font-bold hover:underline transition-opacity duration-300" href="/">
             <span className="text-yellow-300">N</span>
             <span className="text-zinc-300">otter</span>
           </a>

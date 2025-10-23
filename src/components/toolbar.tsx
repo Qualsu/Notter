@@ -76,9 +76,6 @@ export function Toolbar({ initialData, preview }: ToolbarProps){
     }) 
   } 
 
-  // style={{marginTop: initialData.icon && initialData.coverImage !== undefined ? "40px" : undefined}} 
-  // this code (👆), belongs to line 72
-
   return (
     <Twemoji options={{ className: 'twemoji-lg' }}>
       <div className="group relative pl-12">

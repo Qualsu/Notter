@@ -25,13 +25,13 @@ export function About(){
             />
             <Card
                 name="Работай в команде"
-                description="В Notter присутствует поддержка организаций из Qual ID для работы с командой"
+                description="В Notter присутствует поддержка организаций из Qual ID для работы в команде"
                 img={people}
                 imgDark={peopleDark}
             />
             <Card
                 name="Синхронизируй"
-                description="Синхронизируя данные, вы можете работать с любого устройства"
+                description="Синхронизируя данные вы можете работать с любого устройства"
                 img={sync}
                 imgDark={syncDark}
             />
