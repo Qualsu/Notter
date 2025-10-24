@@ -5,9 +5,10 @@ import { Heading } from "./_components/heading";
 import { About } from "./_components/about";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useRequestUser } from "../../../server/users/request";
 
 export default function Landing() {
-
+  useRequestUser()
   const content = useQuery(api.document.getTestPage)
 
   if (content === undefined || content === null) {

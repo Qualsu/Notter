@@ -6,12 +6,14 @@ import { redirect, useRouter } from "next/navigation"
 import { Navigation } from "./_components/navigation"
 import { SearchCommand } from "@/components/search-command"
 import { useEffect } from "react"
+import { useRequestUser } from "../../../server/users/request"
 
 export default function MainLayout({
     children,
   }: {
     children: React.ReactNode
   }) {
+    useRequestUser()
     const { isAuthenticated, isLoading } = useConvexAuth()
     const router = useRouter()
     

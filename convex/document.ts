@@ -57,10 +57,12 @@ export const getSidebar = query({
         publicSorted: v.optional(v.boolean())
     },
     handler: async(ctx, args) => {
-        const identify = await ctx.auth.getUserIdentity()
+        if (!args.publicSorted) {
+            const identify = await ctx.auth.getUserIdentity()
 
-        if (!identify) {
-            throw new Error("Not authenticated")
+            if (!identify) {
+                throw new Error("Not authenticated")
+            }
         }
 
         let queryBuilder = ctx.db.query("documents")
@@ -260,16 +262,21 @@ export const getSearch = query({
 
 export const getById = query({
     args: {
-      documentId: v.id("documents"),
+      documentId: v.union(v.id("documents"), v.null()),
       userId: v.optional(v.string())
     },
     handler: async (ctx, args) => {
+      console.log("Fetching document with ID:", args.documentId)
       const identity = await ctx.auth.getUserIdentity()
-  
+
+      if (args.documentId === null) {
+        return null
+      }
+
       const document = await ctx.db.get(args.documentId)
   
       if (!document) {
-        throw new Error("Document not found")
+        return null
       }
   
       if (document.isPublished && !document.isAcrhived) {
