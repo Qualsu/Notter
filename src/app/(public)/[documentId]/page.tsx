@@ -9,6 +9,7 @@ import { Cover } from "@/components/cover"
 import { api } from "../../../../convex/_generated/api"
 import Error404 from "@/app/errorPage"
 import { Separator } from "@/components/ui/separator"
+import { Navbar } from "@/app/(landing)/_components/navbar"
 
 interface DocumentIdPageProps {
   params: {
@@ -52,23 +53,26 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <title>{document.title}</title>
-      <Cover url={document.coverImage} preview />
-      <div className="mx-auto md:max-w-3xl lg:max-w-4xl flex-grow w-full">
-        <Toolbar initialData={document} preview />
-        <Editor onChange={() => {}} initialContent={document.content} editable={false} />
+    <>
+      <Navbar />
+      <div className="flex flex-col min-h-screen">
+        <title>{document.title}</title>
+        <Cover url={document.coverImage} preview />
+        <div className="mx-auto md:max-w-3xl lg:max-w-4xl flex-grow w-full">
+          <Toolbar initialData={document} preview />
+          <Editor onChange={() => {}} initialContent={document.content} editable={false} />
+        </div>
+        <footer className="mt-auto w-full">
+          <Separator />
+          <p className="text-center my-5 text-primary/30">
+            Заметка создана <a href={`/profile/${document.userName}`} className="hover:underline hover:text-primary/50 transition-colors duration-300">{document.userName}</a> в
+            <a className="ml-1 opacity-50 hover:opacity-100 font-bold hover:underline transition-opacity duration-300" href="/">
+              <span className="text-yellow-300">N</span>
+              <span className="text-zinc-300">otter</span>
+            </a>
+          </p>
+        </footer>
       </div>
-      <footer className="mt-auto w-full">
-        <Separator />
-        <p className="text-center my-5 text-primary/30">
-          Заметка создана <a href={`/profile/${document.userName}`} className="hover:underline hover:text-primary/50 transition-colors duration-300">{document.userName}</a> в
-          <a className="ml-1 opacity-50 hover:opacity-100 font-bold hover:underline transition-opacity duration-300" href="/">
-            <span className="text-yellow-300">N</span>
-            <span className="text-zinc-300">otter</span>
-          </a>
-        </p>
-      </footer>
-    </div>
+    </>
   )
 } 

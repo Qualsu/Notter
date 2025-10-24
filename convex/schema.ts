@@ -13,7 +13,8 @@ export default defineSchema({
         coverImage: v.optional(v.string()),
         icon: v.optional(v.string()),
         isPublished: v.boolean(),
-        lastEditor: v.optional(v.string())
+        lastEditor: v.optional(v.string()),
+        verifed: v.optional(v.boolean()),
     })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"])

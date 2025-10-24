@@ -53,7 +53,8 @@ export const archive = mutation({
 export const getSidebar = query({
     args: {
         parentDocument: v.optional(v.id("documents")),
-        userId: v.string()
+        userId: v.string(),
+        publicSorted: v.optional(v.boolean())
     },
     handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
@@ -62,13 +63,21 @@ export const getSidebar = query({
             throw new Error("Not authenticated")
         }
 
-        const documents = await ctx.db.query("documents")
+        let queryBuilder = ctx.db.query("documents")
             .withIndex("by_user_parent", (q) => q
                 .eq("userId", args.userId)
                 .eq("parentDocument", args.parentDocument)
             ).filter((q) => 
                 q.eq(q.field("isAcrhived"), false)
             )
+
+        if (args.publicSorted) {
+            queryBuilder = queryBuilder.filter((q) => 
+                q.eq(q.field("isPublished"), true)
+            )
+        }
+
+        const documents = await queryBuilder
             .order("desc")
             .collect()
 
