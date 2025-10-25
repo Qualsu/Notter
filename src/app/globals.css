@@ -114,13 +114,6 @@ body,
   z-index: 999999;
 }
 
-.cl-userPreviewMainIdentifierText:hover {
-  text-decoration: underline;
-  color:rgb(216, 216, 216);
-  transition: all;
-  transition-duration: 300ms;
-}
-
 .twemoji{
   width: 20px;
   height: 20px;
