@@ -306,15 +306,47 @@ export const getByShortId = query({
   }
 })
 
-export const getTestPage = query({
-  handler: async (ctx) => {
-    const document = await ctx.db.query("documents")
-      .filter((q) => q.eq(q.field("shortId"), "TEST-PAGE"))
+export const getDocumentCount = query({
+  args: {
+    userId: v.string()
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+
+    if (!identity) {
+      throw new Error("Not authenticated")
+    }
+
+    const documentCount = await ctx.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .collect()
 
-    return document[0]
+    return documentCount.length
   }
 })
+
+export const getPublicDocumentCount = query({
+  args: {
+    userId: v.string()
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+
+    if (!identity) {
+      throw new Error("Not authenticated")
+    }
+
+    const publicDocuments = await ctx.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("isPublished"), true))  // Фильтруем по isPublished
+      .collect()
+
+    return publicDocuments.length
+  }
+})
+
 
 export const update = mutation({
     args: {

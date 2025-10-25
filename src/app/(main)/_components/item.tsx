@@ -38,8 +38,7 @@ export function Item({
     level = 0,
     onExpand,
     expanded,
-    lastEditor,
-    verified
+    lastEditor
 }: ItemProps){
     const router = useRouter()
     const create = useMutation(api.document.create)

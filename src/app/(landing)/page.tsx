@@ -3,19 +3,11 @@
 import { Footer } from "./_components/footer";
 import { Heading } from "./_components/heading";
 import { About } from "./_components/about";
-import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
 import { useRequestUser } from "../../../server/users/request";
+import { Premium } from "./_components/premium";
 
 export default function Landing() {
   useRequestUser()
-  const content = useQuery(api.document.getTestPage)
-
-  if (content === undefined || content === null) {
-    return (
-      <div></div>
-    ) 
-  }
 
   return (
     <div className="min-h-full flex flex-col">
@@ -33,6 +25,7 @@ export default function Landing() {
           <div className="absolute w-28 h-28 bg-gray-400 rounded-xl z-[-99] top-[1100px] right-[280px] lg:right-[450px] md:right-[370px] rotate-6 shadow-md "/>
         </div>
         <About/>
+        <Premium/>
       </div>
       <Footer/>
     </div>

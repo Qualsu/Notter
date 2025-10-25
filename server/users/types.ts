@@ -18,4 +18,6 @@ export type User = {
   created: Date | null;
   premium: number;
   moderator: boolean;
+  documents: number
+  publicDocuments: number
 }

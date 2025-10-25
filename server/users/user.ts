@@ -10,6 +10,8 @@ export async function createUser(
   firstname: string | null = null,
   lastname: string | null = null,
   avatar: string | null = null,
+  documents: number | null = null,
+  publicDocuments: number | null = null
 ): Promise<User | null>{
   try {
     const response = await axios.post(`${API_URL}/users/add/${_id}`, {
@@ -18,6 +20,8 @@ export async function createUser(
       firstname,
       lastname,
       avatar,
+      documents,
+      publicDocuments
     });
     return response.data;
   } catch (error) {
@@ -53,7 +57,9 @@ export async function updateUser(
   lastname: string | null = null,
   avatar: string | null = null,
   privated: boolean | null = null,
-  pined: string | null = null
+  pined: string | null = null,
+  documents: number | null = null,
+  publicDocuments: number | null = null
 ): Promise<User | null>{
   try {
     const response = await axios.put(`${API_URL}/users/update/${_id}`, {
@@ -63,6 +69,8 @@ export async function updateUser(
       avatar,
       privated,
       pined,
+      documents,
+      publicDocuments,
     });
     return response.data;
   } catch (error) {
@@ -70,3 +78,33 @@ export async function updateUser(
     return null;
   }
 };
+
+export async function updateDocumentsCount(
+  _id: string,
+  count: number
+): Promise<User | null> {
+  try {
+    const response = await axios.put(`${API_URL}/users/update_documents/${_id}`, {
+      count,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating documents count:", error);
+    return null;
+  }
+}
+
+export async function updatePublicDocumentsCount(
+  _id: string,
+  count: number
+): Promise<User | null> {
+  try {
+    const response = await axios.put(`${API_URL}/users/update_public_documents/${_id}`, {
+      count,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating public documents count:", error);
+    return null;
+  }
+}

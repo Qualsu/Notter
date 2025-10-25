@@ -1,12 +1,12 @@
-"use client" 
+"use client"
 
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover" 
-import { useMutation } from "convex/react" 
-import { useState } from "react" 
+import { useMutation, useQuery } from "convex/react" 
+import { useState, useEffect } from "react" 
 import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button" 
 import { Check, Copy, Globe } from "lucide-react" 
@@ -15,6 +15,8 @@ import { api } from "../../../../convex/_generated/api"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useOrigin } from "../../../../hooks/use-origin"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
+import { updateUser } from "../../../../server/users/user"
+import { getById } from "../../../../server/users/user"
 
 interface PublishProps {
   initialData: Doc<"documents"> 
@@ -29,6 +31,30 @@ export function Publish({ initialData }: PublishProps){
   const [copied, setCopied] = useState(false) 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isShortUrl, setIsShortUrl] = useState(false)
+  const [publicDocumentLimit, setPublicDocumentLimit] = useState<number>(10)
+
+  const currentPublicDocuments = useQuery(api.document.getPublicDocumentCount, {
+    userId: orgId
+  }) 
+
+  const fetchUserData = async () => {
+    if (user?.id) {
+      const userData = await getById(user.id)
+      if (userData) {
+        let publicLimit = 10;
+        if (userData.premium === 1) {
+          publicLimit = 100;
+        } else if (userData.premium === 2) {
+          publicLimit = 1000;
+        }
+        setPublicDocumentLimit(publicLimit)
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchUserData()
+  })
 
   const handleCheckboxChange = () => {
     setIsShortUrl((prev) => !prev)
@@ -36,7 +62,12 @@ export function Publish({ initialData }: PublishProps){
 
   const url = isShortUrl ? `${origin}/${initialData.shortId}` : `${origin}/view/${initialData._id}`
 
-  const onPublish = () => {
+  const onPublish = async () => {
+    if (currentPublicDocuments !== undefined && currentPublicDocuments >= publicDocumentLimit) {
+      toast.error(`Вы достигли лимита на публикацию в ${publicDocumentLimit} публичных заметок`);
+      return;
+    }
+
     setIsSubmitting(true) 
 
     const promise = update({
@@ -51,9 +82,15 @@ export function Publish({ initialData }: PublishProps){
       success: "Заметка опубликована!",
       error: "Не удалось опубликовать",
     }) 
+
+    if (user?.id && currentPublicDocuments !== undefined) {
+      const updatedPublicCount = Number(currentPublicDocuments) + 1;
+
+      updateUser(user.id, null, null, null, null, null, null, null, updatedPublicCount);
+    }
   } 
 
-  const onUnpublish = () => {
+  const onUnpublish = async () => {
     setIsSubmitting(true) 
 
     const promise = update({
@@ -68,6 +105,12 @@ export function Publish({ initialData }: PublishProps){
       success: "Заметка убрана с публикации!",
       error: "Не удалось отменить публикацию",
     }) 
+
+    if (user?.id && currentPublicDocuments !== undefined) {
+      const updatedPublicCount = Math.max(Number(currentPublicDocuments) - 1, 0);
+      updateUser(user.id, null, null, null, null, null, null, null, updatedPublicCount)
+      console.log("upd")
+    }
   } 
 
   const onCopy = () => {
@@ -142,7 +185,7 @@ export function Publish({ initialData }: PublishProps){
         ) : (
           <div className="flex flex-col items-center justify-center">
             <Globe className="mb-2 h-8 w-8 text-muted-foreground " />
-            <p>Поделитесь свой заметкой</p>
+            <p>Поделитесь своей заметкой</p>
             <Protect
               condition={(check) => {
                 return check({
@@ -172,4 +215,4 @@ export function Publish({ initialData }: PublishProps){
       </PopoverContent>
     </Popover>
   ) 
-} 
+}

@@ -1,16 +1,25 @@
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { createUser, updateUser } from "./user";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
-export function useRequestUser(){
+export function useRequestUser() {
   const { user, isLoaded, isSignedIn } = useUser();
+
+  const documentCount = useQuery(api.document.getDocumentCount, {
+    userId: user?.id as string
+  })
+  const documentPublicCount = useQuery(api.document.getPublicDocumentCount, {
+    userId: user?.id as string
+  })
 
   useEffect(() => {
     const createOrUpdateUser = async () => {
       if (isLoaded && isSignedIn && user) {
         const { id, firstName, lastName, username, imageUrl, createdAt } = user;
 
-        if (username === null) return
+        if (username === null) return;
 
         try {
           const createdUser = await createUser(
@@ -19,7 +28,9 @@ export function useRequestUser(){
             createdAt,
             firstName,
             lastName,
-            imageUrl || null
+            imageUrl || null,
+            documentCount,
+            documentPublicCount
           );
 
           console.log("Создан пользователь:", createdUser);
@@ -30,7 +41,11 @@ export function useRequestUser(){
               username,
               firstName,
               lastName,
-              imageUrl || null
+              imageUrl || null,
+              null,
+              null,
+              documentCount,
+              documentPublicCount
             );
 
             console.log("Обновлен пользователь:", updatedUser);
@@ -49,4 +64,4 @@ export function useRequestUser(){
   }, [isLoaded, isSignedIn, user]);
 
   return null;
-};
+}
