@@ -10,6 +10,7 @@ import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
+import VerifedBadge from "@/app/(public)/profile/_components/verifed"
 
 interface ItemProps {
     id?: Id<"documents">
@@ -23,6 +24,7 @@ interface ItemProps {
     onClick?: () => void
     icon: LucideIcon
     lastEditor?: string
+    verified?: boolean
 }
 
 export function Item({
@@ -36,7 +38,8 @@ export function Item({
     level = 0,
     onExpand,
     expanded,
-    lastEditor
+    lastEditor,
+    verified
 }: ItemProps){
     const router = useRouter()
     const create = useMutation(api.document.create)
@@ -177,6 +180,9 @@ export function Item({
             <span className="truncate">
                 {label}
             </span>
+            
+
+
             {isSearch && (
                 <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted/20 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                     <span className="text-xs">Ctrl</span>S

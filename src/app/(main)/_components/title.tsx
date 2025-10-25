@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import Twemoji from 'react-twemoji';
+import VerifedBadge from "@/app/(public)/profile/_components/verifed"
 
 interface TitleProps{
     initialData: Doc<"documents">
@@ -67,6 +68,7 @@ export function Title({ initialData }: TitleProps){
                     className="h-7 px-2 focus-visible:ring-transparent"
                 />
             ) : (
+              <div className="flex flex-row items-center">
                 <Button
                     onClick={enableInput}
                     variant="ghost"
@@ -75,6 +77,8 @@ export function Title({ initialData }: TitleProps){
                 >
                     <span className="truncate text-sm">{initialData?.title}</span>
                 </Button>
+                {initialData.verifed && <VerifedBadge text="Заметка верефицирована командой Qualsu" size={4} clicked={true} down={true}/>}
+              </div>
             )}
         </div>
         </Twemoji>

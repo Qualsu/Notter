@@ -13,7 +13,6 @@ export function useRequestUser(){
         if (username === null) return
 
         try {
-          // Пробуем создать пользователя
           const createdUser = await createUser(
             id,
             username,
@@ -25,7 +24,6 @@ export function useRequestUser(){
 
           console.log("Создан пользователь:", createdUser);
 
-          // Если создание не удалось (400 ошибка), пробуем обновить пользователя
           if (!createdUser) {
             const updatedUser = await updateUser(
               id,
@@ -50,5 +48,5 @@ export function useRequestUser(){
     createOrUpdateUser();
   }, [isLoaded, isSignedIn, user]);
 
-  return null; // Не рендерим ничего, только выполняем запросы
+  return null;
 };

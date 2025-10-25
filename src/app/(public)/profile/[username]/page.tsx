@@ -9,214 +9,20 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Twemoji from 'react-twemoji';
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import { FileIcon } from "lucide-react";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { Navbar } from "@/app/(landing)/_components/navbar";
 import toast from "react-hot-toast";
-import { getByUsername, updateUser } from "../../../../../server/users/user";
+import { getByUsername } from "../../../../../server/users/user";
 import { User } from "../../../../../server/users/types";
 import Error404 from "@/app/errorPage";
 import { useUser } from "@clerk/nextjs";
+import VerifedBadge from "../_components/verifed";
+import { DocumentList } from "../_components/documentList";
 
 interface UsernameProps {
   params: {
     username: string;
   };
-}
-
-interface DocumentListProps {
-  user: User;
-  profile: string;
-  setProfile: React.Dispatch<React.SetStateAction<User | null>>;
-  parentDocumentId?: Id<"documents">;
-  level?: number;
-  publicSorted?: boolean;
-}
-
-function RecursiveDocumentList({
-  user,
-  profile,
-  setProfile,
-  parentDocumentId,
-  level = 0,
-  publicSorted = true,
-}: DocumentListProps) {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const { user: clerkUser } = useUser();
-  
-  const documents = useQuery(api.document.getSidebar, {
-    parentDocument: parentDocumentId,
-    userId: user?._id,
-    publicSorted,
-  });
-
-  const onToggleExpand = (documentId: string) => {
-    setExpanded((prev) => ({
-      ...prev,
-      [documentId]: !prev[documentId],
-    }));
-  };
-
-  const handlePinClick = async (docId: string) => {
-    try {
-      let updatedUser;
-      
-      if (docId === user?.pined) {
-        updatedUser = await updateUser(user._id, null, null, null, null, null, "");
-        console.log(updatedUser)
-        if (updatedUser) {
-          toast.success("Note unpinned successfully!");
-          setProfile((prevProfile) => {
-            if (prevProfile) {
-              return { ...prevProfile, pined: null };
-            }
-            return prevProfile;
-          });
-        }
-      } else {
-        updatedUser = await updateUser(user._id, null, null, null, null, null, docId);
-        if (updatedUser) {
-          toast.success("Note pinned successfully!");
-          setProfile((prevProfile) => {
-            if (prevProfile) {
-              return { ...prevProfile, pined: docId };
-            }
-            return prevProfile;
-          });
-        }
-      }
-    } catch (error) {
-      toast.error("Failed to pin/unpin the note");
-    }
-  };
-
-  if (documents === undefined) {
-    return (
-      <>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="flex items-center gap-2 p-1">
-            <Skeleton className="h-16 w-full rounded-lg" />
-          </div>
-        ))}
-      </>
-    );
-  }
-
-  if (documents.length === 0 && level === 0) {
-    return <p className="text-muted-foreground text-sm ml-2">Пусто</p>;
-  }
-
-  return (
-    <div className="space-y-2">
-      <Twemoji>
-        {documents.map((doc) => {
-          const isExpanded = expanded[doc._id];
-
-          if (doc.isPublished || !publicSorted) {
-            return (
-              <div key={doc._id} style={{ paddingLeft: level * 20 }}>
-                <div
-                  onClick={() => onToggleExpand(doc._id)}
-                  className={cn(
-                    "flex items-center justify-between hover:bg-secondary/20 rounded-lg transition-colors border-2 m-2 cursor-pointer"
-                  )}
-                >
-                  <div className={`flex items-center gap-2 ${!doc.coverImage ? "p-4" : ""}`}>
-                    {doc.icon ? (
-                      <span
-                        className={`inline-block w-6 h-6 ${doc.coverImage && "ml-4"}`}
-                        style={{ lineHeight: 0 }}
-                      >
-                        {doc.icon}
-                      </span>
-                    ) : (
-                      <FileIcon
-                        className={`w-5 h-5 text-muted-foreground ${doc.coverImage && "ml-4"}`}
-                      />
-                    )}
-
-                    <a
-                      href={`/view/${doc._id}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-xl text-primary/80 transition-all duration-300 hover:underline hover:text-primary"
-                    >
-                      {doc.title}
-                    </a>
-
-                    {doc.verifed && (
-                      <div className="relative group select-none">
-                        <Check className="w-5 h-5 text-yellow-400 transform transition-transform duration-200 hover:scale-110" />
-                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-yellow-200">
-                          Заметка верефицирована командой Qualsu
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {doc.coverImage && (
-                    <div className="relative w-64 h-16 overflow-hidden ml-auto">
-                      <Image
-                        src={doc.coverImage}
-                        alt={doc.title}
-                        fill
-                        className="rounded-r-lg object-cover ml-0.5"
-                      />
-                    </div>
-                  )}
-                
-
-                  {clerkUser?.username === profile && profile === user.username && (
-                    <div className="relative">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePinClick(doc._id);
-                      }}
-                      className="absolute left-5 -bottom-3"
-                    >
-                      {doc._id === user?.pined ? (
-                        <Pin className="w-6 h-6 text-yellow-500 hover:text-yellow-600 transition-all duration-200" />
-                      ) : (
-                        <Pin className="w-6 h-6 rotate-45 text-yellow-500 opacity-60 hover:opacity-100 transition-all duration-200" />
-                      )}
-                    </button>
-                    </div>
-                  )}
-                </div>
-
-                {isExpanded && (
-                  <div className="ml-6 border-l border-muted-foreground/30 pl-4">
-                    <RecursiveDocumentList
-                      user={user}
-                      profile={profile}
-                      setProfile={setProfile}
-                      parentDocumentId={doc._id}
-                      level={level + 1}
-                      publicSorted={publicSorted}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          return (
-            <div key={doc._id}>
-              <RecursiveDocumentList
-                user={user}
-                parentDocumentId={doc._id}
-                profile={profile}
-                setProfile={setProfile}
-                level={0}
-                publicSorted={publicSorted}
-              />
-            </div>
-          );
-        })}
-      </Twemoji>
-    </div>
-  );
 }
 
 export default function UserProfile({ params }: UsernameProps) {
@@ -251,8 +57,10 @@ export default function UserProfile({ params }: UsernameProps) {
                 <Skeleton className="h-6 w-[150px]" />
               </div>
             </div>
-            <Skeleton className="h-10 w-[120px] rounded-xl" />
+            <Skeleton className="hidden md:block h-10 w-[120px] rounded-xl" />
           </div>
+
+          <Skeleton className="block md:hidden h-10 w-[120px] rounded-xl mb-3 ml-3" />
 
           <hr className="bg-[#111111]" />
 
@@ -295,7 +103,7 @@ export default function UserProfile({ params }: UsernameProps) {
     <>
       <Navbar />
       <div className="p-2 px-4 mt-8 border-8 border-white dark:border-[#0a0a0a]">
-        <title>{params.username}`s Profile</title>
+        <title>{params.username + "`s profile"}</title>
         <div className="flex flex-col">
           <Cover url={document?.coverImage || "/default-cover.png"} preview />
 
@@ -320,23 +128,15 @@ export default function UserProfile({ params }: UsernameProps) {
                         {profile?.lastname}
                         {!profile?.firstname && !profile?.lastname ? profile?.username : ""}
                         {profile?.badges.verified && (
-                          <div className="relative group select-none">
-                            <Check className="w-7 h-7 text-yellow-400 transform transition-transform duration-200 hover:scale-110" />
-                            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-yellow-200">
-                              Верефицированный пользователь
-                            </span>
-                          </div>
+                          <VerifedBadge text="Верефицированный пользователь" size={7} clicked={false}/>
                         )}
                       </span>
                     </span>
-                    {profile?.badges.verified && (
-                      <div className="relative group select-none hidden sm:block">
-                        <Check className="w-7 h-7 text-yellow-400 transform transition-transform duration-200 hover:scale-110" />
-                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-yellow-200">
-                          Верефицированный пользователь
-                        </span>
-                      </div>
-                    )}
+                    <div className="hidden sm:block">
+                      {profile?.badges.verified && (
+                        <VerifedBadge text="Верефицированный пользователь" size={7} clicked={false}/>
+                      )}
+                    </div>
                   </h1>
                 </div>
                 <p
@@ -375,6 +175,36 @@ export default function UserProfile({ params }: UsernameProps) {
                   />
                   <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
                     Создатель верефицированных заметок
+                  </span>
+                </div>
+              )}
+
+              {profile?.moderator && (
+                <div className="relative group select-none mx-0.5">
+                  <Image
+                    src="/badge/Moderator.png"
+                    alt="Note Verifed Icon"
+                    width={24}
+                    height={24}
+                    className="transform transition-transform duration-200 hover:scale-110"
+                  />
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-orange-300">
+                    Модератор
+                  </span>
+                </div>
+              )}
+
+              {profile?.badges.contributor && (
+                <div className="relative group select-none">
+                  <Image
+                    src="/badge/Contributor.png"
+                    alt="Note Verifed Icon"
+                    width={28}
+                    height={28}
+                    className="transform transition-transform duration-200 hover:scale-110"
+                  />
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-rose-400">
+                    Внесенный вклад
                   </span>
                 </div>
               )}
@@ -467,7 +297,7 @@ export default function UserProfile({ params }: UsernameProps) {
                 <div className="mt-8 mx-6">
                   <h2 className="text-2xl font-bold mb-4">All Notes</h2>
                   {profile._id ? (
-                    <RecursiveDocumentList user={profile} profile={params.username} setProfile={setProfile} />
+                    <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
                   ) : (
                     <p className="text-muted-foreground">User not loaded</p>
                   )}
@@ -512,7 +342,7 @@ export default function UserProfile({ params }: UsernameProps) {
             <div className="mt-8 mx-6">
               <h2 className="text-2xl font-bold mb-4">All Notes</h2>
               {profile._id ? (
-                <RecursiveDocumentList user={profile} profile={params.username} setProfile={setProfile} />
+                <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
               ) : (
                 <p className="text-muted-foreground">User not loaded</p>
               )}

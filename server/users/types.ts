@@ -2,6 +2,7 @@ export type Badge = {
   verified: boolean;
   notter: boolean;
   notes_verifed: boolean;
+  contributor: boolean;
 }
 
 export type User = {
@@ -16,4 +17,5 @@ export type User = {
   pined: string | null;
   created: Date | null;
   premium: number;
+  moderator: boolean;
 }

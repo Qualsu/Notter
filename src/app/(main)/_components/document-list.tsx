@@ -85,6 +85,7 @@ export function DocumentList({
                             onExpand={() => onExpand(document._id)}
                             expanded={expanded[document._id]}
                             lastEditor={document.lastEditor as string}
+                            verified={document.verifed}
                         />
                         {expanded[document._id] && (
                             <DocumentList parentDocumentId={document._id} level={level + 1} />

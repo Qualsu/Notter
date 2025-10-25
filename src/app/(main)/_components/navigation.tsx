@@ -18,6 +18,7 @@ import { useSettings } from "../../../../hooks/use-settings"
 import { Navbar } from "./navbar"
 import { useOrganization, useUser } from "@clerk/clerk-react"
 import { Id } from "../../../../convex/_generated/dataModel"
+import { Button } from "@/components/ui/button"
 
 export function Navigation(){
     const router = useRouter()
@@ -220,6 +221,9 @@ export function Navigation(){
                             <TrashBox />
                         </PopoverContent>
                     </Popover>
+                </div>
+                 <div className="absolute bottom-4 left-0 w-full flex justify-center items-center">
+                    <a href={`/profile/${user?.username}`} className="text-sm text-primary/50 hover:text-primary/80 transition-all duration-200">Перейти в профиль</a>
                 </div>
                 <div 
                 onMouseDown={handleMouseDown}
