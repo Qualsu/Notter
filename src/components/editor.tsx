@@ -37,7 +37,6 @@ export default function Editor({ onChange, initialContent, editable }: EditorPro
     ? (JSON.parse(initialContent) as PartialBlock[])
     : undefined,
     uploadFile: handleUpload,
-    // schema,
   }) 
 
   const handleEditorChange = () => {

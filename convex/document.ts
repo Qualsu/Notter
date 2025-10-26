@@ -92,7 +92,8 @@ export const create = mutation({
         title: v.string(),
         parentDocument: v.optional(v.id("documents")),
         userId: v.string(),
-        lastEditor: v.string()
+        lastEditor: v.string(),
+        creatorName: v.string()
     },
     handler: async(ctx, args) => {
         const identify = await ctx.auth.getUserIdentity()
@@ -101,24 +102,13 @@ export const create = mutation({
             throw new Error("Not authenticated")
         }
 
-        const documentCount = await ctx.db
-          .query("documents")
-          .withIndex("by_user", (q) => q.eq("userId", args.userId))
-          .order("desc")
-          .collect()
-
-        if (documentCount.length >= 100){
-          throw new Error("Rate limited note")
-        }
-
-        await limitCreateDocument(ctx, args.userId)
-
         const document = await ctx.db.insert("documents", {
             title: args.title,
             parentDocument: args.parentDocument,
             shortId: generateRandomId(),
             userId: args.userId,
             userName: args.lastEditor,
+            creatorName: args.creatorName,
             isAcrhived: false,
             isPublished: false,
             lastEditor: args.lastEditor
@@ -313,9 +303,7 @@ export const getDocumentCount = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
 
-    if (!identity) {
-      throw new Error("Not authenticated")
-    }
+    if (!identity) return
 
     const documentCount = await ctx.db
       .query("documents")
@@ -333,14 +321,12 @@ export const getPublicDocumentCount = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
 
-    if (!identity) {
-      throw new Error("Not authenticated")
-    }
+    if (!identity) return
 
     const publicDocuments = await ctx.db
       .query("documents")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .filter((q) => q.eq(q.field("isPublished"), true))  // Фильтруем по isPublished
+      .filter((q) => q.eq(q.field("isPublished"), true))
       .collect()
 
     return publicDocuments.length
@@ -449,5 +435,15 @@ export const removeCoverImage = mutation({
     })
 
     return document
+  }
+})
+
+export const getTestPage = query({
+  handler: async (ctx) => {
+    const document = await ctx.db.query("documents")
+      .filter((q) => q.eq(q.field("shortId"), "TEST-PAGE"))
+      .collect()
+
+    return document[0]
   }
 })

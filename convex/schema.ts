@@ -6,6 +6,7 @@ export default defineSchema({
         title: v.string(),
         userId: v.string(),
         userName: v.optional(v.string()),
+        creatorName: v.optional(v.string()),
         shortId: v.string(),
         isAcrhived: v.boolean(),
         parentDocument: v.optional(v.union(v.id("documents"), v.null())),

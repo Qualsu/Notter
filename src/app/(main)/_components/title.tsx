@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import Twemoji from 'react-twemoji';
-import VerifedBadge from "@/app/(public)/profile/_components/verifed"
+import VerifedBadge from "@/app/(profile)/_components/verifed"
 
 interface TitleProps{
     initialData: Doc<"documents">

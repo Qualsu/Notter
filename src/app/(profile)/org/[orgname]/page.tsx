@@ -2,46 +2,47 @@
 
 import { Cover } from "@/components/cover";
 import Image from "next/image";
-import { Check, LockKeyhole, Pin } from "lucide-react";
-import { api } from "../../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Twemoji from 'react-twemoji';
 import { Skeleton } from "@/components/ui/skeleton";
-import { Id } from "../../../../../convex/_generated/dataModel";
 import { Navbar } from "@/app/(landing)/_components/navbar";
 import toast from "react-hot-toast";
-import { getByUsername } from "../../../../../server/users/user";
-import { User } from "../../../../../server/users/types";
 import Error404 from "@/app/errorPage";
 import { useUser } from "@clerk/nextjs";
-import VerifedBadge from "../_components/verifed";
-import { DocumentList } from "../_components/documentList";
-import { Badges } from "../_components/badge";
+import VerifedBadge from "../../_components/verifed";
+import { DocumentList } from "../../_components/documentList";
+import { Badges } from "../../_components/badge";
+import { getByUsername } from "../../../../../server/orgs/org";
+import { Org } from "../../../../../server/orgs/types";
+import { LockKeyhole, Pin } from "lucide-react";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import { User } from "../../../../../server/users/types";
 
-interface UsernameProps {
+interface OrgProps {
   params: {
-    username: string;
+    orgname: string;
   };
 }
 
-export default function UserProfile({ params }: UsernameProps) {
+export default function OrgProfile({ params }: OrgProps) {
   const { isLoaded, user } = useUser();
-  const [profile, setProfile] = useState<User | null>(null);
+  const [org, setOrg] = useState<Org | User | null>(null);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const profileData = await getByUsername(params.username);
-      setProfile(profileData);
+    const fetchOrg = async () => {
+      const orgData = await getByUsername(params.orgname);
+      setOrg(orgData);
     };
 
-    fetchProfile();
-  }, [params.username]);
+    fetchOrg();
+  }, [params.orgname]);
 
   const document = useQuery(api.document.getById, {
-    userId: profile?._id,
-    documentId: profile?.pined === undefined ? null : profile?.pined as Id<"documents"> | null,
+    userId: org?._id,
+    documentId: org?.pined === undefined ? null : org?.pined == "" ? null : org?.pined as Id<"documents"> | null,
   });
   const Editor = useMemo(() => dynamic(() => import("@/components/editor"), { ssr: false }), []);
 
@@ -82,8 +83,8 @@ export default function UserProfile({ params }: UsernameProps) {
 
   const copyUsername = async () => {
     try {
-      if (profile?.username && navigator) {
-        await navigator.clipboard.writeText(profile.username);
+      if (org?.username && navigator) {
+        await navigator.clipboard.writeText(org.username);
         toast.success("Username copied to clipboard!");
       }
     } catch (error) {
@@ -91,20 +92,26 @@ export default function UserProfile({ params }: UsernameProps) {
     }
   };
 
-  if (!profile) {
+  if (!org) {
     return (
       <>
         <Navbar />
-        <Error404 />;
+        <Error404 /> ;
       </>
-    )
+    );
   }
+
+  const isUser = (profile: User | Org): profile is User => {
+    return (profile as User).firstname !== undefined;
+  };
+
+  const canViewPrivateOrg = org?.privated ? org?.members?.includes(user?.id as string) || user?.username === org.username : true;
 
   return (
     <>
       <Navbar />
       <div className="p-2 px-4 mt-8 border-8 border-white dark:border-[#0a0a0a]">
-        <title>{params.username + "`s profile"}</title>
+        <title>{org?.name + "`s profile"}</title>
         <div className="flex flex-col">
           <Cover url={document?.coverImage || "/default-cover.png"} preview />
 
@@ -112,8 +119,8 @@ export default function UserProfile({ params }: UsernameProps) {
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Image
-                  src={profile?.avatar || "/default-profile.png"}
-                  alt="Profile Picture"
+                  src={org?.avatar || "/default-profile.png"}
+                  alt="Org Avatar"
                   width={80}
                   height={80}
                   className="rounded-full"
@@ -122,20 +129,28 @@ export default function UserProfile({ params }: UsernameProps) {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-3xl  flex items-center gap-2">
-                    <span className="hidden sm:block font-bold whitespace-nowrap">{profile?.firstname} {profile?.lastname} {!profile?.firstname && !profile?.lastname ? profile?.username : ""}</span>
+                    {/* Conditional rendering based on profile type */}
+                    {isUser(org) ? (
+                      <span className="hidden sm:block font-bold whitespace-nowrap">
+                        {org?.firstname} {org?.lastname} {!org?.firstname && !org?.lastname ? org?.username : ""}
+                      </span>
+                    ) : (
+                      <span className="hidden sm:block font-bold whitespace-nowrap">{org?.name}</span>
+                    )}
+
                     <span className="block sm:hidden font-bold">
-                      {profile?.firstname}
+                      {isUser(org) ? org?.firstname : org?.name}
                       <span className="flex flex-row items-center gap-2">
-                        {profile?.lastname}
-                        {!profile?.firstname && !profile?.lastname ? profile?.username : ""}
-                        {profile?.badges.verified && (
-                          <VerifedBadge text="Верефицированный пользователь" size={7} clicked={false}/>
+                        {isUser(org) && org?.lastname}
+                        {!isUser(org) && org?.name}
+                        {org?.badges.verified && (
+                          <VerifedBadge text="Верефицированная команда" size={7} clicked={false} />
                         )}
                       </span>
                     </span>
                     <div className="hidden sm:block">
-                      {profile?.badges.verified && (
-                        <VerifedBadge text="Верефицированный пользователь" size={7} clicked={false}/>
+                      {org?.badges.verified && (
+                        <VerifedBadge text="Верефицированная команда" size={7} clicked={false} />
                       )}
                     </div>
                   </h1>
@@ -144,28 +159,28 @@ export default function UserProfile({ params }: UsernameProps) {
                   className="mt-2 text-xl text-primary/80 hover:text-primary hover:underline duration-300 transition-all"
                   onClick={copyUsername}
                 >
-                  {profile?.username}
+                  {org?.username}
                 </p>
               </div>
             </div>
 
             <div className="flex flex-row gap-2 bg-black/5 dark:bg-[#111111] p-2 rounded-xl items-center mt-4 md:mt-0 max-w-max text-white">
-              <Badges profile={profile}/>
+              <Badges profile={org} />
             </div>
           </div>
 
           <hr className="bg-[#111111]" />
 
-          {profile?.privated ? (
-            user?.username === profile.username ? (
+          {org?.privated ? (
+            canViewPrivateOrg ? (
               <>
                 <div className="flex flex-col items-center justify-center mx-6 my-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
                   <div className="flex items-center gap-2">
                     <LockKeyhole className="w-8 h-8 text-yellow-500" />
-                    <strong>Приватный профиль:</strong>
+                    <strong>Приватная организация:</strong>
                   </div>
                   <p className="text-center">
-                    Ваш профиль является приватным. Только вы можете видеть его содержимое
+                    Профиль организации является приватным. Только вы и участники могут видеть содержимое
                   </p>
                 </div>
                 <div className="flex flex-row items-center my-4 mx-6 text-muted-foreground">
@@ -181,12 +196,7 @@ export default function UserProfile({ params }: UsernameProps) {
                   >
                     <span className="font-bold">{document?.title}</span>
                     {document?.verifed && (
-                      <div className="relative group select-none">
-                        <Check className="w-5 h-5 text-yellow-400 transform transition-transform duration-200 hover:scale-110" />
-                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-yellow-200">
-                          Заметка верефицирована командой Qualsu
-                        </span>
-                      </div>
+                      <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6} />
                     )}
                   </a>
                 </div>
@@ -195,10 +205,10 @@ export default function UserProfile({ params }: UsernameProps) {
                 </div>
                 <div className="mt-8 mx-6">
                   <h2 className="text-2xl font-bold mb-4">All Notes</h2>
-                  {profile._id ? (
-                    <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
+                  {org._id ? (
+                    <DocumentList user={org} profile={params.orgname} setProfile={setOrg} />
                   ) : (
-                    <p className="text-muted-foreground">User not loaded</p>
+                    <p className="text-muted-foreground">Org not loaded</p>
                   )}
                 </div>
               </>
@@ -206,10 +216,10 @@ export default function UserProfile({ params }: UsernameProps) {
               <div className="flex flex-col items-center justify-center mx-6 my-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
                 <div className="flex items-center gap-2">
                   <LockKeyhole className="w-8 h-8 text-yellow-500" />
-                  <strong>Приватный профиль:</strong>
+                  <strong>Приватная организация:</strong>
                 </div>
                 <p className="text-center">
-                  Этот профиль является приватным. Только владелец может его просматривать
+                  Этот профиль организации является приватным. Только участники могут видеть содержимое
                 </p>
               </div>
             )
@@ -237,13 +247,13 @@ export default function UserProfile({ params }: UsernameProps) {
             )
           )}
 
-          {!profile?.privated && (
+          {!org?.privated && (
             <div className="mt-8 mx-6">
               <h2 className="text-2xl font-bold mb-4">All Notes</h2>
-              {profile._id ? (
-                <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
+              {org._id ? (
+                <DocumentList user={org} profile={params.orgname} setProfile={setOrg} />
               ) : (
-                <p className="text-muted-foreground">User not loaded</p>
+                <p className="text-muted-foreground">Org not loaded</p>
               )}
             </div>
           )}

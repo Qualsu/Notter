@@ -2,12 +2,13 @@
 
 import { cn } from "@/lib/utils"
 import { Archive, ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings2 } from "lucide-react"
-import { useParams, usePathname, useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { ElementRef, useEffect, useRef, useState } from "react"
 import { useMediaQuery } from 'usehooks-ts'
 import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
-import { getById, updateDocumentsCount, updatePublicDocumentsCount } from "../../../../server/users/user"
+import { getById as getUserById } from "../../../../server/users/user"
+import { getById as getOrgById } from "../../../../server/orgs/org"
 import { Progress } from "@/components/ui/progress"
 import { toast } from "react-hot-toast"
 import { useOrganization, useUser } from "@clerk/clerk-react"
@@ -30,7 +31,8 @@ export function Navigation() {
     const isMobile = useMediaQuery("(max-width: 768px)")
     const create = useMutation(api.document.create)
     const update = useMutation(api.document.update)
-    const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
+    const isOrg = organization?.id !== undefined
+    const orgId = isOrg ? organization?.id as string : user?.id as string
 
     const isResizingRef = useRef(false)
     const sidebarRef = useRef<ElementRef<"aside">>(null)
@@ -42,9 +44,20 @@ export function Navigation() {
     const [documentPublicCount, setDocumentPublicCount] = useState<number>(0)
     const [premiumLevel, setPremiumLevel] = useState<number>(0)
 
+    const fetchOrgData = async () => {
+        if (isOrg && organization?.id) {
+            const orgData = await getOrgById(organization.id)
+            if (orgData) {
+                setDocumentCount(orgData.documents || 0)
+                setDocumentPublicCount(orgData.publicDocuments || 0)
+                setPremiumLevel(orgData.premium || 0)
+            }
+        }
+    }
+
     const fetchUserData = async () => {
-        if (user?.id) {
-            const userData = await getById(user.id)
+        if (!isOrg && user?.id) {
+            const userData = await getUserById(user.id)
             if (userData) {
                 setDocumentCount(userData.documents || 0)
                 setDocumentPublicCount(userData.publicDocuments || 0)
@@ -54,15 +67,19 @@ export function Navigation() {
     }
 
     useEffect(() => {
-        fetchUserData()
-    }, [user?.id])
+        if (isOrg) {
+            fetchOrgData()
+        } else {
+            fetchUserData()
+        }
+    }, [user?.id, organization?.id])
 
     let documentLimit: number = 75
     let publicDocumentLimit: number = 10
 
     if (premiumLevel === 1) {
-        documentLimit = 200
-        publicDocumentLimit = 100
+        documentLimit = isOrg ? 500 : 200
+        publicDocumentLimit = isOrg ? 250 : 100
     } else if (premiumLevel === 2) {
         documentLimit = 1000
         publicDocumentLimit = 1000
@@ -77,17 +94,6 @@ export function Navigation() {
         return ""
     }
 
-    const updateDocumentCount = (newCount: number) => {
-        if (user?.id) {
-            updateDocumentsCount(user.id, newCount)
-                .then(() => setDocumentCount(newCount))
-                .catch((error) => {
-                    console.error("Error updating document count:", error)
-                    toast.error("Не удалось обновить количество документов")
-                })
-        }
-    }
-
     const handleCreate = () => {
         if (documentCount >= documentLimit) {
             toast.error(`Вы достигли лимита на создание в ${documentLimit} заметок`);
@@ -97,11 +103,11 @@ export function Navigation() {
         const promise = create({
             title: "Новая заметка",
             userId: orgId,
-            lastEditor: user?.username as string
+            lastEditor: user?.username as string,
+            creatorName: isOrg ? organization?.slug as string : user?.username as string,
         })
             .then((documentId) => {
                 router.push(`/dashboard/${documentId}`)
-                updateDocumentCount(documentCount + 1)
                 return documentId
             })
             .catch((error) => {
@@ -216,7 +222,7 @@ export function Navigation() {
                 </div>
 
                 <div className="absolute bottom-4 left-0 w-full flex justify-center items-center">
-                    <a href={`/profile/${user?.username}`} className="text-sm text-primary/50 hover:text-primary/80 transition-all duration-200">Перейти в профиль</a>
+                    <a href={isOrg ? `/org/${organization?.slug}` : `/user/${user?.username}`} className="text-sm text-primary/50 hover:text-primary/80 transition-all duration-200">Перейти в профиль</a>
                 </div>
                 <div onMouseDown={handleMouseDown} onClick={resetWidth} className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
             </aside>

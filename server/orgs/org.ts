@@ -1,24 +1,26 @@
 import axios from "axios";
-import { User } from "./types";
+import { Org } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_QUALSU_API
 
-export async function createUser(
+export async function createOrg(
   _id: string,
-  username: string,
+  username: string | null,
+  owner: string | null,
   created: Date | null = null,
-  firstname: string | null = null,
-  lastname: string | null = null,
+  name: string | null = null,
+  members: string[] | null = null,
   avatar: string | null = null,
   documents: number | null = null,
   publicDocuments: number | null = null
-): Promise<User | null>{
+): Promise<Org | null>{
   try {
-    const response = await axios.post(`${API_URL}/users/add/${_id}`, {
+    const response = await axios.post(`${API_URL}/orgs/add/${_id}`, {
       username,
+      owner,
       created,
-      firstname,
-      lastname,
+      members,
+      name,
       avatar,
       documents,
       publicDocuments
@@ -30,9 +32,9 @@ export async function createUser(
   }
 };
 
-export async function getByUsername(username: string): Promise<User | null>{
+export async function getByUsername(username: string): Promise<Org | null>{
   try {
-    const response = await axios.get(`${API_URL}/users/by_username/${username}`);
+    const response = await axios.get(`${API_URL}/orgs/by_username/${username}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user by username:", error);
@@ -40,9 +42,9 @@ export async function getByUsername(username: string): Promise<User | null>{
   }
 };
 
-export async function getById(_id: string): Promise<User | null>{
+export async function getById(_id: string): Promise<Org | null>{
   try {
-    const response = await axios.get(`${API_URL}/users/by_id/${_id}`);
+    const response = await axios.get(`${API_URL}/orgs/by_id/${_id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user by id:", error);
@@ -50,26 +52,28 @@ export async function getById(_id: string): Promise<User | null>{
   }
 };
 
-export async function updateUser(
+export async function updateOrg(
   _id: string,
   username: string | null = null,
-  firstname: string | null = null,
-  lastname: string | null = null,
+  owner: string | null = null,
+  name: string | null = null,
   avatar: string | null = null,
   privated: boolean | null = null,
   pined: string | null = null,
   documents: number | null = null,
-  publicDocuments: number | null = null
-): Promise<User | null>{
+  publicDocuments: number | null = null,
+  members: string[] | null = null,
+): Promise<Org | null>{
   try {
-    const response = await axios.put(`${API_URL}/users/update/${_id}`, {
+    const response = await axios.put(`${API_URL}/orgs/update/${_id}`, {
       username,
-      firstname,
-      lastname,
+      name,
+      owner,
       avatar,
       privated,
       pined,
       documents,
+      members,
       publicDocuments,
     });
     return response.data;

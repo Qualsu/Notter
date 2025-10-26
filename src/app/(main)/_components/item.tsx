@@ -10,7 +10,6 @@ import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
-import VerifedBadge from "@/app/(public)/profile/_components/verifed"
 
 interface ItemProps {
     id?: Id<"documents">
@@ -46,7 +45,8 @@ export function Item({
     const update = useMutation(api.document.update)
     const { user } = useUser()
     const { organization } = useOrganization()
-    const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
+    const isOrg = organization?.id !== undefined
+    const orgId = isOrg ? organization?.id as string : user?.id as string
 
     const onArchive = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -89,7 +89,8 @@ export function Item({
             title: "Новая заметка",
             parentDocument: id,
             userId: orgId,
-            lastEditor: user?.username as string
+            lastEditor: user?.username as string,
+            creatorName: isOrg ? organization?.slug ?? "" : user?.username ?? ""
         }).then((documentId) => {
             if (!expanded) {
                 onExpand?.()

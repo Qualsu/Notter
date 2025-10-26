@@ -2,22 +2,24 @@ import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
 import Image from "next/image";
 import { Pin } from "lucide-react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useState } from "react";
 import Twemoji from 'react-twemoji';
 import { Skeleton } from "@/components/ui/skeleton";
-import { Id } from "../../../../../convex/_generated/dataModel";
+import { Id } from "../../../../convex/_generated/dataModel";
 import toast from "react-hot-toast";
-import { updateUser } from "../../../../../server/users/user";
-import { User } from "../../../../../server/users/types";
+import { updateUser } from "../../../../server/users/user";
+import { User } from "../../../../server/users/types";
 import { useUser } from "@clerk/nextjs";
-import VerifedBadge from "../_components/verifed";
+import VerifedBadge from "./verifed";
+import { Org } from "../../../../server/orgs/types";
+import { updateOrg } from "../../../../server/orgs/org";
 
 interface DocumentListProps {
-  user: User;
+  user: User | Org;
   profile: string;
-  setProfile: React.Dispatch<React.SetStateAction<User | null>>;
+  setProfile: React.Dispatch<React.SetStateAction<User | Org | null>>;
   parentDocumentId?: Id<"documents">;
   level?: number;
   publicSorted?: boolean;
@@ -33,7 +35,8 @@ export function DocumentList({
 }: DocumentListProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const { user: clerkUser } = useUser();
-  
+  const isOrg = user._id.startsWith("org_")
+
   const documents = useQuery(api.document.getSidebar, {
     parentDocument: parentDocumentId,
     userId: user?._id,
@@ -52,7 +55,9 @@ export function DocumentList({
       let updatedUser;
       
       if (docId === user?.pined) {
-        updatedUser = await updateUser(user._id, null, null, null, null, null, "");
+        updatedUser = isOrg ? 
+          await updateOrg(user._id, null, null, null, null, null, "") : 
+          await updateUser(user._id, null, null, null, null, null, "");
         console.log(updatedUser)
         if (updatedUser) {
           toast.success("Note unpinned successfully!");
@@ -64,7 +69,9 @@ export function DocumentList({
           });
         }
       } else {
-        updatedUser = await updateUser(user._id, null, null, null, null, null, docId);
+        updatedUser = isOrg ? 
+          await updateOrg(user._id, null, null, null, null, null, docId) : 
+          await updateUser(user._id, null, null, null, null, null, docId);
         if (updatedUser) {
           toast.success("Note pinned successfully!");
           setProfile((prevProfile) => {
@@ -150,21 +157,21 @@ export function DocumentList({
                   )}
                 
 
-                  {clerkUser?.username === profile && profile === user.username && (
+                  {(clerkUser?.username === profile || user.owner == clerkUser?.id) && (
                     <div className="relative">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePinClick(doc._id);
-                      }}
-                      className="absolute left-5 -bottom-3"
-                    >
-                      {doc._id === user?.pined ? (
-                        <Pin className="w-6 h-6 text-yellow-500 hover:text-yellow-600 transition-all duration-200" />
-                      ) : (
-                        <Pin className="w-6 h-6 rotate-45 text-yellow-500 opacity-60 hover:opacity-100 transition-all duration-200" />
-                      )}
-                    </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePinClick(doc._id);
+                        }}
+                        className="absolute left-5 -bottom-3"
+                      >
+                        {doc._id === user?.pined ? (
+                          <Pin className="w-6 h-6 text-yellow-500 hover:text-yellow-600 transition-all duration-200" />
+                        ) : (
+                          <Pin className="w-6 h-6 rotate-45 text-yellow-500 opacity-60 hover:opacity-100 transition-all duration-200" />
+                        )}
+                      </button>
                     </div>
                   )}
                 </div>

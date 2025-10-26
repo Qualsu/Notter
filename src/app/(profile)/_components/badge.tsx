@@ -1,8 +1,9 @@
-import { User } from "../../../../../server/users/types"
+import { Org } from "../../../../server/orgs/types";
+import { User } from "../../../../server/users/types"
 import Image from "next/image";
 
 type BadgesProps = {
-    profile: User
+    profile: User | Org
 }
 
 export function Badges({profile}: BadgesProps){
@@ -34,6 +35,21 @@ export function Badges({profile}: BadgesProps){
                     />
                     <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
                     Создатель верефицированных заметок
+                    </span>
+                </div>
+            )}
+
+            {profile?.badges.org_verifed && (
+                <div className="relative group select-none mx-0.5">
+                    <Image
+                        src="/badge/OrgVerifed.png"
+                        alt="Note Verifed Icon"
+                        width={28}
+                        height={28}
+                        className="transform transition-transform duration-200 hover:scale-110"
+                    />
+                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
+                        Владелец верефицированной команды
                     </span>
                 </div>
             )}

@@ -1,26 +1,24 @@
-export type UserBadge = {
+export type OrgBadge = {
   verified: boolean;
-  notter: boolean;
   notes_verifed: boolean;
-  org_verifed: boolean;
   contributor: boolean;
+  notter: boolean;
+  org_verifed: boolean;
 }
 
-export type User = {
+export type Org = {
   _id: string;
   username: string;
-  name: string;
-  firstname: string;
-  lastname: string | null;
+  owner: string;
+  name: string | null;
+  members: Array<string>
   avatar: string | null;
-  badges: UserBadge;
+  badges: OrgBadge;
   privated: boolean;
   pined: string | null;
   created: Date | null;
   premium: number;
-  moderator: boolean;
   documents: number
   publicDocuments: number
-  owner: string
-  members: Array<string>
+  moderator: boolean
 }

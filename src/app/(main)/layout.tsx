@@ -7,6 +7,7 @@ import { Navigation } from "./_components/navigation"
 import { SearchCommand } from "@/components/search-command"
 import { useEffect } from "react"
 import { useRequestUser } from "../../../server/users/request"
+import { useRequestOrg } from "../../../server/orgs/request"
 
 export default function MainLayout({
     children,
@@ -14,6 +15,7 @@ export default function MainLayout({
     children: React.ReactNode
   }) {
     useRequestUser()
+    useRequestOrg()
     const { isAuthenticated, isLoading } = useConvexAuth()
     const router = useRouter()
     
