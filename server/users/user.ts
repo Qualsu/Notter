@@ -11,7 +11,7 @@ export async function createUser(
   lastname: string | null = null,
   avatar: string | null = null,
   documents: number | null = null,
-  publicDocuments: number | null = null
+  publicDocuments: number | null = null,
 ): Promise<User | null>{
   try {
     const response = await axios.post(`${API_URL}/users/add/${_id}`, {
@@ -59,7 +59,8 @@ export async function updateUser(
   privated: boolean | null = null,
   pined: string | null = null,
   documents: number | null = null,
-  publicDocuments: number | null = null
+  publicDocuments: number | null = null,
+  watermark: boolean | null = null
 ): Promise<User | null>{
   try {
     const response = await axios.put(`${API_URL}/users/update/${_id}`, {
@@ -71,6 +72,7 @@ export async function updateUser(
       pined,
       documents,
       publicDocuments,
+      watermark
     });
     return response.data;
   } catch (error) {

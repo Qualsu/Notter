@@ -19,6 +19,7 @@ export function SettingsModal() {
   const { user } = useUser()
   const { organization } = useOrganization()
   const [isPrivated, setIsPrivated] = useState<boolean>(false)
+  const [watermark, setWatermark] = useState<boolean>(false)
   const [userData, setUserData] = useState<any>(null)
   const isOrg = organization?.id !== undefined
   const id = isOrg ? organization?.id : user?.id as string
@@ -30,6 +31,7 @@ export function SettingsModal() {
         if (data) {
           setUserData(data)
           setIsPrivated(data.privated || false)
+          setWatermark(data.watermark || false) // Устанавливаем watermark, если premium === 2
         }
       }
     }
@@ -51,6 +53,18 @@ export function SettingsModal() {
     }
   }
 
+  const handleWatermarkToggle = async (value: boolean) => {
+    setWatermark(value)
+
+    if (id) {
+      if (isOrg) {
+        await updateOrg(id, null, null, null, null, null, null, null, null, null, value)
+      } else {
+        await updateUser(id, null, null, null, null, null, null, null, null, value)
+      }
+    }
+  }
+
   return (
     <Dialog open={settings.isOpen} onOpenChange={settings.onClose}>
       <DialogContent>
@@ -68,22 +82,36 @@ export function SettingsModal() {
           <ModeToggle />
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-1">
-            <Label>Приватный профиль</Label>
-            <span className="text-[0.8rem] text-muted-foreground">
-              Скройте свои заметки от лишних глаз
-            </span>
+        {(userData?.owner === user?.id || !isOrg) && (
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-y-1">
+              <Label>Приватный профиль</Label>
+              <span className="text-[0.8rem] text-muted-foreground">
+                Скройте свои заметки от лишних глаз
+              </span>
+            </div>
+            
+              <Switch
+                checked={isPrivated}
+                onCheckedChange={handlePrivacyToggle}
+              />
           </div>
-          {userData?.owner === user?.id ? (
+        )}
+
+        {(userData?.premium === 2 && userData?.owner === user?.id || !isOrg) && (
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-y-1">
+              <Label>Логотип Notter</Label>
+              <span className="text-[0.8rem] text-muted-foreground">
+                Убрать логотип с публичных заметок
+              </span>
+            </div>
             <Switch
-              checked={isPrivated}
-              onCheckedChange={handlePrivacyToggle}
+              checked={watermark}
+              onCheckedChange={handleWatermarkToggle}
             />
-          ) : (
-            <span className="text-muted-foreground">Недоступно</span>
-          )}
-        </div>
+          </div>
+        )}
 
         <Separator />
         <div

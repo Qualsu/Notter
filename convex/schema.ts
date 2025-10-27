@@ -8,6 +8,7 @@ export default defineSchema({
         userName: v.optional(v.string()),
         creatorName: v.optional(v.string()),
         shortId: v.string(),
+        isShort: v.optional(v.boolean()),
         isAcrhived: v.boolean(),
         parentDocument: v.optional(v.union(v.id("documents"), v.null())),
         content: v.optional(v.string()),

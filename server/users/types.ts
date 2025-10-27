@@ -21,6 +21,7 @@ export type User = {
   moderator: boolean;
   documents: number
   publicDocuments: number
+  watermark: boolean | null
   owner: string
   members: Array<string>
 }

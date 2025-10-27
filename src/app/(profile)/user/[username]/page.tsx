@@ -108,7 +108,7 @@ export default function UserProfile({ params }: UsernameProps) {
   return (
     <>
       <Navbar />
-      <div className="p-2 px-4 mt-8 border-8 border-white dark:border-[#0a0a0a]">
+      <div className="p-2 px-4 mt-10 border-8 border-white dark:border-[#0a0a0a]">
         <title>{params.username + "`s profile"}</title>
         <div className="flex flex-col">
           <Cover url={document?.coverImage || "/default-cover.png"} preview />
@@ -127,7 +127,6 @@ export default function UserProfile({ params }: UsernameProps) {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-3xl  flex items-center gap-2">
-                    {/* Conditional rendering based on profile type */}
                     {isUser(profile) ? (
                       <span className="hidden sm:block font-bold whitespace-nowrap">
                         {profile?.firstname} {profile?.lastname} {!profile?.firstname && !profile?.lastname ? profile?.username : ""}

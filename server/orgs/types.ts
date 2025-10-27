@@ -21,4 +21,5 @@ export type Org = {
   documents: number
   publicDocuments: number
   moderator: boolean
+  watermark: boolean
 }

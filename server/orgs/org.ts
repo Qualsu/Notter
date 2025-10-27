@@ -63,6 +63,7 @@ export async function updateOrg(
   documents: number | null = null,
   publicDocuments: number | null = null,
   members: string[] | null = null,
+  watermark: boolean | null = null
 ): Promise<Org | null>{
   try {
     const response = await axios.put(`${API_URL}/orgs/update/${_id}`, {
@@ -75,6 +76,7 @@ export async function updateOrg(
       documents,
       members,
       publicDocuments,
+      watermark
     });
     return response.data;
   } catch (error) {
