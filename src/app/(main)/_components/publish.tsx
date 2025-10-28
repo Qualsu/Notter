@@ -1,5 +1,3 @@
-"use client"
-
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { useMutation, useQuery } from "convex/react"
 import { useState, useEffect } from "react"
@@ -36,7 +34,7 @@ export function Publish({ initialData }: PublishProps) {
 
   const [isShortUrl, setIsShortUrl] = useState<boolean>(Boolean(initialData.isShort))
   const [customShortId, setCustomShortId] = useState<string>(initialData.shortId || '')
-  const [previousShortId, setPreviousShortId] = useState<string>(initialData.shortId || '') // Состояние для предыдущего значения
+  const [previousShortId, setPreviousShortId] = useState<string>(initialData.shortId || '')
   const [editingShortId, setEditingShortId] = useState<boolean>(false)
 
   useEffect(() => {
@@ -61,21 +59,19 @@ export function Publish({ initialData }: PublishProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, isOrg])
 
-  // Проверка премиума и автоматическое снятие галочки
   const handleCheckboxChange = (checked: boolean | "indeterminate") => {
     const next = checked === true
 
-    // Если уровень премиума равен 0, сбрасываем галочку и ссылку
     if (userData?.premium === 0 && next) {
-      setIsShortUrl(false) // Снимаем галочку
-      setCustomShortId(initialData.shortId)  // Очищаем ссылку
+      setIsShortUrl(false)
+      setCustomShortId(initialData.shortId)
       toast.error("Для использования сокращенных ссылок требуется премиум уровень 1 или 2")
       return
     }
 
     setIsShortUrl(next)
-    setCustomShortId(initialData.shortId) // Сбрасываем значение customShortId, если чекбокс не активен
-    setEditingShortId(false) // Выключаем редактирование при отключении чекбокса
+    setCustomShortId(initialData.shortId)
+    setEditingShortId(false)
     update({
       id: initialData._id,
       isPublished: initialData.isPublished,
@@ -90,39 +86,48 @@ export function Publish({ initialData }: PublishProps) {
     setCustomShortId(newShortId)
   }
 
-  const handleValidateAndSave = () => {
-    // Проверяем на валидность только если поле не пустое
+  const handleValidateAndSave = async () => {
     if (customShortId === "") {
       toast.error("Ссылка не может быть пустой.")
-      setCustomShortId(previousShortId) // Сброс значения на предыдущее
+      setCustomShortId(previousShortId)
       return
     }
 
-    // Проверка на допустимые символы
+    if (customShortId === previousShortId) {
+      return
+    }
+
     if (!/^[a-z0-9-]*$/i.test(customShortId) || customShortId.length < 4 || customShortId.length > 30) {
       toast.error("ShortId должен содержать от 4 до 30 символов и только буквы, цифры и дефис.")
-      setCustomShortId(previousShortId) // Сброс значения на предыдущее
+      setCustomShortId(previousShortId)
       return
     }
 
-    // Если все проверки прошли, сохраняем новое значение и отправляем запрос
-    setPreviousShortId(customShortId) // Обновляем предыдущее значение
-    update({
-      id: initialData._id,
-      isPublished: initialData.isPublished,
-      userId: orgId,
-      lastEditor: user?.username as string,
-      shortId: customShortId,  // Устанавливаем новый shortId
-      isShort: true,  // Включаем флаг isShort
-    }).catch(() => toast.error("Не удалось обновить ShortId"))
+    setPreviousShortId(customShortId)
+    try {
+      await update({
+        id: initialData._id,
+        isPublished: initialData.isPublished,
+        userId: orgId,
+        lastEditor: user?.username as string,
+        shortId: customShortId,
+        isShort: true,
+      })
+      toast.success("Ссылка успешно обновлена!")
+    } catch (error: any) {
+      if (error.message.includes("Short ID already exists")) {
+        toast.error("Эта ссылка уже существует")
+        setCustomShortId(previousShortId)
+      } else {
+        toast.error("Не удалось обновить ссылку")
+      }
+    }
   }
 
   const handleBlur = () => {
     setEditingShortId(false)
-    // Если валидация прошла успешно, показываем toast
     handleValidateAndSave()
 
-    // Показываем успешный toast, если нет ошибок
     if (customShortId !== previousShortId) {
       toast.success("Ссылка успешно обновлена!")
     }
@@ -191,7 +196,7 @@ export function Publish({ initialData }: PublishProps) {
   }
 
   const canUseShort = userData?.premium === 1 || userData?.premium === 2
-  const canUseCustomShort = userData?.premium === 2 // Только для premium 2
+  const canUseCustomShort = userData?.premium === 2
 
   return (
     <Popover>
@@ -216,15 +221,15 @@ export function Publish({ initialData }: PublishProps) {
                 value={editingShortId ? customShortId : url}
                 className="h-8 flex-1 rounded-l-md border bg-muted px-2 text-xs"
                 onClick={() => {
-                  if (isShortUrl && canUseCustomShort) { // Условие для редактирования только при премиум 2
-                    setEditingShortId(true); // Активируем редактирование, только если стоит галочка и премиум 2
+                  if (isShortUrl && canUseCustomShort) {
+                    setEditingShortId(true);
                   }
                 }}
                 onBlur={handleBlur}
                 onChange={handleCustomShortIdChange}
-                onKeyPress={handleKeyPress} // Добавляем обработчик для клавиши Enter
+                onKeyPress={handleKeyPress}
                 autoFocus
-                disabled={!isShortUrl || !canUseCustomShort} // Делаем поле неактивным, если не стоит галочка или премиум не 2
+                disabled={!isShortUrl || !canUseCustomShort}
               />
               <Button onClick={onCopy} disabled={copied} className="h-8 rounded-l-none">
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -235,7 +240,7 @@ export function Publish({ initialData }: PublishProps) {
               <Checkbox
                 checked={isShortUrl}
                 onCheckedChange={handleCheckboxChange}
-                disabled={!canUseShort} // Чекбокс доступен только для премиум 1 и 2
+                disabled={!canUseShort}
               />
               <p className="ml-1 text-xs">
                 Сократить ссылку

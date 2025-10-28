@@ -362,9 +362,19 @@ export const update = mutation({
       if (!existingDocument) {
         throw new Error("Document not found")
       }
-  
+      
       if (existingDocument.userId !== args.userId) {
         throw new Error("Unauthorized")
+      }
+
+      if (args.shortId) {
+        const documents = await ctx.db.query("documents")
+          .filter((q) => q.eq(q.field("shortId"), args.shortId))
+          .collect()
+
+        if (documents.length > 0) {
+          throw new Error("Short ID already exists")
+        }
       }
       
       if (rest.parentDocument === null) {

@@ -30,7 +30,6 @@ export function Navigation() {
     const { organization } = useOrganization()
     const isMobile = useMediaQuery("(max-width: 768px)")
     const create = useMutation(api.document.create)
-    const update = useMutation(api.document.update)
     const isOrg = organization?.id !== undefined
     const orgId = isOrg ? organization?.id as string : user?.id as string
 
