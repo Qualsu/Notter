@@ -17,7 +17,7 @@ export function useRequestUser() {
   useEffect(() => {
     const createOrUpdateUser = async () => {
       if (isLoaded && isSignedIn && user) {
-        const { id, firstName, lastName, username, imageUrl, createdAt } = user;
+        const { id, firstName, lastName, username, imageUrl, createdAt, emailAddresses } = user;
 
         if (username === null) return;
 
@@ -30,7 +30,8 @@ export function useRequestUser() {
             lastName,
             imageUrl || null,
             documentCount,
-            documentPublicCount
+            documentPublicCount,
+            emailAddresses[0].emailAddress
           );
 
           console.log("Создан пользователь:", createdUser);
@@ -45,7 +46,9 @@ export function useRequestUser() {
               null,
               null,
               documentCount,
-              documentPublicCount
+              documentPublicCount,
+              null,
+              emailAddresses[0].emailAddress
             );
 
             console.log("Обновлен пользователь:", updatedUser);

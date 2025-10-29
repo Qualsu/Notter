@@ -46,7 +46,7 @@ export function useRequestOrg() {
               membersList,
               imageUrl || null,
               documentCount,
-              documentPublicCount
+              documentPublicCount,
             );
 
             console.log("Создана организация:", createdOrg);

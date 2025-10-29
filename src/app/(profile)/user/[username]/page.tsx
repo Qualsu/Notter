@@ -14,12 +14,13 @@ import { useUser } from "@clerk/nextjs";
 import VerifedBadge from "../../_components/verifed";
 import { DocumentList } from "../../_components/documentList";
 import { Badges } from "../../_components/badge";
-import { getByUsername } from "../../../../../server/users/user";
+import { getById, getByUsername } from "../../../../../server/users/user";
 import { User } from "../../../../../server/users/types";
 import { Org } from "../../../../../server/orgs/types";
 import { Check, LockKeyhole, Pin } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { ModeratorPanel } from "../../_components/moderatorPanel";
 
 interface UsernameProps {
   params: {
@@ -30,15 +31,19 @@ interface UsernameProps {
 export default function UserProfile({ params }: UsernameProps) {
   const { isLoaded, user } = useUser();
   const [profile, setProfile] = useState<User | Org | null>(null);
+  const [account, setAccount] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       const profileData = await getByUsername(params.username);
+      const accountData = await getById(user?.id as string);
+      console.log(accountData)
       setProfile(profileData);
+      setAccount(accountData)
     };
 
     fetchProfile();
-  }, [params.username]);
+  }, [params.username, user?.id]);
 
   const document = useQuery(api.document.getById, {
     userId: profile?._id,
@@ -101,10 +106,6 @@ export default function UserProfile({ params }: UsernameProps) {
     )
   }
 
-  const isUser = (profile: User | Org): profile is User => {
-    return (profile as User).firstname !== undefined;
-  };
-
   return (
     <>
       <Navbar />
@@ -127,30 +128,27 @@ export default function UserProfile({ params }: UsernameProps) {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-3xl  flex items-center gap-2">
-                    {isUser(profile) ? (
-                      <span className="hidden sm:block font-bold whitespace-nowrap">
-                        {profile?.firstname} {profile?.lastname} {!profile?.firstname && !profile?.lastname ? profile?.username : ""}
-                      </span>
-                    ) : (
-                      <span className="hidden sm:block font-bold whitespace-nowrap">{profile?.name}</span>
-                    )}
+                    <span className="hidden sm:block font-bold whitespace-nowrap">
+                      {profile?.firstname} {profile?.lastname} {!profile?.firstname && !profile?.lastname ? profile?.username : ""}
+                    </span>
 
                     <span className="block sm:hidden font-bold">
-                      {isUser(profile) ? profile?.firstname : profile?.name}
+                      {profile?.firstname}
                       <span className="flex flex-row items-center gap-2">
-                        {isUser(profile) && profile?.lastname}
-                        {!isUser(profile) && profile?.name}
-                        {isUser(profile) && profile?.badges.verified && (
+                        {profile?.lastname}
+                        {profile?.badges.verified && (
                           <VerifedBadge text="Верефицированный пользователь" size={7} clicked={false} />
                         )}
                       </span>
                     </span>
                     <div className="hidden sm:block">
-                      {isUser(profile) && profile?.badges.verified && (
+                      {profile?.badges.verified && (
                         <VerifedBadge text="Верефицированный пользователь" size={7} clicked={false} />
                       )}
                     </div>
                   </h1>
+
+                  <ModeratorPanel user={profile} />
                 </div>
                 <p
                   className="mt-2 text-xl text-primary/80 hover:text-primary hover:underline duration-300 transition-all"
@@ -169,7 +167,7 @@ export default function UserProfile({ params }: UsernameProps) {
           <hr className="bg-[#111111]" />
 
           {profile?.privated ? (
-            user?.username === profile.username ? (
+            user?.username === profile.username || account?.moderator ? (
               <>
                 <div className="flex flex-col items-center justify-center mx-6 my-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
                   <div className="flex items-center gap-2">
@@ -180,26 +178,31 @@ export default function UserProfile({ params }: UsernameProps) {
                     Ваш профиль является приватным. Только вы можете видеть его содержимое
                   </p>
                 </div>
-                <div className="flex flex-row items-center my-4 mx-6 text-muted-foreground">
-                  <Pin className="w-5 h-5 -rotate-45 mr-1" />
-                  {document?.icon && (
-                    <span className="inline-block w-6 h-6 m-1" style={{ lineHeight: 0 }}>
-                      <Twemoji>{document.icon}</Twemoji>
-                    </span>
-                  )}
-                  <a
-                    className="text-xl flex flex-row items-center gap-1.5 hover:underline hover:text-primary/70 transition-all duration-300"
-                    href={`/view/${document?._id}`}
-                  >
-                    <span className="font-bold">{document?.title}</span>
-                    {document?.verifed && (
-                      <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6} />
-                    )}
-                  </a>
-                </div>
-                <div className="border-2 mx-6 pt-6 rounded-lg">
-                  <Editor onChange={() => {}} initialContent={document?.content} editable={false} />
-                </div>
+                {profile.pined !== "" && (
+                  <>
+                    <div className="flex flex-row items-center my-4 mx-6 text-muted-foreground">
+                      <Pin className="w-5 h-5 -rotate-45 mr-1" />
+                      {document?.icon && (
+                        <span className="inline-block w-6 h-6 m-1" style={{ lineHeight: 0 }}>
+                          <Twemoji>{document.icon}</Twemoji>
+                        </span>
+                      )}
+                      <a
+                        className="text-xl flex flex-row items-center gap-1.5 hover:underline hover:text-primary/70 transition-all duration-300"
+                        href={`/view/${document?._id}`}
+                      >
+                        <span className="font-bold">{document?.title}</span>
+                        {document?.verifed && (
+                          <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6} />
+                        )}
+                      </a>
+                    </div>
+                  
+                    <div className="border-2 mx-6 pt-6 rounded-lg">
+                      <Editor onChange={() => {}} initialContent={document?.content} editable={false} />
+                    </div>
+                  </>
+                )}
                 <div className="mt-8 mx-6">
                   <h2 className="text-2xl font-bold mb-4">All Notes</h2>
                   {profile._id ? (

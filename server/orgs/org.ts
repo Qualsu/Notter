@@ -12,7 +12,7 @@ export async function createOrg(
   members: string[] | null = null,
   avatar: string | null = null,
   documents: number | null = null,
-  publicDocuments: number | null = null
+  publicDocuments: number | null = null,
 ): Promise<Org | null>{
   try {
     const response = await axios.post(`${API_URL}/orgs/add/${_id}`, {
@@ -63,7 +63,8 @@ export async function updateOrg(
   documents: number | null = null,
   publicDocuments: number | null = null,
   members: string[] | null = null,
-  watermark: boolean | null = null
+  watermark: boolean | null = null,
+  premium: number | null = null
 ): Promise<Org | null>{
   try {
     const response = await axios.put(`${API_URL}/orgs/update/${_id}`, {
@@ -76,7 +77,8 @@ export async function updateOrg(
       documents,
       members,
       publicDocuments,
-      watermark
+      watermark,
+      premium
     });
     return response.data;
   } catch (error) {
@@ -84,3 +86,20 @@ export async function updateOrg(
     return null;
   }
 };
+
+export async function updateOrgBadge(
+  _id: string,
+  badgeName: string,
+  status: boolean
+): Promise<{ message: string } | null> {
+  try {
+    const response = await axios.put(`${API_URL}/orgs/update_badge/${_id}`, {
+      badge_name: badgeName,
+      status
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user badge:", error);
+    return null;
+  }
+}

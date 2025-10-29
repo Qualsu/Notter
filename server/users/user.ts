@@ -12,6 +12,7 @@ export async function createUser(
   avatar: string | null = null,
   documents: number | null = null,
   publicDocuments: number | null = null,
+  mail: string | null = null
 ): Promise<User | null>{
   try {
     const response = await axios.post(`${API_URL}/users/add/${_id}`, {
@@ -21,7 +22,8 @@ export async function createUser(
       lastname,
       avatar,
       documents,
-      publicDocuments
+      publicDocuments,
+      mail
     });
     return response.data;
   } catch (error) {
@@ -60,7 +62,10 @@ export async function updateUser(
   pined: string | null = null,
   documents: number | null = null,
   publicDocuments: number | null = null,
-  watermark: boolean | null = null
+  watermark: boolean | null = null,
+  mail: string | null = null,
+  premium: number | null = null,
+  moderator: boolean | null = null
 ): Promise<User | null>{
   try {
     const response = await axios.put(`${API_URL}/users/update/${_id}`, {
@@ -72,7 +77,10 @@ export async function updateUser(
       pined,
       documents,
       publicDocuments,
-      watermark
+      watermark,
+      mail,
+      premium,
+      moderator
     });
     return response.data;
   } catch (error) {
@@ -80,3 +88,20 @@ export async function updateUser(
     return null;
   }
 };
+
+export async function updateUserBadge(
+  _id: string,
+  badgeName: string,
+  status: boolean
+): Promise<{ message: string } | null> {
+  try {
+    const response = await axios.put(`${API_URL}/users/update_badge/${_id}`, {
+      badge_name: badgeName,
+      status
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user badge:", error);
+    return null;
+  }
+}

@@ -1,9 +1,9 @@
 export type UserBadge = {
   verified: boolean;
-  notter: boolean;
   notes_verifed: boolean;
-  org_verifed: boolean;
   contributor: boolean;
+  notter: boolean;
+  org_verifed: boolean;
 }
 
 export type User = {
@@ -24,4 +24,5 @@ export type User = {
   watermark: boolean | null
   owner: string
   members: Array<string>
+  mail: string | null
 }

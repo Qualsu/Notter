@@ -11,6 +11,8 @@ export type Org = {
   username: string;
   owner: string;
   name: string | null;
+  firstname: string;
+  lastname: string | null;
   members: Array<string>
   avatar: string | null;
   badges: OrgBadge;
@@ -22,4 +24,5 @@ export type Org = {
   publicDocuments: number
   moderator: boolean
   watermark: boolean
+  mail: string | null
 }

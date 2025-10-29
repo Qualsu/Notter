@@ -20,6 +20,8 @@ import { LockKeyhole, Pin } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { User } from "../../../../../server/users/types";
+import { ModeratorPanel } from "../../_components/moderatorPanel";
+import { getById } from "../../../../../server/users/user";
 
 interface OrgProps {
   params: {
@@ -30,15 +32,18 @@ interface OrgProps {
 export default function OrgProfile({ params }: OrgProps) {
   const { isLoaded, user } = useUser();
   const [org, setOrg] = useState<Org | User | null>(null);
+  const [account, setAccount] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchOrg = async () => {
       const orgData = await getByUsername(params.orgname);
+      const accountData = await getById(user?.id as string);
       setOrg(orgData);
+      setAccount(accountData);
     };
 
     fetchOrg();
-  }, [params.orgname]);
+  }, [params.orgname, user?.id]);
 
   const document = useQuery(api.document.getById, {
     userId: org?._id,
@@ -101,10 +106,6 @@ export default function OrgProfile({ params }: OrgProps) {
     );
   }
 
-  const isUser = (profile: User | Org): profile is User => {
-    return (profile as User).firstname !== undefined;
-  };
-
   const canViewPrivateOrg = org?.privated ? org?.members?.includes(user?.id as string) || user?.username === org.username : true;
 
   return (
@@ -129,20 +130,10 @@ export default function OrgProfile({ params }: OrgProps) {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-3xl  flex items-center gap-2">
-                    {/* Conditional rendering based on profile type */}
-                    {isUser(org) ? (
-                      <span className="hidden sm:block font-bold whitespace-nowrap">
-                        {org?.firstname} {org?.lastname} {!org?.firstname && !org?.lastname ? org?.username : ""}
-                      </span>
-                    ) : (
-                      <span className="hidden sm:block font-bold whitespace-nowrap">{org?.name}</span>
-                    )}
-
+                    <span className="hidden sm:block font-bold whitespace-nowrap">{org?.name}</span>
                     <span className="block sm:hidden font-bold">
-                      {isUser(org) ? org?.firstname : org?.name}
                       <span className="flex flex-row items-center gap-2">
-                        {isUser(org) && org?.lastname}
-                        {!isUser(org) && org?.name}
+                        {org?.name}
                         {org?.badges.verified && (
                           <VerifedBadge text="Верефицированная команда" size={7} clicked={false} />
                         )}
@@ -154,6 +145,8 @@ export default function OrgProfile({ params }: OrgProps) {
                       )}
                     </div>
                   </h1>
+
+                  <ModeratorPanel user={org} />
                 </div>
                 <p
                   className="mt-2 text-xl text-primary/80 hover:text-primary hover:underline duration-300 transition-all"
@@ -172,7 +165,7 @@ export default function OrgProfile({ params }: OrgProps) {
           <hr className="bg-[#111111]" />
 
           {org?.privated ? (
-            canViewPrivateOrg ? (
+            canViewPrivateOrg || account?.moderator ? (
               <>
                 <div className="flex flex-col items-center justify-center mx-6 my-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
                   <div className="flex items-center gap-2">
@@ -183,26 +176,31 @@ export default function OrgProfile({ params }: OrgProps) {
                     Профиль организации является приватным. Только вы и участники могут видеть содержимое
                   </p>
                 </div>
-                <div className="flex flex-row items-center my-4 mx-6 text-muted-foreground">
-                  <Pin className="w-5 h-5 -rotate-45 mr-1" />
-                  {document?.icon && (
-                    <span className="inline-block w-6 h-6 m-1" style={{ lineHeight: 0 }}>
-                      <Twemoji>{document.icon}</Twemoji>
-                    </span>
-                  )}
-                  <a
-                    className="text-xl flex flex-row items-center gap-1.5 hover:underline hover:text-primary/70 transition-all duration-300"
-                    href={`/view/${document?._id}`}
-                  >
-                    <span className="font-bold">{document?.title}</span>
-                    {document?.verifed && (
-                      <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6} />
-                    )}
-                  </a>
-                </div>
-                <div className="border-2 mx-6 pt-6 rounded-lg">
-                  <Editor onChange={() => {}} initialContent={document?.content} editable={false} />
-                </div>
+                {org.pined !== "" && (
+                  <>
+                    <div className="flex flex-row items-center my-4 mx-6 text-muted-foreground">
+                      <Pin className="w-5 h-5 -rotate-45 mr-1" />
+                      {document?.icon && (
+                        <span className="inline-block w-6 h-6 m-1" style={{ lineHeight: 0 }}>
+                          <Twemoji>{document.icon}</Twemoji>
+                        </span>
+                      )}
+                      <a
+                        className="text-xl flex flex-row items-center gap-1.5 hover:underline hover:text-primary/70 transition-all duration-300"
+                        href={`/view/${document?._id}`}
+                      >
+                        <span className="font-bold">{document?.title}</span>
+                        {document?.verifed && (
+                          <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6} />
+                        )}
+                      </a>
+                    </div>
+                  
+                    <div className="border-2 mx-6 pt-6 rounded-lg">
+                      <Editor onChange={() => {}} initialContent={document?.content} editable={false} />
+                    </div>
+                  </>
+                )}
                 <div className="mt-8 mx-6">
                   <h2 className="text-2xl font-bold mb-4">All Notes</h2>
                   {org._id ? (
