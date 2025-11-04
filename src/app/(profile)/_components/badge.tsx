@@ -24,7 +24,7 @@ export function Badges({profile}: BadgesProps){
                 </div>
             )}
 
-            {profile?.badges.notes_verifed && (
+            {profile?.verifiedDocuments > 0 && (
                 <div className="relative group select-none">
                     <Image
                         src="/badge/NoteVerifed.png"
@@ -39,7 +39,7 @@ export function Badges({profile}: BadgesProps){
                 </div>
             )}
 
-            {profile?.badges.org_verifed && (
+            {profile?.verifiedOrgs > 0 && (
                 <div className="relative group select-none mx-0.5">
                     <Image
                         src="/badge/OrgVerifed.png"

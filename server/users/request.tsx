@@ -7,64 +7,81 @@ import { api } from "../../convex/_generated/api";
 export function useRequestUser() {
   const { user, isLoaded, isSignedIn } = useUser();
 
+  // ✅ хуки всегда вызываются
   const documentCount = useQuery(api.document.getDocumentCount, {
-    userId: user?.id as string
-  })
+    userId: user ? user.id : "",
+  });
+
   const documentPublicCount = useQuery(api.document.getPublicDocumentCount, {
-    userId: user?.id as string
-  })
+    userId: user ? user.id : "",
+  });
+
+  const documentVerifiedCount = useQuery(api.document.getVerifiedDocumentCount, {
+    userId: user ? user.id : "",
+  });
 
   useEffect(() => {
+    // ⚡ Просто выходим, если не авторизован
+    if (!isLoaded || !isSignedIn || !user) return;
+
     const createOrUpdateUser = async () => {
-      if (isLoaded && isSignedIn && user) {
-        const { id, firstName, lastName, username, imageUrl, createdAt, emailAddresses } = user;
+      const {
+        id,
+        firstName,
+        lastName,
+        username,
+        imageUrl,
+        createdAt,
+        emailAddresses,
+      } = user;
 
-        if (username === null) return;
+      if (!username) return;
 
-        try {
-          const createdUser = await createUser(
+      try {
+        const createdUser = await createUser(
+          id,
+          username,
+          createdAt,
+          firstName,
+          lastName,
+          imageUrl || null,
+          documentCount,
+          documentPublicCount,
+          documentVerifiedCount,
+          emailAddresses[0].emailAddress
+        );
+
+        console.log("Создан пользователь:", createdUser);
+
+        if (!createdUser) {
+          const updatedUser = await updateUser(
             id,
             username,
-            createdAt,
             firstName,
             lastName,
             imageUrl || null,
+            null,
+            null,
             documentCount,
             documentPublicCount,
+            documentVerifiedCount,
+            null,
             emailAddresses[0].emailAddress
           );
 
-          console.log("Создан пользователь:", createdUser);
+          console.log("Обновлен пользователь:", updatedUser);
 
-          if (!createdUser) {
-            const updatedUser = await updateUser(
-              id,
-              username,
-              firstName,
-              lastName,
-              imageUrl || null,
-              null,
-              null,
-              documentCount,
-              documentPublicCount,
-              null,
-              emailAddresses[0].emailAddress
-            );
-
-            console.log("Обновлен пользователь:", updatedUser);
-
-            if (!updatedUser) {
-              console.error("Не удалось создать или обновить пользователя.");
-            }
+          if (!updatedUser) {
+            console.error("Не удалось создать или обновить пользователя.");
           }
-        } catch (error) {
-          console.error("Произошла ошибка при создании или обновлении пользователя:", error);
         }
+      } catch (error) {
+        console.error("Ошибка при создании/обновлении пользователя:", error);
       }
     };
 
     createOrUpdateUser();
-  }, [isLoaded, isSignedIn, user]);
+  }, [isLoaded, isSignedIn, user, documentCount, documentPublicCount]);
 
   return null;
 }

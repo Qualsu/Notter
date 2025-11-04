@@ -22,6 +22,8 @@ export type Org = {
   premium: number;
   documents: number
   publicDocuments: number
+  verifiedDocuments: number
+  verifiedOrgs: number
   moderator: boolean
   watermark: boolean
   mail: string | null

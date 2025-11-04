@@ -1,5 +1,5 @@
 import { Id } from "../../../../convex/_generated/dataModel";
-import DocumentIdPage from "../document";
+import DocumentIdPage from "../_components/document"
 
 interface DocumentIdPageProps {
   params: {

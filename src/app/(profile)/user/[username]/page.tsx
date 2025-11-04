@@ -178,7 +178,7 @@ export default function UserProfile({ params }: UsernameProps) {
                     Ваш профиль является приватным. Только вы можете видеть его содержимое
                   </p>
                 </div>
-                {profile.pined !== "" && (
+                {profile?.pined != undefined && (
                   <>
                     <div className="flex flex-row items-center my-4 mx-6 text-muted-foreground">
                       <Pin className="w-5 h-5 -rotate-45 mr-1" />

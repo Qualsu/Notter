@@ -12,6 +12,7 @@ export async function createUser(
   avatar: string | null = null,
   documents: number | null = null,
   publicDocuments: number | null = null,
+  verifiedDocuments: number | null = null,
   mail: string | null = null
 ): Promise<User | null>{
   try {
@@ -23,6 +24,7 @@ export async function createUser(
       avatar,
       documents,
       publicDocuments,
+      verifiedDocuments,
       mail
     });
     return response.data;
@@ -62,6 +64,7 @@ export async function updateUser(
   pined: string | null = null,
   documents: number | null = null,
   publicDocuments: number | null = null,
+  verifiedDocuments: number | null = null,
   watermark: boolean | null = null,
   mail: string | null = null,
   premium: number | null = null,
@@ -77,6 +80,7 @@ export async function updateUser(
       pined,
       documents,
       publicDocuments,
+      verifiedDocuments,
       watermark,
       mail,
       premium,
@@ -102,6 +106,19 @@ export async function updateUserBadge(
     return response.data;
   } catch (error) {
     console.error("Error updating user badge:", error);
+    return null;
+  }
+}
+
+export async function changeVerifiedOrgs(
+  _id: string,
+  change: number
+): Promise<{ message: string } | null> {
+  try {
+    const response = await axios.put(`${API_URL}/users/change_verified_orgs/${_id}?change=${change}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error changing verified organizations:", error);
     return null;
   }
 }

@@ -253,7 +253,8 @@ export const getSearch = query({
 export const getById = query({
     args: {
       documentId: v.union(v.id("documents"), v.null()),
-      userId: v.optional(v.string())
+      userId: v.optional(v.string()),
+      alwaysView: v.optional(v.boolean())
     },
     handler: async (ctx, args) => {
       console.log("Fetching document with ID:", args.documentId)
@@ -277,8 +278,8 @@ export const getById = query({
         throw new Error("Not authenticated")
       }
     
-      if (document.userId !== args.userId) {
-        throw new Error("Not authorized")
+      if (document.userId !== args.userId && args.alwaysView === false) {
+        return null
       }
   
       return document
@@ -303,7 +304,10 @@ export const getDocumentCount = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
 
-    if (!identity) return
+    if (!identity || !args.userId){ 
+      console.log("args non")
+      return null
+    }
 
     const documentCount = await ctx.db
       .query("documents")
@@ -321,7 +325,10 @@ export const getPublicDocumentCount = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
 
-    if (!identity) return
+    if (!identity || !args.userId){ 
+      console.log("args non")
+      return null
+    }
 
     const publicDocuments = await ctx.db
       .query("documents")
@@ -333,6 +340,27 @@ export const getPublicDocumentCount = query({
   }
 })
 
+export const getVerifiedDocumentCount = query({
+  args: {
+    userId: v.string()
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+
+    if (!identity || !args.userId){ 
+      console.log("args non")
+      return null
+    }
+
+    const publicDocuments = await ctx.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("verifed"), true))
+      .collect()
+
+    return publicDocuments.length
+  }
+})
 
 export const update = mutation({
     args: {
@@ -346,7 +374,8 @@ export const update = mutation({
       userId: v.string(),
       lastEditor: v.optional(v.string()),
       isShort: v.optional(v.boolean()),
-      shortId: v.optional(v.string())
+      shortId: v.optional(v.string()),
+      verifed: v.optional(v.boolean())
     },
     handler: async (ctx, args) => {
       const identity = await ctx.auth.getUserIdentity()

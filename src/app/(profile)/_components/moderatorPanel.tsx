@@ -1,15 +1,15 @@
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "../../../../server/users/types";
 import { Org } from "../../../../server/orgs/types";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { updateUserBadge } from "../../../../server/users/user";
+import { changeVerifiedOrgs, getById, updateUserBadge } from "../../../../server/users/user";
 import { updateUser } from "../../../../server/users/user";
 import { updateOrgBadge } from "../../../../server/orgs/org";
 import { updateOrg } from "../../../../server/orgs/org";
-import { toast } from "react-hot-toast"; // Импортируем toast
-import { Switch } from "@/components/ui/switch"; // Предполагаем, что у вас есть компонент Switch
+import { toast } from "react-hot-toast";
+import { Switch } from "@/components/ui/switch";
 import { useUser } from "@clerk/clerk-react";
 
 interface UserProps {
@@ -27,8 +27,23 @@ export function ModeratorPanel({ user }: UserProps) {
   const [moderatorStatus, setModeratorStatus] = useState(user?.moderator ?? false);
   const { user: clerkUser } = useUser()
   const isOrg = user?._id.startsWith("org_");
+  const [clerkUserData, setClerkUserData] = useState<User | null>(null);
 
-  if (user?.moderator === false) {
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!clerkUser?.id) return;
+      try {
+        const data = await getById(clerkUser.id);
+        setClerkUserData(data);
+      } catch (error) {
+        console.error("Ошибка при получении данных:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [clerkUser?.id]); 
+
+  if (clerkUserData?.moderator !== true) {
     return null
   }
 
@@ -44,28 +59,29 @@ export function ModeratorPanel({ user }: UserProps) {
   }
 
   const handleBadgeToggle = async (badgeName: string) => {
-  if (!user) return;
+    if (!user) return;
 
-  const currentStatus = badgeName === "verified" ? user?.badges.verified : user?.badges.contributor;
+    const currentStatus = badgeName === "verified" ? user?.badges.verified : user?.badges.contributor;
     const newStatus = !currentStatus;
 
     try {
         const result = isOrg ? 
-            await updateOrgBadge(user._id, badgeName, newStatus) :
-            await updateUserBadge(user._id, badgeName, newStatus);
+          await updateOrgBadge(user._id, badgeName, newStatus) :
+          await updateUserBadge(user._id, badgeName, newStatus);
         if (result) {
-        toast.success(`Бейдж '${badgeName}' обновлен на ${newStatus ? "активен" : "неактивен"}`);
-        console.log(`Badge '${badgeName}' updated to ${newStatus}`);
+          toast.success(`Бейдж '${badgeName}' обновлен на ${newStatus ? "активен" : "неактивен"}`);
+          console.log(`Badge '${badgeName}' updated to ${newStatus}`);
 
-        // Обновляем локальные состояния для отрисовки нового статуса
-        if (badgeName === "verified") {
-            setVerifiedStatus(newStatus);
-        } else if (badgeName === "contributor") {
-            setContributorStatus(newStatus);
-        }
+          if (badgeName === "verified") {
+              setVerifiedStatus(newStatus);
+              if (isOrg)
+                await changeVerifiedOrgs(user.owner, newStatus ? 1 : -1)
+          } else if (badgeName === "contributor") {
+              setContributorStatus(newStatus);
+          }
         }
     } catch (error) {
-        toast.error("Произошла ошибка при обновлении бейджа.");
+        toast.error("Произошла ошибка при обновлении бейджа");
         console.error("Error updating badge:", error);
     }
   };
@@ -76,28 +92,27 @@ export function ModeratorPanel({ user }: UserProps) {
 
     const newPremium = subscriptionType === "Amber" ? 1 : subscriptionType === "Diamond" ? 2 : 0;
 
-    // Если текущая подписка совпадает с выбранной, то снимаем подписку
     if ((newPremium === 1 && amberSubscription) || (newPremium === 2 && diamondSubscription)) {
       const result = isOrg ? 
         await updateOrg(user._id, null, null, null, null, null, null, null, null, null, null, 0) :
-        await updateUser(user._id, null, null, null, null, null, null, null, null, null, null, 0);
+        await updateUser(user._id, null, null, null, null, null, null, null, null, null, null, null, 0);
       if (result) {
-        toast.success("Подписка снята.");
+        toast.success("Подписка снята");
         setAmberSubscription(false);
-        setDiamondSubscription(false); // Отключаем оба свитчера
+        setDiamondSubscription(false);
       }
     } else {
       const result = isOrg ? 
         await updateOrg(user._id, null, null, null, null, null, null, null, null, null, null, newPremium) :
-        await updateUser(user._id, null, null, null, null, null, null, null, null, null, null, newPremium);
+        await updateUser(user._id, null, null, null, null, null, null, null, null, null, null, null, newPremium);
       if (result) {
-        toast.success(`Подписка ${subscriptionType} активирована.`);
+        toast.success(`Подписка ${subscriptionType} активирована`);
         if (subscriptionType === "Amber") {
           setAmberSubscription(true);
-          setDiamondSubscription(false); // Выключаем Diamond, если включен Amber
+          setDiamondSubscription(false);
         } else {
           setDiamondSubscription(true);
-          setAmberSubscription(false); // Выключаем Amber, если включен Diamond
+          setAmberSubscription(false);
         }
       }
     }
@@ -109,7 +124,7 @@ export function ModeratorPanel({ user }: UserProps) {
 
     const result = isOrg ? 
         await updateOrg(user._id, null, null, null, null, null, null, null, null, null, newWatermark) : 
-        await updateUser(user._id, null, null, null, null, null, null, null, null, newWatermark);
+        await updateUser(user._id, null, null, null, null, null, null, null, null, null, newWatermark);
     if (result) {
       toast.success(`Watermark обновлен на ${newWatermark ? "включен" : "выключен"}`);
       setWatermark(newWatermark);
@@ -133,19 +148,17 @@ export function ModeratorPanel({ user }: UserProps) {
     if (!user || !user?.badges.notter || isOrg) return;
 
     const newModeratorStatus = !moderatorStatus;
-    const result = await updateUser(user._id, null, null, null, null, null, null, null, null, null, null, null, newModeratorStatus);
+    const result = await updateUser(user._id, null, null, null, null, null, null, null, null, null, null, null, null, newModeratorStatus);
     if (result) {
       toast.success(`${newModeratorStatus ? "Назначен модератором" : "Снят с поста модератора"}`);
-      setModeratorStatus(newModeratorStatus); // Обновляем статус модератора
+      setModeratorStatus(newModeratorStatus);
     }
   };
 
-  // Функция для открытия диалога
   const handleOpenDialog = () => {
     setDialogOpen(true);
   };
 
-  // Функция для закрытия диалога
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
@@ -171,6 +184,7 @@ export function ModeratorPanel({ user }: UserProps) {
             {!isOrg && <p>Mail: {user?.mail}</p>}
             <p>Documents: {user?.documents}/{documentLimit}</p>
             <p>Public Documents: {user?.publicDocuments}/{publicDocumentLimit}</p>
+            
             <hr className="my-3" />
 
             {/* Переключатели для watermark и privated */}
@@ -207,7 +221,7 @@ export function ModeratorPanel({ user }: UserProps) {
               />
             </div>
             <div className="flex items-center gap-3">
-              <p>Verified badge</p>
+              <p>Verified</p>
               <Switch
                 checked={verifiedStatus}
                 onCheckedChange={() => handleBadgeToggle("verified")}

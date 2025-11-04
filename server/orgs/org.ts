@@ -13,6 +13,7 @@ export async function createOrg(
   avatar: string | null = null,
   documents: number | null = null,
   publicDocuments: number | null = null,
+  verifiedDocuments: number | null = null,
 ): Promise<Org | null>{
   try {
     const response = await axios.post(`${API_URL}/orgs/add/${_id}`, {
@@ -23,7 +24,8 @@ export async function createOrg(
       name,
       avatar,
       documents,
-      publicDocuments
+      publicDocuments,
+      verifiedDocuments
     });
     return response.data;
   } catch (error) {
@@ -64,7 +66,8 @@ export async function updateOrg(
   publicDocuments: number | null = null,
   members: string[] | null = null,
   watermark: boolean | null = null,
-  premium: number | null = null
+  premium: number | null = null,
+  verifiedDocuments: number | null = null,
 ): Promise<Org | null>{
   try {
     const response = await axios.put(`${API_URL}/orgs/update/${_id}`, {
@@ -78,7 +81,8 @@ export async function updateOrg(
       members,
       publicDocuments,
       watermark,
-      premium
+      premium,
+      verifiedDocuments
     });
     return response.data;
   } catch (error) {
