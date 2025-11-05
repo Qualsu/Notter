@@ -375,7 +375,8 @@ export const update = mutation({
       lastEditor: v.optional(v.string()),
       isShort: v.optional(v.boolean()),
       shortId: v.optional(v.string()),
-      verifed: v.optional(v.boolean())
+      verifed: v.optional(v.boolean()),
+      isAcrhived: v.optional(v.boolean())
     },
     handler: async (ctx, args) => {
       const identity = await ctx.auth.getUserIdentity()

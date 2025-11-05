@@ -11,6 +11,7 @@ import { updateOrg } from "../../../../server/orgs/org";
 import { toast } from "react-hot-toast";
 import { Switch } from "@/components/ui/switch";
 import { useUser } from "@clerk/clerk-react";
+import { sendMail } from "../../../../server/mail/mail";
 
 interface UserProps {
   user: User | Org | null;
@@ -70,14 +71,33 @@ export function ModeratorPanel({ user }: UserProps) {
           await updateUserBadge(user._id, badgeName, newStatus);
         if (result) {
           toast.success(`Бейдж '${badgeName}' обновлен на ${newStatus ? "активен" : "неактивен"}`);
-          console.log(`Badge '${badgeName}' updated to ${newStatus}`);
-
+          
           if (badgeName === "verified") {
               setVerifiedStatus(newStatus);
               if (isOrg)
                 await changeVerifiedOrgs(user.owner, newStatus ? 1 : -1)
+              
+              const message = newStatus 
+                ? `${user.username}, Ваш аккаунт был верифицирован модератором.`
+                : `${user.username}, Ваш аккаунт был снят с верификации модератором. Вы можете обратиться в службу поддержки заполнив форму https://feedback.qual.su`;
+              
+              await sendMail({
+                to: user?.mail as string,
+                subject: "Изменение статуса верификации",
+                message: message
+              });
           } else if (badgeName === "contributor") {
               setContributorStatus(newStatus);
+              
+              const message = newStatus 
+                ? `${user.username}, Бейдж контрибьютора был выдан вашему аккаунту модератором.`
+                : `${user.username}, Бейдж контрибьютора был снят с вашего аккаунта модератором. Вы можете обратиться в службу поддержки заполнив форму https://feedback.qual.su`;
+              
+              await sendMail({
+                to: user?.mail as string,
+                subject: "Изменение статуса контрибьютора",
+                message: message
+              });
           }
         }
     } catch (error) {
@@ -85,7 +105,6 @@ export function ModeratorPanel({ user }: UserProps) {
         console.error("Error updating badge:", error);
     }
   };
-
 
   const handleSubscriptionToggle = async (subscriptionType: "Amber" | "Diamond") => {
     if (!user) return;
@@ -100,6 +119,12 @@ export function ModeratorPanel({ user }: UserProps) {
         toast.success("Подписка снята");
         setAmberSubscription(false);
         setDiamondSubscription(false);
+        
+        await sendMail({
+          to: user?.mail as string,
+          subject: "Изменение подписки",
+          message: `${user.username}, Подписка ${subscriptionType} была снята с вашего аккаунта модератором. Вы можете обратиться в службу поддержки заполнив форму https://feedback.qual.su`
+        });
       }
     } else {
       const result = isOrg ? 
@@ -114,6 +139,13 @@ export function ModeratorPanel({ user }: UserProps) {
           setDiamondSubscription(true);
           setAmberSubscription(false);
         }
+        
+        const subscriptionName = subscriptionType === "Amber" ? "Gem Amber" : "Diamond";
+        await sendMail({
+          to: user?.mail as string,
+          subject: "Изменение подписки",
+          message: `${user.username}, Подписка ${subscriptionName} была ${amberSubscription || diamondSubscription ? "изменена" : "выдана"} вашему аккаунту модератором.`
+        });
       }
     }
   };
@@ -184,10 +216,11 @@ export function ModeratorPanel({ user }: UserProps) {
             {!isOrg && <p>Mail: {user?.mail}</p>}
             <p>Documents: {user?.documents}/{documentLimit}</p>
             <p>Public Documents: {user?.publicDocuments}/{publicDocumentLimit}</p>
+            <p>Verified Documents: {user?.verifiedDocuments}</p>
+            {!isOrg && <p>Verified orgs: {user?.verifiedOrgs}</p>}
             
             <hr className="my-3" />
 
-            {/* Переключатели для watermark и privated */}
             <div className="flex items-center gap-3">
               <p>Watermark: </p>
               <Switch checked={watermark} onCheckedChange={handleWatermarkToggle} />
@@ -197,7 +230,6 @@ export function ModeratorPanel({ user }: UserProps) {
               <Switch checked={privated} onCheckedChange={handlePrivatedToggle} />
             </div>
 
-            {/* Переключение для модератора */}
             {user?.badges.notter && clerkUser?.id !== user?._id && (
               <div className="flex items-center gap-3">
                 <p>Moderator</p>
@@ -205,7 +237,6 @@ export function ModeratorPanel({ user }: UserProps) {
               </div>
             )}
 
-            {/* Переключатели для подписки Amber и Diamond */}
             <div className="flex items-center gap-3">
               <p>Amber Subscription: </p>
               <Switch

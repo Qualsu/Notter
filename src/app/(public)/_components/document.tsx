@@ -129,7 +129,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
         <title>{document.title}</title>
         <Cover url={document.coverImage} preview={user?.moderator ? false : true} />
         <div className="mx-auto md:max-w-3xl lg:max-w-4xl flex-grow w-full">
-          <ModeratorPanel _id={document._id} userId={document.userId} shortId={document.shortId} isShort={document.isShort} isPublished={document.isPublished} creatorName={document.creatorName} lastEditor={document.lastEditor} verifed={document.verifed} content={document.content} title={document.title}/>
+          <ModeratorPanel _id={document._id} userId={document.userId} shortId={document.shortId} isShort={document.isShort} isPublished={document.isPublished} creatorName={document.creatorName} lastEditor={document.lastEditor} verifed={document.verifed} content={document.content} title={document.title} isAcrhived={document.isAcrhived}/>
           <Toolbar initialData={document} preview={user?.moderator ? false : true} />
           <Editor onChange={() => {}} initialContent={document.content} editable={false} />
         </div>

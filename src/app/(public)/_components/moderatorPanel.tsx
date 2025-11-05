@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { User } from "../../../../server/users/types";
-import { getById } from "../../../../server/users/user";
+import { getById as getUserById } from "../../../../server/users/user";
+import { getById as getOrgById } from "../../../../server/orgs/org";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Check, FileJson, Menu, Trash, X } from "lucide-react";
@@ -13,6 +14,7 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { ConfirmModal } from "@/components/modal/confirm-modal";
+import { sendMail } from "../../../../server/mail/mail";
 
 interface DocumentProps {
   _id: Id<"documents">;
@@ -21,6 +23,7 @@ interface DocumentProps {
   shortId?: string;
   isShort?: boolean;
   isPublished: boolean;
+  isAcrhived?: boolean;
   creatorName?: string;
   lastEditor?: string;
   verifed?: boolean;
@@ -34,6 +37,7 @@ export function ModeratorPanel({
   shortId,
   isShort,
   isPublished,
+  isAcrhived,
   creatorName,
   lastEditor,
   verifed,
@@ -42,6 +46,7 @@ export function ModeratorPanel({
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { user: clerkUser } = useUser();
   const [clerkUserData, setClerkUserData] = useState<User | null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
   const remove = useMutation(api.document.remove);
   const update = useMutation(api.document.update);
   const router = useRouter();
@@ -50,24 +55,54 @@ export function ModeratorPanel({
   const [localShortId, setLocalShortId] = useState(shortId || "");
   const [localIsShort, setLocalIsShort] = useState(!!isShort);
   const [localIsPublished, setLocalIsPublished] = useState(isPublished);
+  const [localIsArchived, setLocalIsArchived] = useState(!!isAcrhived);
   const [localVerified, setLocalVerified] = useState(!!verifed);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (!clerkUser?.id) return;
       try {
-        const data = await getById(clerkUser.id);
+        const data = await getUserById(clerkUser.id);
         setClerkUserData(data);
+
+        const isOrg = userId.startsWith("org_")
+        const owner = isOrg ? await getOrgById(userId) : null
+        const userdata = isOrg ? 
+          await getUserById(owner?.owner as string) : 
+          await getUserById(userId);
+        setUserData(userdata);
       } catch (error) {
         console.error("Ошибка при получении данных:", error);
       }
     };
     fetchUserData();
-  }, [clerkUser?.id]);
+  }, [clerkUser?.id, userId]);
 
   if (clerkUserData?.moderator !== true) return null;
 
-  const handleUpdate = async (field: string, value: any) => {
+  const sendNotification = async (action: string, success: boolean, details?: string) => {
+    if (!userData?.mail) return;
+    
+    try {
+      const subject = success 
+        ? `Изменение документа "${title}"` 
+        : `Проблема с изменением документа "${title}"`;
+      
+      const message = success
+        ? `Модератор изменил настройки вашего документа "${title}": ${action}.${details ? ` Детали: ${details}` : ''}`
+        : `При попытке изменения документа "${title}" произошла ошибка: ${action}.${details ? ` Детали: ${details}` : ''} Если проблема повторяется, обратитесь в поддержку.`;
+
+      await sendMail({
+        to: userData.mail,
+        subject,
+        message
+      });
+    } catch (error) {
+      console.error("Ошибка при отправке уведомления:", error);
+    }
+  };
+
+  const handleUpdate = async (field: string, value: any, actionDescription: string) => {
     try {
       await update({
         id: _id,
@@ -75,9 +110,12 @@ export function ModeratorPanel({
         [field]: value,
       });
       toast.success("Обновлено успешно");
+      await sendNotification(actionDescription, true);
     } catch (err: any) {
-      toast.error(err.message || "Ошибка при обновлении");
+      const errorMessage = err.message || "Ошибка при обновлении";
+      toast.error(errorMessage);
       console.error(err);
+      await sendNotification(actionDescription, false, errorMessage);
     }
   };
 
@@ -88,24 +126,37 @@ export function ModeratorPanel({
     
     const regex = /^[a-z0-9-]{4,30}$/;
     if (!regex.test(localShortId)) {
-      toast.error("Short ID должен быть 4–30 символов, только a-z, 0-9 и -");
-      setLocalShortId(shortId || ""); // вернуть старое значение
+      const errorMessage = "Short ID должен быть 4–30 символов, только a-z, 0-9 и -";
+      toast.error(errorMessage);
+      setLocalShortId(shortId || "");
+      await sendNotification("изменение Short ID", false, errorMessage);
       return;
     }
 
-    await handleUpdate("shortId", localShortId);
+    const actionDescription = `Short ID изменен с "${shortId || 'не установлен'}" на "${localShortId}"`;
+    await handleUpdate("shortId", localShortId, actionDescription);
   };
 
   const handleSwitchChange = async (field: string, value: boolean) => {
+    const fieldNames: { [key: string]: string } = {
+      "isShort": "короткая ссылка",
+      "isPublished": "публикация",
+      "isAcrhived": "архивация",
+      "verifed": "верификация"
+    };
+
+    const actionDescription = `${fieldNames[field]} ${value ? "включена" : "выключена"}`;
+    
     // мгновенно обновляем UI
     if (field === "isShort") setLocalIsShort(value);
     if (field === "isPublished") setLocalIsPublished(value);
+    if (field === "isAcrhived") setLocalIsArchived(value);
     if (field === "verifed") setLocalVerified(value);
 
-    await handleUpdate(field, value);
+    await handleUpdate(field, value, actionDescription);
   };
 
-  const onRemove = (documentId: Id<"documents">) => {
+  const onRemove = async (documentId: Id<"documents">) => {
     const promise = remove({
       id: documentId,
       userId,
@@ -117,20 +168,38 @@ export function ModeratorPanel({
       error: "Не удалось удалить",
     });
 
-    router.push("/dashboard");
+    try {
+      await promise;
+      await sendNotification("документ удален", true);
+      router.push("/dashboard");
+    } catch (error: any) {
+      const errorMessage = error.message || "Ошибка при удалении";
+      await sendNotification("удаление документа", false, errorMessage);
+    }
   };
 
   const downloadJson = () => {
     if (content && typeof window !== "undefined") {
-      const parsedJson = JSON.parse(content);
-      const jsonContent = JSON.stringify(parsedJson, null, 2);
-      const blob = new Blob([jsonContent], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${title}.json`;
-      link.click();
-      URL.revokeObjectURL(url);
+      try {
+        const parsedJson = JSON.parse(content);
+        const jsonContent = JSON.stringify(parsedJson, null, 2);
+        const blob = new Blob([jsonContent], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${title}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        // Уведомление о скачивании JSON
+        if (userData?.mail) {
+          sendNotification("скачан JSON файл документа", true)
+            .catch(err => console.error("Ошибка отправки уведомления о скачивании:", err));
+        }
+      } catch (error) {
+        console.error("Ошибка при создании JSON файла:", error);
+        toast.error("Ошибка при создании JSON файла");
+      }
     }
   };
 
@@ -153,6 +222,9 @@ export function ModeratorPanel({
           </p>
           <p className="flex flex-row items-center gap-1">
             Is published: {isPublished ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+          </p>
+          <p className="flex flex-row items-center gap-1">
+            Is archived: {isAcrhived ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
           </p>
           <p>Creator: {creatorName}</p>
           <p>Last editor: {lastEditor}</p>
@@ -184,6 +256,14 @@ export function ModeratorPanel({
             <Switch
               checked={localIsPublished}
               onCheckedChange={(value) => handleSwitchChange("isPublished", value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-3">
+            <p>IsArchived:</p>
+            <Switch
+              checked={localIsArchived}
+              onCheckedChange={(value) => handleSwitchChange("isAcrhived", value)}
             />
           </div>
 
