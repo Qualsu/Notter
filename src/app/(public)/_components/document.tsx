@@ -128,10 +128,10 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
       <div className="flex flex-col min-h-screen">
         <title>{document.title}</title>
         <Cover url={document.coverImage} preview={user?.moderator ? false : true} />
-        <div className="mx-auto md:max-w-3xl lg:max-w-4xl flex-grow w-full">
+        <div className="mx-auto md:max-w-3xl lg:max-w-4xl flex-grow w-full mt-6">
           <ModeratorPanel _id={document._id} userId={document.userId} shortId={document.shortId} isShort={document.isShort} isPublished={document.isPublished} creatorName={document.creatorName} lastEditor={document.lastEditor} verifed={document.verifed} content={document.content} title={document.title} isAcrhived={document.isAcrhived}/>
           <Toolbar initialData={document} preview={user?.moderator ? false : true} />
-          <Editor onChange={() => {}} initialContent={document.content} editable={false} />
+          <Editor onChange={() => {}} initialContent={document.content} editable={false}/>
         </div>
         <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean}/>
       </div>
