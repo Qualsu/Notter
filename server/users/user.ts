@@ -29,7 +29,6 @@ export async function createUser(
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating user:", error);
     return null;
   }
 };
@@ -39,7 +38,6 @@ export async function getByUsername(username: string): Promise<User | null>{
     const response = await axios.get(`${API_URL}/users/by_username/${username}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching user by username:", error);
     return null;
   }
 };
@@ -49,7 +47,6 @@ export async function getById(_id: string): Promise<User | null>{
     const response = await axios.get(`${API_URL}/users/by_id/${_id}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching user by id:", error);
     return null;
   }
 };
@@ -88,7 +85,6 @@ export async function updateUser(
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating user:", error);
     return null;
   }
 };
@@ -105,7 +101,6 @@ export async function updateUserBadge(
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating user badge:", error);
     return null;
   }
 }
@@ -118,7 +113,6 @@ export async function changeVerifiedOrgs(
     const response = await axios.put(`${API_URL}/users/change_verified_orgs/${_id}?change=${change}`);
     return response.data;
   } catch (error) {
-    console.error("Error changing verified organizations:", error);
     return null;
   }
 }

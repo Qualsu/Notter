@@ -29,7 +29,6 @@ export async function createOrg(
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating user:", error);
     return null;
   }
 };
@@ -39,7 +38,6 @@ export async function getByUsername(username: string): Promise<Org | null>{
     const response = await axios.get(`${API_URL}/orgs/by_username/${username}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching user by username:", error);
     return null;
   }
 };
@@ -49,7 +47,6 @@ export async function getById(_id: string): Promise<Org | null>{
     const response = await axios.get(`${API_URL}/orgs/by_id/${_id}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching user by id:", error);
     return null;
   }
 };
@@ -86,7 +83,6 @@ export async function updateOrg(
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating user:", error);
     return null;
   }
 };
@@ -103,7 +99,6 @@ export async function updateOrgBadge(
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating user badge:", error);
     return null;
   }
 }

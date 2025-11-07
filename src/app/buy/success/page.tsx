@@ -15,8 +15,6 @@ export default function SuccessBuy() {
     const merchantOrderId = searchParams.get('MERCHANT_ORDER_ID');
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-    console.log(merchantOrderId)
-
     const handleSuccess = async () => {
         if (merchantOrderId === null) {
             return

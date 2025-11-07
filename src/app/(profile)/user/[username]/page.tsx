@@ -6,7 +6,7 @@ import { useQuery } from "convex/react";
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Twemoji from 'react-twemoji';
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton"
 import { Navbar } from "@/app/(landing)/_components/navbar";
 import toast from "react-hot-toast";
 import Error404 from "@/app/errorPage";
@@ -37,7 +37,6 @@ export default function UserProfile({ params }: UsernameProps) {
     const fetchProfile = async () => {
       const profileData = await getByUsername(params.username);
       const accountData = await getById(user?.id as string);
-      console.log(accountData)
       setProfile(profileData);
       setAccount(accountData)
     };

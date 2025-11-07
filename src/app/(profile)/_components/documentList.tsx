@@ -58,7 +58,6 @@ export function DocumentList({
         updatedUser = isOrg ? 
           await updateOrg(user._id, null, null, null, null, null, "") : 
           await updateUser(user._id, null, null, null, null, null, "");
-        console.log(updatedUser)
         if (updatedUser) {
           toast.success("Note unpinned successfully!");
           setProfile((prevProfile) => {

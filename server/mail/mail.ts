@@ -16,7 +16,6 @@ export async function sendMail({
     });
     return response.data;
   } catch (error) {
-    console.error("Error sending email:", error);
     return null;
   }
 };

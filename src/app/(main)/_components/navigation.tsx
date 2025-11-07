@@ -110,7 +110,6 @@ export function Navigation() {
                 return documentId
             })
             .catch((error) => {
-                console.error(error)
                 toast.error("Не удалось создать заметку")
             })
 

@@ -2,7 +2,6 @@ import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
 import { Doc, Id } from "./_generated/dataModel"
 import { generateRandomId } from "./genId"
-import { limitCreateDocument } from "./rateLimits"
 
 export const archive = mutation({
     args: {
@@ -257,7 +256,6 @@ export const getById = query({
       alwaysView: v.optional(v.boolean())
     },
     handler: async (ctx, args) => {
-      console.log("Fetching document with ID:", args.documentId)
       const identity = await ctx.auth.getUserIdentity()
 
       if (args.documentId === null) {
@@ -305,7 +303,6 @@ export const getDocumentCount = query({
     const identity = await ctx.auth.getUserIdentity()
 
     if (!identity || !args.userId){ 
-      console.log("args non")
       return null
     }
 
@@ -326,7 +323,6 @@ export const getPublicDocumentCount = query({
     const identity = await ctx.auth.getUserIdentity()
 
     if (!identity || !args.userId){ 
-      console.log("args non")
       return null
     }
 
@@ -348,7 +344,6 @@ export const getVerifiedDocumentCount = query({
     const identity = await ctx.auth.getUserIdentity()
 
     if (!identity || !args.userId){ 
-      console.log("args non")
       return null
     }
 

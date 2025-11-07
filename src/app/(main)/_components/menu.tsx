@@ -111,7 +111,6 @@ export function Menu({ documentId }: MenuProps) {
       reader.onload = () => {
         if (reader.result) {
           const content = reader.result as string;
-          console.log("Содержимое файла:", content);
           const promise = update({
             id: documentId,
             userId: orgId,

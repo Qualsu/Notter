@@ -7,7 +7,6 @@ import { api } from "../../convex/_generated/api";
 export function useRequestUser() {
   const { user, isLoaded, isSignedIn } = useUser();
 
-  // ✅ хуки всегда вызываются
   const documentCount = useQuery(api.document.getDocumentCount, {
     userId: user ? user.id : "",
   });
@@ -21,7 +20,6 @@ export function useRequestUser() {
   });
 
   useEffect(() => {
-    // ⚡ Просто выходим, если не авторизован
     if (!isLoaded || !isSignedIn || !user) return;
 
     const createOrUpdateUser = async () => {
@@ -37,7 +35,6 @@ export function useRequestUser() {
 
       if (!username) return;
 
-      try {
         const createdUser = await createUser(
           id,
           username,
@@ -50,9 +47,6 @@ export function useRequestUser() {
           documentVerifiedCount,
           emailAddresses[0].emailAddress
         );
-
-        console.log("Создан пользователь:", createdUser);
-
         if (!createdUser) {
           const updatedUser = await updateUser(
             id,
@@ -68,16 +62,7 @@ export function useRequestUser() {
             null,
             emailAddresses[0].emailAddress
           );
-
-          console.log("Обновлен пользователь:", updatedUser);
-
-          if (!updatedUser) {
-            console.error("Не удалось создать или обновить пользователя.");
-          }
         }
-      } catch (error) {
-        console.error("Ошибка при создании/обновлении пользователя:", error);
-      }
     };
 
     createOrUpdateUser();

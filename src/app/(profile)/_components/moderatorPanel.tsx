@@ -37,7 +37,7 @@ export function ModeratorPanel({ user }: UserProps) {
         const data = await getById(clerkUser.id);
         setClerkUserData(data);
       } catch (error) {
-        console.error("Ошибка при получении данных:", error);
+
       }
     };
 
@@ -102,7 +102,6 @@ export function ModeratorPanel({ user }: UserProps) {
         }
     } catch (error) {
         toast.error("Произошла ошибка при обновлении бейджа");
-        console.error("Error updating badge:", error);
     }
   };
 

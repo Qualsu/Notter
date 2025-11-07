@@ -26,57 +26,49 @@ export function useRequestOrg() {
       const { id, name, createdAt, imageUrl, slug } = organization;
       let adminId = null;
       const membersList: string[] = [];
+      const memberships = await organization.getMemberships();
 
-      try {
-        const memberships = await organization.getMemberships();
-
-        memberships.data.forEach((member) => {
-          if (member.role === "org:admin") {
-            adminId = member.publicUserData.userId;
-          }
-          membersList.push(member.publicUserData.userId as string);
-        });
-
-        if (id === undefined) return null;
-
-        const existingOrg = await getById(id);
-        if (!existingOrg) {
-          const createdOrg = await createOrg(
-            id,
-            slug,
-            adminId,
-            createdAt,
-            name,
-            membersList,
-            imageUrl || null,
-            documentCount,
-            documentPublicCount,
-            documentVerifiedCount
-          );
-
-          console.log("Создана организация:", createdOrg);
-        } else {
-          const updatedOrg = await updateOrg(
-            id,
-            slug,
-            adminId,
-            name,
-            imageUrl || null,
-            null,
-            null,
-            documentCount,
-            documentPublicCount,
-            membersList,
-            null,
-            null,
-            documentVerifiedCount
-          );
-
-          console.log("Обновлена организация:", updatedOrg);
+      memberships.data.forEach((member) => {
+        if (member.role === "org:admin") {
+          adminId = member.publicUserData.userId;
         }
-      } catch (error) {
-        console.error("Произошла ошибка при создании или обновлении организации:", error);
-      }
+        membersList.push(member.publicUserData.userId as string);
+      });
+
+      if (id === undefined) return null;
+
+      const existingOrg = await getById(id);
+      if (!existingOrg) {
+        const createdOrg = await createOrg(
+          id,
+          slug,
+          adminId,
+          createdAt,
+          name,
+          membersList,
+          imageUrl || null,
+          documentCount,
+          documentPublicCount,
+          documentVerifiedCount
+        );
+
+      } else {
+        const updatedOrg = await updateOrg(
+          id,
+          slug,
+          adminId,
+          name,
+          imageUrl || null,
+          null,
+          null,
+          documentCount,
+          documentPublicCount,
+          membersList,
+          null,
+          null,
+          documentVerifiedCount
+        );
+        }
     };
 
     createOrUpdateOrg();

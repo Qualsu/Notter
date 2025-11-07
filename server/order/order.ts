@@ -19,7 +19,6 @@ export async function createOrder(
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating order:", error);
     return null;
   }
 };
@@ -31,7 +30,6 @@ export async function success(
     const response = await axios.put(`${API_URL}/order/success/${_id}`);
     return response.data;
   } catch (error) {
-    console.error("Error successing order:", error);
     return null;
   }
 };

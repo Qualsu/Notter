@@ -51,7 +51,6 @@ export function ModeratorPanel({
   const update = useMutation(api.document.update);
   const router = useRouter();
 
-  // локальные состояния для управления UI
   const [localShortId, setLocalShortId] = useState(shortId || "");
   const [localIsShort, setLocalIsShort] = useState(!!isShort);
   const [localIsPublished, setLocalIsPublished] = useState(isPublished);
@@ -72,7 +71,7 @@ export function ModeratorPanel({
           await getUserById(userId);
         setUserData(userdata);
       } catch (error) {
-        console.error("Ошибка при получении данных:", error);
+
       }
     };
     fetchUserData();
@@ -80,17 +79,41 @@ export function ModeratorPanel({
 
   if (clerkUserData?.moderator !== true) return null;
 
-  const sendNotification = async (action: string, success: boolean, details?: string) => {
-    if (!userData?.mail) return;
-    
+  const sendNotification = async (action: string, success: boolean, details: string) => {
+    if (!userData?.mail || !success) return;
+
     try {
-      const subject = success 
-        ? `Изменение документа "${title}"` 
-        : `Проблема с изменением документа "${title}"`;
-      
-      const message = success
-        ? `Модератор изменил настройки вашего документа "${title}": ${action}.${details ? ` Детали: ${details}` : ''}`
-        : `При попытке изменения документа "${title}" произошла ошибка: ${action}.${details ? ` Детали: ${details}` : ''} Если проблема повторяется, обратитесь в поддержку.`;
+      let subject = "";
+      let message = "";
+
+      switch (action) {
+        case "публикация":
+          subject = `Публикация вашей заметки "${title}" была обновлена`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          break;
+        case "короткая ссылка":
+          subject = `Ссылка на вашу заметку "${title}" была обновлена`;
+          message = `${userData.username}!\n\nShort ID вашей заметки "${title}" был ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          break;
+        case "архивация":
+          subject = `Архивация вашей заметки "${title}" была обновлена`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          break;
+        case "верификация":
+          subject = `Верификация вашей заметки "${title}" была обновлена`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          break;
+        case "удаление":
+          subject = `Удаление вашей заметки "${title}"`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была удалена.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          break;
+        default:
+          subject = `Изменение вашей заметки "${title}"`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была обновлена. Детали: ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          break;
+      }
+
+      message += `\nПо всем вопросам обращайтесь на https://feedback.qual.su`;
 
       await sendMail({
         to: userData.mail,
@@ -98,11 +121,33 @@ export function ModeratorPanel({
         message
       });
     } catch (error) {
-      console.error("Ошибка при отправке уведомления:", error);
+
     }
   };
 
   const handleUpdate = async (field: string, value: any, actionDescription: string) => {
+    let details = "";
+
+    switch (field) {
+      case "isShort":
+        details = `Короткая ссылка была ${value ? "включена" : "выключена"}`;
+        break;
+      case "isPublished":
+        details = `Публикация была ${value ? "опубликована" : "снята с публикации"}`;
+        break;
+      case "isAcrhived":
+        details = `Заметка была ${value ? "архивирована" : "восстановлена из архива"}`;
+        break;
+      case "verifed":
+        details = `Верификация была ${value ? "подтверждена" : "отменена"}`;
+        break;
+      case "shortId":
+        details = `Short ID был изменен на "${value}"`;
+        break;
+      default:
+        details = `Изменено поле "${field}" на ${value}`;
+    }
+
     try {
       await update({
         id: _id,
@@ -110,11 +155,10 @@ export function ModeratorPanel({
         [field]: value,
       });
       toast.success("Обновлено успешно");
-      await sendNotification(actionDescription, true);
+      await sendNotification(actionDescription, true, details);
     } catch (err: any) {
       const errorMessage = err.message || "Ошибка при обновлении";
       toast.error(errorMessage);
-      console.error(err);
       await sendNotification(actionDescription, false, errorMessage);
     }
   };
@@ -146,8 +190,7 @@ export function ModeratorPanel({
     };
 
     const actionDescription = `${fieldNames[field]} ${value ? "включена" : "выключена"}`;
-    
-    // мгновенно обновляем UI
+
     if (field === "isShort") setLocalIsShort(value);
     if (field === "isPublished") setLocalIsPublished(value);
     if (field === "isAcrhived") setLocalIsArchived(value);
@@ -170,7 +213,7 @@ export function ModeratorPanel({
 
     try {
       await promise;
-      await sendNotification("документ удален", true);
+      await sendNotification("документ удален", true, "документ удален");
       router.push("/dashboard");
     } catch (error: any) {
       const errorMessage = error.message || "Ошибка при удалении";
@@ -190,14 +233,7 @@ export function ModeratorPanel({
         link.download = `${title}.json`;
         link.click();
         URL.revokeObjectURL(url);
-        
-        // Уведомление о скачивании JSON
-        if (userData?.mail) {
-          sendNotification("скачан JSON файл документа", true)
-            .catch(err => console.error("Ошибка отправки уведомления о скачивании:", err));
-        }
       } catch (error) {
-        console.error("Ошибка при создании JSON файла:", error);
         toast.error("Ошибка при создании JSON файла");
       }
     }
@@ -231,7 +267,6 @@ export function ModeratorPanel({
 
           <hr className="my-3" />
 
-          {/* Short ID */}
           <div className="flex items-center gap-3">
             <p className="whitespace-nowrap">Short ID:</p>
             <Input
@@ -242,7 +277,6 @@ export function ModeratorPanel({
             />
           </div>
 
-          {/* Switches */}
           <div className="flex items-center gap-3">
             <p>IsShort:</p>
             <Switch
@@ -275,7 +309,6 @@ export function ModeratorPanel({
             />
           </div>
 
-          {/* Удаление */}
           <div className="flex flex-row items-center gap-2">
             <ConfirmModal onConfirm={() => onRemove(_id)}>
                 <Button variant={"outline"} className="mt-4">
