@@ -60,7 +60,7 @@ export function SettingsModal() {
       if (isOrg) {
         await updateOrg(id, null, null, null, null, null, null, null, null, null, value)
       } else {
-        await updateUser(id, null, null, null, null, null, null, null, null, value)
+        await updateUser(id, null, null, null, null, null, null, null, null, null, value)
       }
     }
   }
