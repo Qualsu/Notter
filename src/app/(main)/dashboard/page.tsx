@@ -15,12 +15,14 @@ export default function Dashboard() {
     const router = useRouter()
     const { user } = useUser()
     const { organization } = useOrganization()
-    const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
+    const isOrg = organization?.id !== undefined
+    const orgId = isOrg ? organization?.id as string : user?.id as string
     
     const onCreate = () => {
         const promise = create({ 
             title: "Новая заметка",
             userId: orgId,
+            creatorName: isOrg ? organization?.slug as string : user?.username as string,
             lastEditor: user?.username as string
         })
             .then((documentId) => {
