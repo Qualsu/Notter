@@ -35,7 +35,7 @@ function Footer({ name, team, logo }: UserInterface){
         <footer className="mt-auto w-full">
             <Separator />
             <p className="text-center my-3 text-primary/30">
-                Заметка создана {team ? 'командой' : ''} <a href={`/${team ? 'org' : 'profile'}/${name}`} className="hover:underline font-bold">{name} </a> 
+                Заметка создана {team ? 'командой' : ''} <a href={`/${team ? 'org' : 'user'}/${name}`} className="hover:underline font-bold">{name} </a> 
                 {logo && (
                   <>
                     <span>в</span>
