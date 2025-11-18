@@ -46,14 +46,14 @@ export function Premium() {
         <PremiumCard
           title="Free"
           price={freePrice}
-          color="gray"
+          className="border-gray-300"
           features={[`До ${limits.free.notes} заметок`, `До ${limits.free.publicNotes} публичных заметок`]}
           btn={false}
         />
         <PremiumCard
           title="Amber"
           price={amberPrice}
-          color="yellow"
+          className="border-yellow-300"
           icon="/badge/Amber.png"
           features={[
             "Сокращенные ссылки для публичных заметок",
@@ -65,7 +65,7 @@ export function Premium() {
         <PremiumCard
           title="Diamond"
           price={diamondPrice}
-          color="cyan"
+          className="border-cyan-300"
           icon="/badge/Diamond.png"
           features={[
             "Все преимущества Amber",

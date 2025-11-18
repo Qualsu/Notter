@@ -4,7 +4,6 @@ import { OrganizationSwitcher, useOrganization, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createOrder } from "../../../../server/order/order";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useConvexAuth } from "convex/react";
@@ -12,6 +11,7 @@ import { getById as getUser } from "../../../../server/orgs/org";
 import { getById as getOrg } from "../../../../server/users/user";
 import { User } from "../../../../server/users/types";
 import { Org } from "../../../../server/orgs/types";
+import { useRouter } from "next/navigation";
 
 type PriceCalculation = {
     price: number;
@@ -19,6 +19,7 @@ type PriceCalculation = {
 };
 
 export default function BuyPremium() {
+    const router = useRouter();
     const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
     const { organization } = useOrganization();
     const { user } = useUser();
@@ -60,6 +61,10 @@ export default function BuyPremium() {
     };
 
     useEffect(() => {
+        if (!isAuthenticated) {
+            router.push("/auth/sign-in");
+        }
+        
         const fetchProfile = async () => {
             if (id) {
                 if (isOrg) {
@@ -73,7 +78,7 @@ export default function BuyPremium() {
         };
 
         fetchProfile();
-    }, [id, isOrg]);
+    }, [id, isOrg, isAuthenticated, router]);
 
     const handlePayment = async () => {
         if (!selectedPlan) {
@@ -93,9 +98,6 @@ export default function BuyPremium() {
             window.location.href = orderResponse;
         } else {
             toast.error("Произошла ошибка при создании заказа");
-            if (!isAuthenticated) {
-                return redirect("/auth/sign-in");
-            }
         }
         setLoading(false);
     };
