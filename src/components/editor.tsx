@@ -4,9 +4,13 @@ import { BlockNoteEditor, BlockNoteSchema, defaultBlockSpecs, PartialBlock } fro
 import { useCreateBlockNote } from "@blocknote/react" 
 import { BlockNoteView } from "@blocknote/mantine"
 import { useTheme } from "next-themes" 
-import { useEdgeStore } from "@/lib/edgestore" 
 import "@blocknote/core/style.css" 
 import "@blocknote/mantine/style.css"
+import { useOrganization, useUser } from "@clerk/nextjs"
+import { getById as getUserById } from "../../server/users/user"
+import { getById as getOrgById } from "../../server/orgs/org"
+import toast from "react-hot-toast"
+import { uploadFile as uploadFileOnServer } from "../../server/files/file"
 
 interface EditorProps {
   onChange: (value: string) => void 
@@ -16,13 +20,30 @@ interface EditorProps {
 
 export default function Editor({ onChange, initialContent, editable }: EditorProps){
   const { resolvedTheme } = useTheme()
-  const { edgestore } = useEdgeStore()
+  const { user } = useUser()
+  const { organization } = useOrganization()
+  const isOrg = organization?.id !== undefined
+  const orgId = isOrg ? organization?.id as string : user?.id as string
 
   const handleUpload = async (file: File) => {
-    const res = await edgestore.publicFiles.upload({file}) 
+    const userdata = isOrg
+      ? await getOrgById(orgId)
+      : await getUserById(orgId)
 
-    return res.url 
-  } 
+    const userSize =
+      userdata?.premium == 1 ? 3
+      : userdata?.premium == 2 ? 10
+      : 1
+
+    const maxSize = userSize * 1024 * 1024
+    if (file.size > maxSize) {
+      toast.error(`Размер файла не может превышать ${userSize} МБ`)
+      throw new Error("File too large")
+    }
+
+    const url = await uploadFileOnServer(file);
+    return url;
+  };
 
   const { audio, file, video, ...remainingBlockSpecs } = defaultBlockSpecs;
 

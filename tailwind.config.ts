@@ -49,6 +49,12 @@ const config: Config = {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
+			logo: {
+				"yellow": "#FFCC00",
+				"light-yellow": "#FFE57F",
+				"gray": "#D7D7D7",
+				"cyan": "#2bd8fd"
+			},
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',

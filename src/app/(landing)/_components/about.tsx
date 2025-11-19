@@ -15,25 +15,21 @@ export function About(){
                 name="Просто и удобно"
                 description="Мы предоставляем простое, удобное, а главное бесплатное приложения"
                 img={lamp}
-                imgDark={lampDark}
             />
             <Card
                 name="Функционально"
                 description="Большой функционал которого должно хватить для простых и средних задач"
                 img={options}
-                imgDark={optionsDark}
             />
             <Card
                 name="Работай в команде"
                 description="В Notter присутствует поддержка организаций из Qual ID для работы в команде"
                 img={people}
-                imgDark={peopleDark}
             />
             <Card
                 name="Синхронизируй"
                 description="Синхронизируя данные вы можете работать с любого устройства"
                 img={sync}
-                imgDark={syncDark}
             />
         </>
     )

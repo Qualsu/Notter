@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import errorImg from "../../public/image/NotterMini.png"
+import errorImg from "../../public/badge/Notter.png"
 
 import { Button } from "@/components/ui/button";
 
@@ -17,7 +17,7 @@ export default function Error404(){
       />
       <div className="flex flex-col">
         <h1 className="text-7xl font-medium m-2">404</h1>
-        <Button asChild size="lg">
+        <Button asChild size="lg" variant={"ghost"}>
             <Link href="/">На главную</Link>
         </Button>
       </div>

@@ -1,8 +1,7 @@
-// Premium.tsx
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Check, X } from "lucide-react"; // Импортируем иконки
+import { Check, X } from "lucide-react";
 import PremiumCard from "./premium-card";
 
 export function Premium() {
@@ -17,17 +16,17 @@ export function Premium() {
   const freePrice = 0;
 
   const limits = {
-    free: { notes: "75", publicNotes: "10" },
-    amber: { notes: isTeam ? "500" : "200", publicNotes: isTeam ? "250" : "100" },
-    diamond: { notes: "1000", publicNotes: "1000" },
+    free: { notes: "75", publicNotes: "10", upload: "1" },
+    amber: { notes: isTeam ? "500" : "200", publicNotes: isTeam ? "250" : "100", upload: "3" },
+    diamond: { notes: "1000", publicNotes: "1000", upload: "10" },
   };
 
   return (
     <div className="p-6">
       <h1 className="text-5xl font-bold drop-shadow-sm">
-        <span className="text-yellow-300">N</span>
-        <span className="text-[#CFCFD0]">otter </span>
-        <span className="text-cyan-300">Gem</span>
+        <span className="text-logo-yellow">N</span>
+        <span className="text-logo-light-yellow">otter </span>
+        <span className="text-logo-cyan">Gem</span>
       </h1>
 
       <p className="m-4">Подписка, улучшающая и делающая работу еще приятнее</p>
@@ -47,7 +46,11 @@ export function Premium() {
           title="Free"
           price={freePrice}
           className="border-gray-300"
-          features={[`До ${limits.free.notes} заметок`, `До ${limits.free.publicNotes} публичных заметок`]}
+          features={[
+            `До ${limits.free.notes} заметок`, 
+            `До ${limits.free.publicNotes} публичных заметок`, 
+            `Загрузка изображений до ${limits.free.upload} МБ`
+          ]}
           btn={false}
         />
         <PremiumCard
@@ -60,6 +63,7 @@ export function Premium() {
             "Уникальный значок в профиле",
             `До ${limits.amber.notes} заметок`,
             `До ${limits.amber.publicNotes} публичных заметок`,
+            `Загрузка изображений до ${limits.amber.upload} МБ`
           ]}
         />
         <PremiumCard
@@ -74,6 +78,7 @@ export function Premium() {
             "Скачивание/Загрузка заметок в JSON",
             `До ${limits.diamond.notes} заметок`,
             `До ${limits.diamond.publicNotes} публичных заметок`,
+            `Загрузка изображений до ${limits.diamond.upload} МБ`
           ]}
         />
       </div>
@@ -100,6 +105,12 @@ export function Premium() {
             <TableCell>{limits.free.publicNotes}</TableCell>
             <TableCell>{limits.amber.publicNotes}</TableCell>
             <TableCell>{limits.diamond.publicNotes}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Максимальный размер загружаемых изображений</TableCell>
+            <TableCell>{limits.free.upload} МБ</TableCell>
+            <TableCell>{limits.amber.upload} МБ</TableCell>
+            <TableCell>{limits.diamond.upload} МБ</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Значок в профиле</TableCell>

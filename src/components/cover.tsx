@@ -6,12 +6,12 @@ import { Button } from "./ui/button"
 import { ImageIcon, X } from "lucide-react" 
 import { useMutation, useQuery } from "convex/react" 
 import { useParams } from "next/navigation" 
-import { useEdgeStore } from "@/lib/edgestore" 
 import { Skeleton } from "./ui/skeleton" 
 import { api } from "../../convex/_generated/api" 
 import { useCoverImage } from "../../hooks/use-cover-image" 
 import { Id } from "../../convex/_generated/dataModel" 
 import { useOrganization, useUser } from "@clerk/nextjs"
+import { deleteFile } from "../../server/files/file"
 
 interface CoverImageProps {
   url?: string 
@@ -19,7 +19,6 @@ interface CoverImageProps {
 }
 
 export function Cover({ url, preview }: CoverImageProps){
-  const { edgestore } = useEdgeStore() 
   const { user } = useUser()
   const { organization } = useOrganization()
 
@@ -30,10 +29,9 @@ export function Cover({ url, preview }: CoverImageProps){
   
   const onRemove = async () => {
     if (url) {
-      await edgestore.publicFiles.delete({
-        url: url,
-      }) 
+      await deleteFile(url);
     }
+
     removeCoverImage({
       id: params.documentId as Id<"documents">,
       userId: orgId

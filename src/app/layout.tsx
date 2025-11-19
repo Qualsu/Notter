@@ -5,7 +5,6 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import ConvexClientProvider from '@/components/providers/convex-provider'
 import { Toaster } from 'react-hot-toast';
 import { ModalProvider } from '@/components/providers/modal-provider'
-import { EdgeStoreProvider } from '@/lib/edgestore'
 
 const font = Inter({ subsets: ['latin'] })
 
@@ -27,32 +26,30 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <body className={font.className}>
         <ConvexClientProvider>
-          <EdgeStoreProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Toaster
-              position="bottom-center"
-              toastOptions={{
-                style: {
-                  color: 'black',
-                  background: 'white',
-                  fontSize: '13px',
-                  borderRadius: '5px',
-                },
-                iconTheme: {
-                  primary: 'black',
-                  secondary: 'white',
-                },
-              }}
-              />
-              <ModalProvider/>
-              {children}
-            </ThemeProvider>
-          </EdgeStoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                color: 'black',
+                background: 'white',
+                fontSize: '13px',
+                borderRadius: '5px',
+              },
+              iconTheme: {
+                primary: 'black',
+                secondary: 'white',
+              },
+            }}
+            />
+            <ModalProvider/>
+            {children}
+          </ThemeProvider>
         </ConvexClientProvider>
       </body>
     </html>

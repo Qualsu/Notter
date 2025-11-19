@@ -114,7 +114,7 @@ export default function OrgProfile({ params }: OrgProps) {
       <div className="p-2 px-4 mt-8 border-8 border-white dark:border-[#0a0a0a]">
         <title>{org?.name + "`s profile"}</title>
         <div className="flex flex-col">
-          <Cover url={document?.coverImage || "/default-cover.png"} preview />
+          <Cover url={document?.coverImage || "/default-cover.svg"} preview />
 
           <div className="m-3 flex flex-col md:flex-row md:items-center md:justify-between relative">
             <div className="flex items-center gap-3">

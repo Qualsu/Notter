@@ -39,9 +39,9 @@ function Footer({ name, team, logo }: UserInterface){
                 {logo && (
                   <>
                     <span>в</span>
-                    <a className="ml-1 opacity-50 hover:opacity-100 hover:underline transition-opacity duration-300 font-bold" href="/">
-                        <span className="text-yellow-300">N</span>
-                        <span className="text-zinc-300">otter</span>
+                    <a className="ml-1 opacity-50 hover:opacity-100 group transition-opacity duration-300 font-bold" href="/">
+                        <span className="group-hover:underline text-logo-yellow">N</span>
+                        <span className="group-hover:underline text-logo-light-yellow">otter</span>
                     </a>
                   </>
                 )}

@@ -4,8 +4,8 @@ const nextConfig = {
         domains: [
             "files.edgestore.dev",
             "img.clerk.com",
-            "media.discordapp.net",
-            "localhost"
+            "localhost",
+            "db.api.qual.su"
         ]
     }
 }

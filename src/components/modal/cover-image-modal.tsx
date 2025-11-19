@@ -12,9 +12,12 @@ import { useParams } from "next/navigation"
 import { useCoverImage } from "../../../hooks/use-cover-image" 
 import { api } from "../../../convex/_generated/api" 
 import { Id } from "../../../convex/_generated/dataModel" 
-import { useEdgeStore } from "@/lib/edgestore" 
 import { DragAndDrop } from "../drag-and-drop" 
 import { useOrganization, useUser } from "@clerk/nextjs"
+import { uploadFile } from "../../../server/files/file"
+import { getById as getUserById } from "../../../server/users/user";
+import { getById as getOrgById } from "../../../server/orgs/org";
+import toast from "react-hot-toast"
 
 export function CoverImageModal(){
   const params = useParams() 
@@ -23,12 +26,12 @@ export function CoverImageModal(){
   const [isSubmitting, setIsSubmitting] = useState(false) 
 
   const update = useMutation(api.document.update) 
-  const coverImage = useCoverImage() 
-  const { edgestore } = useEdgeStore() 
+  const coverImage = useCoverImage()
 
   const { user } = useUser()
   const { organization } = useOrganization()
-  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
+  const isOrg = organization?.id !== undefined
+  const orgId = isOrg ? organization?.id as string : user?.id as string
 
   const onClose = () => {
     setFile(undefined) 
@@ -37,27 +40,39 @@ export function CoverImageModal(){
   } 
 
   const onChange = async (file?: File) => {
-    if (file) {
-      setIsSubmitting(true) 
-      setFile(file) 
+    if (!file) return;
 
-      const res = await edgestore.publicFiles.upload({
-        file,
-        options: {
-          replaceTargetUrl: coverImage.url
-        }
-      }) 
+    const userdata = isOrg ? 
+      await getOrgById(orgId) : 
+      await getUserById(orgId);
 
-      await update({
-        id: params.documentId as Id<"documents">,
-        coverImage: res.url,
-        userId: orgId,
-        lastEditor: user?.username as string
-      }) 
+    const userSize = 
+      userdata?.premium == 1 ? 3 
+      : userdata?.premium == 2 ? 10 
+      : 1;
+    const maxSize = userSize * 1024 * 1024
 
-      onClose() 
+    if (file.size > maxSize) {
+      toast.error(`Размер файла не может привышать ${userSize} МБ`);
+      coverImage.onClose();
+      return;
     }
-  } 
+
+    setIsSubmitting(true);
+    setFile(file);
+
+    const fileUrl = await uploadFile(file);
+
+    await update({
+      id: params.documentId as Id<"documents">,
+      coverImage: fileUrl,
+      userId: orgId,
+      lastEditor: user?.username as string
+    });
+
+    onClose();
+  };
+
 
   return (
     <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>

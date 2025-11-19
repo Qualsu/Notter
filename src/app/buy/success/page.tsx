@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { sendMail } from "../../../../server/mail/mail";
+import { useUser } from "@clerk/nextjs";
 
 let flag: boolean = false
 
@@ -14,6 +16,8 @@ export default function SuccessBuy() {
     const searchParams = useSearchParams();
     const merchantOrderId = searchParams.get('MERCHANT_ORDER_ID');
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
+    const { user } = useUser()
+    const email = user?.emailAddresses?.[0]?.emailAddress
 
     const handleSuccess = async () => {
         if (merchantOrderId === null) {
@@ -26,6 +30,13 @@ export default function SuccessBuy() {
                 setIsSuccess(true)
                 flag = true
                 toast.success("Заказ успешно оплачен");
+                if (email) {
+                    await sendMail({
+                        to: email,
+                        subject: "Подписка Notter Gem оформлена",
+                        message: `${user.username}, заказ №${merchantOrderId} успешно оплачен! Спасибо за покупку, теперь вам доступны все преимущества Notter Gem!`
+                    })
+                }
             }
         } else {
             if (!flag) {

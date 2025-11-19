@@ -217,6 +217,22 @@ export function Navigation() {
                         <span className="font-bold">Публичные заметки:</span> {documentPublicCount}/{publicDocumentLimit}
                     </div>
                     <Progress value={publicDocumentProgress} max={100} className={`mt-2 ${getProgressColor(publicDocumentProgress)}`} />
+
+                    {/* Новый блок предупреждений при превышении лимита */}
+                    {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
+                        <div className="mt-2 text-sm text-red-400 dark:text-red-200">
+                            {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
+                                <div>
+                                    Достигнут лимит по заметкам. Оформите{" "}
+                                    <a href="/buy" className="group inline-flex transition-all duration-300">
+                                        <span className="group-hover:text-logo-yellow group-hover:underline transition-colors duration-300">N</span>
+                                        <span className="group-hover:text-logo-light-yellow group-hover:underline transition-colors duration-300 mr-1">otter</span>
+                                        <span className="group-hover:text-logo-cyan group-hover:underline transition-colors duration-300">Gem</span>
+                                    </a>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className="absolute bottom-4 left-0 w-full flex justify-center items-center">

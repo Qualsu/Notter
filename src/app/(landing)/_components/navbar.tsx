@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import { useScrollTop } from "../../../../hooks/use-scroll-top"
 import Image from "next/image";
-import logoImg from "../../../../public/image/NotterMini.png"
+import logoImg from "../../../../public/image/NotterIcon.png"
 import { ModeToggle } from "@/components/mode-toggle";
 import { useConvexAuth } from "convex/react";
 import { SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";

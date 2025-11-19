@@ -12,6 +12,7 @@ import { getById as getOrg } from "../../../../server/users/user";
 import { User } from "../../../../server/users/types";
 import { Org } from "../../../../server/orgs/types";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type PriceCalculation = {
     price: number;
@@ -118,9 +119,10 @@ export default function BuyPremium() {
         <>
             <div className="min-h-screen flex flex-col items-center justify-center gap-3">
                 <h1 className="text-5xl font-bold drop-shadow-sm text-center">
-                    <span className="text-yellow-300">N</span>
-                    <span className="text-[#CFCFD0]">otter </span>
-                    <span className="text-cyan-300">Gem</span>
+                    <span className="text-logo-yellow">N</span>
+                    <span className="text-logo-light-yellow">otter </span>
+                    <span className="text-logo-cyan">Gem</span>
+                    <Image src="/badge/Diamond.png" alt="Notter Gem" width={40} height={40} className="inline-block ml-2" />
                 </h1>
                 <div className="flex flex-col sm:flex-row items-center gap-2 whitespace-nowrap">
                     <p>Выберите аккаунт/организацию:</p>
