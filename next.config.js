@@ -6,6 +6,14 @@ const nextConfig = {
             "img.clerk.com",
             "localhost",
             "db.api.qual.su"
+        ],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'db.api.qual.su',
+                port: '8000', 
+                pathname: '/**',
+            },
         ]
     }
 }
