@@ -2,10 +2,6 @@ import lamp from "../../../../public/icon/lamp.svg"
 import people from "../../../../public/icon/people.svg"
 import options from "../../../../public/icon/options.svg"
 import sync from "../../../../public/icon/ecosystem.svg"
-import lampDark from "../../../../public/icon/lampDark.svg"
-import peopleDark from "../../../../public/icon/peopleDark.svg"
-import optionsDark from "../../../../public/icon/optionsDark.svg"
-import syncDark from "../../../../public/icon/ecosystemDark.svg"
 import { Card } from "./card"
 
 export function About(){
