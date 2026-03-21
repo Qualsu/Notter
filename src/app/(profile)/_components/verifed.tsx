@@ -1,12 +1,6 @@
 import { Check } from 'lucide-react'
 import { useState } from 'react'
-
-type VerifedBadgeProps = {
-  text: string;
-  size: number;
-  clicked?: boolean;
-  down?: boolean;
-}
+import type { VerifedBadgeProps } from "@/config/types/profile.types";
 
 export default function VerifedBadge({ text, size, clicked = false, down = false }: VerifedBadgeProps) {
   const [isClicked, setIsClicked] = useState(false)

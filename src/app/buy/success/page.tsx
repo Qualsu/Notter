@@ -1,14 +1,15 @@
 "use client"
 
 import { redirect, useSearchParams } from "next/navigation";
-import { success } from "../../../../server/order/order";
+import { success } from "../../api/order/order";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { sendMail } from "../../../../server/mail/mail";
+import { sendMail } from "../../api/mail/mail";
 import { useUser } from "@clerk/nextjs";
+import { pages } from "@/config/routing/pages.route";
 
 let flag: boolean = false
 
@@ -60,7 +61,7 @@ export default function SuccessBuy() {
                     <span className="text-cyan-300">Gem</span>
                 </h1>
                 <p className="m-2">Заказ #{merchantOrderId} {isSuccess ? "успешно оплачен!" : "не был успешно оплачен"}</p>
-                <Link href="/dashboard">
+                <Link href={pages.DASHBOARD()}>
                     <Button variant={"outline"}>На главную</Button>
                 </Link>
             </div>

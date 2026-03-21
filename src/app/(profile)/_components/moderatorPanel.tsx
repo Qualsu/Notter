@@ -1,21 +1,17 @@
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
-import { User } from "../../../../server/users/types";
-import { Org } from "../../../../server/orgs/types";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { changeVerifiedOrgs, getById, updateUserBadge } from "../../../../server/users/user";
-import { updateUser } from "../../../../server/users/user";
-import { updateOrgBadge } from "../../../../server/orgs/org";
-import { updateOrg } from "../../../../server/orgs/org";
+import { changeVerifiedOrgs, getById, updateUserBadge } from "../../api/users/user";
+import { updateUser } from "../../api/users/user";
+import { updateOrgBadge } from "../../api/orgs/org";
+import { updateOrg } from "../../api/orgs/org";
 import { toast } from "react-hot-toast";
 import { Switch } from "@/components/ui/switch";
 import { useUser } from "@clerk/clerk-react";
-import { sendMail } from "../../../../server/mail/mail";
-
-interface UserProps {
-  user: User | Org | null;
-}
+import { sendMail } from "../../api/mail/mail";
+import type { UserProps } from "@/config/types/profile.types";
+import type { Org, User } from "@/config/types/server.types";
 
 export function ModeratorPanel({ user }: UserProps) {
   const [isDialogOpen, setDialogOpen] = useState(false);

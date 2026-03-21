@@ -7,8 +7,8 @@ import { ElementRef, useEffect, useRef, useState } from "react"
 import { useMediaQuery } from 'usehooks-ts'
 import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
-import { getById as getUserById } from "../../../../server/users/user"
-import { getById as getOrgById } from "../../../../server/orgs/org"
+import { getById as getUserById } from "../../api/users/user"
+import { getById as getOrgById } from "../../api/orgs/org"
 import { Progress } from "@/components/ui/progress"
 import { toast } from "react-hot-toast"
 import { useOrganization, useUser } from "@clerk/clerk-react"
@@ -17,9 +17,11 @@ import { Item } from "./item"
 import { DocumentList } from "./document-list"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { TrashBox } from "./trash-box"
-import { useSearch } from "../../../../hooks/use-search"
-import { useSettings } from "../../../../hooks/use-settings"
+import { useSearch } from "../../../components/hooks/use-search"
+import { useSettings } from "../../../components/hooks/use-settings"
 import { Navbar } from "./navbar"
+import Link from "next/link"
+import { pages } from "@/config/routing/pages.route"
 
 export function Navigation() {
     const router = useRouter()
@@ -71,7 +73,7 @@ export function Navigation() {
         } else {
             fetchUserData()
         }
-    }, [user?.id, organization?.id])
+    }, [])
 
     let documentLimit: number = 75
     let publicDocumentLimit: number = 10
@@ -106,7 +108,7 @@ export function Navigation() {
             creatorName: isOrg ? organization?.slug as string : user?.username as string,
         })
             .then((documentId) => {
-                router.push(`/dashboard/${documentId}`)
+                router.push(pages.DASHBOARD(documentId))
                 return documentId
             })
             .catch((error) => {
@@ -218,17 +220,16 @@ export function Navigation() {
                     </div>
                     <Progress value={publicDocumentProgress} max={100} className={`mt-2 ${getProgressColor(publicDocumentProgress)}`} />
 
-                    {/* Новый блок предупреждений при превышении лимита */}
                     {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
                         <div className="mt-2 text-sm text-red-400 dark:text-red-200">
                             {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
                                 <div>
                                     Достигнут лимит по заметкам. Оформите{" "}
-                                    <a href="/buy" className="group inline-flex transition-all duration-300">
+                                    <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
                                         <span className="group-hover:text-logo-yellow group-hover:underline transition-colors duration-300">N</span>
                                         <span className="group-hover:text-logo-light-yellow group-hover:underline transition-colors duration-300 mr-1">otter</span>
                                         <span className="group-hover:text-logo-cyan group-hover:underline transition-colors duration-300">Gem</span>
-                                    </a>
+                                    </Link>
                                 </div>
                             )}
                         </div>
@@ -236,7 +237,7 @@ export function Navigation() {
                 </div>
 
                 <div className="absolute bottom-4 left-0 w-full flex justify-center items-center">
-                    <a href={isOrg ? `/org/${organization?.slug}` : `/user/${user?.username}`} className="text-sm text-primary/50 hover:text-primary/80 transition-all duration-200">Перейти в профиль</a>
+                    <Link href={pages.PROFILE(isOrg, isOrg ? organization?.slug ?? "" : user?.username ?? "")} className="text-sm text-primary/50 hover:text-primary/80 transition-all duration-200">Перейти в профиль</Link>
                 </div>
                 <div onMouseDown={handleMouseDown} onClick={resetWidth} className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
             </aside>

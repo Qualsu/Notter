@@ -6,22 +6,19 @@ import { redirect, useRouter } from "next/navigation"
 import { Navigation } from "./_components/navigation"
 import { SearchCommand } from "@/components/search-command"
 import { useEffect } from "react"
-import { useRequestUser } from "../../../server/users/request"
-import { useRequestOrg } from "../../../server/orgs/request"
+import { pages } from "@/config/routing/pages.route"
 
 export default function MainLayout({
     children,
   }: {
     children: React.ReactNode
   }) {
-    useRequestUser()
-    useRequestOrg()
     const { isAuthenticated, isLoading } = useConvexAuth()
     const router = useRouter()
     
     useEffect(() => {
       if (!isLoading && isAuthenticated) {
-          router.push("/dashboard")
+          router.push(pages.DASHBOARD())
       }
     }, [isLoading, isAuthenticated, router])
 
@@ -34,7 +31,7 @@ export default function MainLayout({
     }
     
     if(!isAuthenticated){
-        return redirect("/auth/sign-in")
+      return redirect(pages.AUTH)
     }
 
     return (

@@ -3,14 +3,12 @@
 import { Footer } from "./_components/footer";
 import { Heading } from "./_components/heading";
 import { About } from "./_components/about";
-import { useRequestUser } from "../../../server/users/request";
 import { Premium } from "./_components/premium";
 import { useConvexAuth } from "convex/react";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Landing() {
-  useRequestUser()
   const { isLoading } = useConvexAuth()
   const [isReady, setIsReady] = useState(false)
 

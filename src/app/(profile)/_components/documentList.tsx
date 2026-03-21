@@ -9,21 +9,13 @@ import Twemoji from 'react-twemoji';
 import { Skeleton } from "@/components/ui/skeleton";
 import { Id } from "../../../../convex/_generated/dataModel";
 import toast from "react-hot-toast";
-import { updateUser } from "../../../../server/users/user";
-import { User } from "../../../../server/users/types";
+import { updateUser } from "../../api/users/user";
 import { useUser } from "@clerk/nextjs";
 import VerifedBadge from "./verifed";
-import { Org } from "../../../../server/orgs/types";
-import { updateOrg } from "../../../../server/orgs/org";
-
-interface DocumentListProps {
-  user: User | Org;
-  profile: string;
-  setProfile: React.Dispatch<React.SetStateAction<User | Org | null>>;
-  parentDocumentId?: Id<"documents">;
-  level?: number;
-  publicSorted?: boolean;
-}
+import { updateOrg } from "../../api/orgs/org";
+import Link from "next/link";
+import { pages } from "@/config/routing/pages.route";
+import type { DocumentListProps } from "@/config/types/profile.types";
 
 export function DocumentList({
   user,
@@ -131,13 +123,13 @@ export function DocumentList({
                       />
                     )}
 
-                    <a
-                      href={`/view/${doc._id}`}
+                    <Link
+                      href={pages.VIEW(doc._id)}
                       onClick={(e) => e.stopPropagation()}
                       className="text-xl text-primary/80 transition-all duration-300 hover:underline hover:text-primary"
                     >
                       {doc.title}
-                    </a>
+                    </Link>
 
                     {doc.verifed && (
                       <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6}/>

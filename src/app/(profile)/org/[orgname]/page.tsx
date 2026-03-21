@@ -9,25 +9,21 @@ import Twemoji from 'react-twemoji';
 import { Skeleton } from "@/components/ui/skeleton";
 import { Navbar } from "@/app/(landing)/_components/navbar";
 import toast from "react-hot-toast";
-import Error404 from "@/app/errorPage";
+import Error404 from "@/app/not-found";
 import { useUser } from "@clerk/nextjs";
 import VerifedBadge from "../../_components/verifed";
 import { DocumentList } from "../../_components/documentList";
 import { Badges } from "../../_components/badge";
-import { getByUsername } from "../../../../../server/orgs/org";
-import { Org } from "../../../../../server/orgs/types";
+import { getByUsername } from "../../../api/orgs/org";
 import { LockKeyhole, Pin } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
-import { User } from "../../../../../server/users/types";
 import { ModeratorPanel } from "../../_components/moderatorPanel";
-import { getById } from "../../../../../server/users/user";
-
-interface OrgProps {
-  params: {
-    orgname: string;
-  };
-}
+import { getById } from "../../../api/users/user";
+import Link from "next/link";
+import { pages } from "@/config/routing/pages.route";
+import type { OrgProps } from "@/config/types/profile.types";
+import type { Org, User } from "@/config/types/server.types";
 
 export default function OrgProfile({ params }: OrgProps) {
   const { isLoaded, user } = useUser();
@@ -185,15 +181,15 @@ export default function OrgProfile({ params }: OrgProps) {
                           <Twemoji>{document.icon}</Twemoji>
                         </span>
                       )}
-                      <a
+                      <Link
                         className="text-xl flex flex-row items-center gap-1.5 hover:underline hover:text-primary/70 transition-all duration-300"
-                        href={`/view/${document?._id}`}
+                        href={pages.VIEW(document?._id as string)}
                       >
                         <span className="font-bold">{document?.title}</span>
                         {document?.verifed && (
                           <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6} />
                         )}
-                      </a>
+                      </Link>
                     </div>
                   
                     <div className="border-2 mx-6 pt-6 rounded-lg">
@@ -231,12 +227,12 @@ export default function OrgProfile({ params }: OrgProps) {
                       <Twemoji>{document.icon}</Twemoji>
                     </span>
                   )}
-                  <a
+                  <Link
                     className="text-xl font-bold hover:underline hover:text-primary/70 transition-all duration-300"
-                    href={`/view/${document._id}`}
+                    href={pages.VIEW(document._id)}
                   >
                     {document.title}
-                  </a>
+                  </Link>
                 </div>
                 <div className="border-2 mx-6 pt-6 rounded-lg">
                   <Editor onChange={() => {}} initialContent={document.content} editable={false} />

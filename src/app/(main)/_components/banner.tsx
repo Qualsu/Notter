@@ -8,10 +8,8 @@ import { api } from "../../../../convex/_generated/api"
 import { ConfirmModal } from "@/components/modal/confirm-modal" 
 import { Id } from "../../../../convex/_generated/dataModel" 
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
-
-interface BannerProps {
-  documentId: Id<"documents"> 
-}
+import { pages } from "@/config/routing/pages.route"
+import type { BannerProps } from "@/config/types/main.types";
 
 export function Banner({ documentId }: BannerProps){
   const router = useRouter() 
@@ -33,7 +31,7 @@ export function Banner({ documentId }: BannerProps){
         error: "Не удалось удалить"
     }) 
 
-    router.push("/dashboard") 
+    router.push(pages.DASHBOARD()) 
   } 
 
   const onRestore = () => {

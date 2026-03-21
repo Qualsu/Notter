@@ -15,8 +15,9 @@ import {
   CommandList,
 } from "@/components/ui/command" 
 import { api } from "../../convex/_generated/api" 
-import { useSearch } from "../../hooks/use-search" 
+import { useSearch } from "./hooks/use-search" 
 import Twemoji from 'react-twemoji';
+import { pages } from "@/config/routing/pages.route"
 
 export function SearchCommand(){
   const { user } = useUser() 
@@ -50,7 +51,7 @@ export function SearchCommand(){
   }, [toggle]) 
 
   const onSelect = (id: string) => {
-    router.push(`/dashboard/${id}`) 
+    router.push(pages.DASHBOARD(id)) 
     onClose() 
   } 
 

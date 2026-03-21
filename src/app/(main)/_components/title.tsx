@@ -10,10 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import Twemoji from 'react-twemoji';
 import VerifedBadge from "@/app/(profile)/_components/verifed"
-
-interface TitleProps{
-    initialData: Doc<"documents">
-}
+import type { TitleProps } from "@/config/types/main.types";
 
 export function Title({ initialData }: TitleProps){
     const inputRef = useRef<HTMLInputElement>(null)

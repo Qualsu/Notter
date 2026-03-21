@@ -1,10 +1,5 @@
 import Image from "next/image";
-
-interface CardProps {
-    name: string
-    description: string
-    img: any
-}
+import type { CardProps } from "@/config/types/landing.types";
 
 export function Card({ name, description, img }: CardProps){    
     return (

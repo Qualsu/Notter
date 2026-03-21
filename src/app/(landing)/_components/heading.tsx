@@ -1,7 +1,9 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { pages } from "@/config/routing/pages.route"
 import { useConvexAuth } from "convex/react"
+import Link from "next/link"
 
 export function Heading() {
     const {isAuthenticated} = useConvexAuth()
@@ -14,17 +16,10 @@ export function Heading() {
           <h3 className="text-base sm:text-xl md:text-2xl font-medium max-w-2xl mx-auto">
               Планируйте и разрабатывайте с командой в удобной для вас атмосфере
           </h3>
-          {isAuthenticated && (
-            <a href="/dashboard" >
-              <Button className="mt-4">Перейти в Notter</Button>
-            </a>
-          )}
-
-          {!isAuthenticated && (
-            <a href="/auth/sign-in" >
-              <Button className="mt-4">Перейти в Notter</Button>
-            </a>
-          )}
+          
+          <Link href={isAuthenticated ? pages.DASHBOARD() : pages.AUTH}>
+            <Button className="mt-4">Перейти в Notter</Button>
+          </Link>
       </div>
     )
   }

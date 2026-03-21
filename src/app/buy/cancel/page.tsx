@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { pages } from "@/config/routing/pages.route";
 
 export default function CancelBuy() {
     const searchParams = useSearchParams();
@@ -17,7 +18,7 @@ export default function CancelBuy() {
                     <span className="text-cyan-300">Gem</span>
                 </h1>
                 <p className="m-2">Заказ #{merchantOrderId} был отменен</p>
-                <Link href="/dashboard">
+                <Link href={pages.DASHBOARD()}>
                     <Button variant={"outline"}>На главную</Button>
                 </Link>
             </div>

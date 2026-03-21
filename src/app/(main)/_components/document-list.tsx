@@ -11,12 +11,8 @@ import { cn } from "@/lib/utils"
 import { FileIcon } from "lucide-react"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import Twemoji from 'react-twemoji';
-
-interface DocumentListProps {
-    parentDocumentId?: Id<"documents">
-    level?: number
-    data?: Doc<"documents">[]
-}
+import { pages } from "@/config/routing/pages.route"
+import type { DocumentListProps } from "@/config/types/main.types";
 
 export function DocumentList({
     parentDocumentId,
@@ -41,7 +37,7 @@ export function DocumentList({
     })
 
     const onRedirect = (documentId: string) => {
-        router.push(`/dashboard/${documentId}`) // redirect to docId
+        router.push(pages.DASHBOARD(documentId)) // redirect to docId
     }
 
     if (documents === undefined) {

@@ -10,21 +10,8 @@ import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
-
-interface ItemProps {
-    id?: Id<"documents">
-    documentIcon?: string
-    active?: boolean
-    expanded?: boolean
-    isSearch?: boolean
-    level?: number
-    onExpand?: () => void
-    label: string
-    onClick?: () => void
-    icon: LucideIcon
-    lastEditor?: string
-    verified?: boolean
-}
+import { pages } from "@/config/routing/pages.route"
+import type { ItemProps } from "@/config/types/main.types";
 
 export function Item({
     label, 
@@ -63,7 +50,7 @@ export function Item({
             id, 
             userId: orgId
         })
-        .then(() => router.push("/dashboard"))
+        .then(() => router.push(pages.DASHBOARD()))
 
         toast.promise(promise, {
             loading: "Перемещаем в архив...",
@@ -93,7 +80,7 @@ export function Item({
             if (!expanded) {
                 onExpand?.()
             }
-            router.push(`/dashboard/${documentId}`)
+            router.push(pages.DASHBOARD(documentId))
             return documentId
         }).catch((error) => {
             if (error.message.includes("Rate limit exceeded")) {

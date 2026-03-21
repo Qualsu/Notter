@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import ConvexClientProvider from '@/components/providers/convex-provider'
 import { Toaster } from 'react-hot-toast';
 import { ModalProvider } from '@/components/providers/modal-provider'
+import { RequestProvider } from '@/components/providers/request-provider'
 
 const font = Inter({ subsets: ['latin'] })
 
@@ -48,7 +49,9 @@ export default function RootLayout({
             }}
             />
             <ModalProvider/>
-            {children}
+            <RequestProvider>
+              {children}
+            </RequestProvider>
           </ThemeProvider>
         </ConvexClientProvider>
       </body>

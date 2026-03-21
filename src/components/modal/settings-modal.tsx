@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
 import { ModeToggle } from "../mode-toggle"
-import { useSettings } from "../../../hooks/use-settings"
+import { useSettings } from "../hooks/use-settings"
 import { Label } from "../ui/label"
 import { Separator } from "@radix-ui/react-dropdown-menu"
 import { SignOutButton, useOrganization } from "@clerk/nextjs"
@@ -8,10 +8,11 @@ import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import { useState, useEffect } from "react"
 import { Switch } from "@/components/ui/switch"
-import { getById as getUserById } from "../../../server/users/user"
-import { getById as getOrgById } from "../../../server/orgs/org"
-import { updateUser } from "../../../server/users/user"
-import { updateOrg } from "../../../server/orgs/org"
+import { getById as getUserById } from "../../app/api/users/user"
+import { getById as getOrgById } from "../../app/api/orgs/org"
+import { updateUser } from "../../app/api/users/user"
+import { updateOrg } from "../../app/api/orgs/org"
+import { pages } from "@/config/routing/pages.route"
 
 export function SettingsModal() {
   const settings = useSettings()
@@ -31,7 +32,7 @@ export function SettingsModal() {
         if (data) {
           setUserData(data)
           setIsPrivated(data.privated || false)
-          setWatermark(data.watermark || false) // Устанавливаем watermark, если premium === 2
+          setWatermark(data.watermark || false)
         }
       }
     }
@@ -116,7 +117,7 @@ export function SettingsModal() {
         <Separator />
         <div
           onClick={() => {
-            router.push("/")
+            router.push(pages.ROOT)
             settings.onClose()
           }}
           className="m-auto hover:text-primary/80"

@@ -10,11 +10,7 @@ import { Banner } from "./banner";
 import { Menu } from "./menu";
 import { Publish } from "./publish";
 import { useOrganization, useUser } from "@clerk/nextjs";
-
-interface NavbarProps{
-    isCollapsed: boolean
-    onResetWidth: () => void
-}
+import type { NavbarProps } from "@/config/types/main.types";
 
 export function Navbar({ isCollapsed, onResetWidth }: NavbarProps){
     const params = useParams()

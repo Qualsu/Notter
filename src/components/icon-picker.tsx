@@ -8,12 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover" 
-
-interface IconPickerPorps {
-  onChange: (icon: string) => void 
-  children: React.ReactNode 
-  asChild?: boolean 
-}
+import type { IconPickerPorps } from "@/config/types/components.types";
 
 export function IconPicker({
   onChange,

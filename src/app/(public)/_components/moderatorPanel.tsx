@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
-import { User } from "../../../../server/users/types";
-import { getById as getUserById } from "../../../../server/users/user";
-import { getById as getOrgById } from "../../../../server/orgs/org";
+import { getById as getUserById } from "../../api/users/user";
+import { getById as getOrgById } from "../../api/orgs/org";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Check, FileJson, Menu, Trash, X } from "lucide-react";
@@ -14,21 +13,10 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { ConfirmModal } from "@/components/modal/confirm-modal";
-import { sendMail } from "../../../../server/mail/mail";
-
-interface DocumentProps {
-  _id: Id<"documents">;
-  userId: string;
-  title: string
-  shortId?: string;
-  isShort?: boolean;
-  isPublished: boolean;
-  isAcrhived?: boolean;
-  creatorName?: string;
-  lastEditor?: string;
-  verifed?: boolean;
-  content?: string
-}
+import { sendMail } from "../../api/mail/mail";
+import { pages } from "@/config/routing/pages.route";
+import type { ModeratorPanelDocumentProps as DocumentProps } from "@/config/types/public.types";
+import type { User } from "@/config/types/server.types";
 
 export function ModeratorPanel({
   _id,
@@ -85,31 +73,32 @@ export function ModeratorPanel({
     try {
       let subject = "";
       let message = "";
+      const viewUrl = pages.VIEW_URL(_id);
 
       switch (action) {
         case "публикация":
           subject = `Публикация вашей заметки "${title}" была обновлена`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "короткая ссылка":
           subject = `Ссылка на вашу заметку "${title}" была обновлена`;
-          message = `${userData.username}!\n\nShort ID вашей заметки "${title}" был ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nShort ID вашей заметки "${title}" был ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "архивация":
           subject = `Архивация вашей заметки "${title}" была обновлена`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "верификация":
           subject = `Верификация вашей заметки "${title}" была обновлена`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "удаление":
           subject = `Удаление вашей заметки "${title}"`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была удалена.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была удалена.\nПосмотреть: ${viewUrl}`;
           break;
         default:
           subject = `Изменение вашей заметки "${title}"`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была обновлена. Детали: ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была обновлена. Детали: ${details}.\nПосмотреть: ${viewUrl}`;
           break;
       }
 
@@ -214,7 +203,7 @@ export function ModeratorPanel({
     try {
       await promise;
       await sendNotification("документ удален", true, "документ удален");
-      router.push("/dashboard");
+      router.push(pages.DASHBOARD());
     } catch (error: any) {
       const errorMessage = error.message || "Ошибка при удалении";
       await sendNotification("удаление документа", false, errorMessage);

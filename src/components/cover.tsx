@@ -8,15 +8,11 @@ import { useMutation, useQuery } from "convex/react"
 import { useParams } from "next/navigation" 
 import { Skeleton } from "./ui/skeleton" 
 import { api } from "../../convex/_generated/api" 
-import { useCoverImage } from "../../hooks/use-cover-image" 
+import { useCoverImage } from "./hooks/use-cover-image" 
 import { Id } from "../../convex/_generated/dataModel" 
 import { useOrganization, useUser } from "@clerk/nextjs"
-import { deleteFile } from "../../server/files/file"
-
-interface CoverImageProps {
-  url?: string 
-  preview?: boolean 
-}
+import { deleteFile } from "../app/api/files/file"
+import type { CoverImageProps } from "@/config/types/components.types";
 
 export function Cover({ url, preview }: CoverImageProps){
   const { user } = useUser()

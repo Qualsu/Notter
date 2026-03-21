@@ -9,14 +9,14 @@ import {
 import { useState } from "react" 
 import { useMutation } from "convex/react" 
 import { useParams } from "next/navigation" 
-import { useCoverImage } from "../../../hooks/use-cover-image" 
+import { useCoverImage } from "../hooks/use-cover-image" 
 import { api } from "../../../convex/_generated/api" 
 import { Id } from "../../../convex/_generated/dataModel" 
 import { DragAndDrop } from "../drag-and-drop" 
 import { useOrganization, useUser } from "@clerk/nextjs"
-import { uploadFile } from "../../../server/files/file"
-import { getById as getUserById } from "../../../server/users/user";
-import { getById as getOrgById } from "../../../server/orgs/org";
+import { uploadFile } from "../../app/api/files/file"
+import { getById as getUserById } from "../../app/api/users/user";
+import { getById as getOrgById } from "../../app/api/orgs/org";
 import toast from "react-hot-toast"
 
 export function CoverImageModal(){

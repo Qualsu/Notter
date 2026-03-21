@@ -19,15 +19,11 @@ import { api } from "../../../../convex/_generated/api";
 import { Protect } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/ui/shadcn-io/dropzone";
-import { User } from "../../../../server/users/types";
-import { Org } from "../../../../server/orgs/types";
-import { getById as getOrg } from "../../../../server/orgs/org";
-import { getById as getUser } from "../../../../server/users/user";
-
-
-interface MenuProps {
-  documentId: Id<"documents">;
-}
+import { getById as getOrg } from "../../api/orgs/org";
+import { getById as getUser } from "../../api/users/user";
+import { pages } from "@/config/routing/pages.route";
+import type { MenuProps } from "@/config/types/main.types";
+import type { Org, User } from "@/config/types/server.types";
 
 export function Menu({ documentId }: MenuProps) {
   const router = useRouter();
@@ -72,7 +68,7 @@ export function Menu({ documentId }: MenuProps) {
       error: "Не удалось переместить в архив",
     });
 
-    router.push("/dashboard");
+    router.push(pages.DASHBOARD());
   };
 
   const onRestore = () => {
@@ -87,7 +83,7 @@ export function Menu({ documentId }: MenuProps) {
       error: "Не удалось восстановить",
     });
 
-    router.push(`/dashboard/${documentId}`);
+    router.push(pages.DASHBOARD(documentId));
   };
 
   const downloadJson = () => {
@@ -122,7 +118,7 @@ export function Menu({ documentId }: MenuProps) {
             loading: "Обновляем заметку..."
           })
           promise.then(() => {
-            router.push("/dashboard");
+            router.push(pages.DASHBOARD());
           });
         } else {
           toast.error("Ошибка чтения файла");
@@ -200,7 +196,6 @@ export function Menu({ documentId }: MenuProps) {
                 setOpenModal(false);
               }}
               onError={console.error}
-              className=""
             >
               <DropzoneEmptyState />
               <DropzoneContent />

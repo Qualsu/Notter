@@ -12,6 +12,7 @@ import { ConfirmModal } from "@/components/modal/confirm-modal"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
+import { pages } from "@/config/routing/pages.route"
 
 export function TrashBox(){
   const router = useRouter() 
@@ -32,7 +33,7 @@ export function TrashBox(){
   }) 
 
   const onClick = (documentId: string) => {
-    router.push(`/dashboard/${documentId}`) 
+    router.push(pages.DASHBOARD(documentId)) 
   } 
 
   const onRestore = (
@@ -65,13 +66,13 @@ export function TrashBox(){
     }) 
 
     if (params.documentId === documentId) {
-      router.push("/dashboard") 
+      router.push(pages.DASHBOARD()) 
     }
   }
 
   const removeAll = () => {
 
-    router.push("/dashboard")
+    router.push(pages.DASHBOARD())
 
     let promise: any
     documents?.map((document) => {

@@ -6,43 +6,33 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useQuery } from "convex/react"
 import { Toolbar } from "@/components/toolbar"
 import { Cover } from "@/components/cover"
-import Error404 from "@/app/errorPage"
+import Error404 from "@/app/not-found"
 import { Separator } from "@/components/ui/separator"
 import { api } from "../../../../convex/_generated/api"
 import { Id } from "../../../../convex/_generated/dataModel"
 import { Navbar } from "../../(landing)/_components/navbar"
-import { getByUsername as getByOrgname } from "../../../../server/orgs/org"
-import { getById, getByUsername } from "../../../../server/users/user"
-import { Org } from "../../../../server/orgs/types"
-import { User } from "../../../../server/users/types"
+import { getByUsername as getByOrgname } from "../../api/orgs/org"
+import { getById, getByUsername } from "../../api/users/user"
 import { ModeratorPanel } from "./moderatorPanel"
 import { useOrganization, useUser } from "@clerk/clerk-react"
-
-interface DocumentIdPageProps {
-  params: {
-    documentId: string
-  }
-}
-
-interface UserInterface {
-  name: string
-  team: boolean
-  logo: boolean
-}
+import Link from "next/link"
+import { pages } from "@/config/routing/pages.route"
+import type { PublicDocumentComponentProps as DocumentIdPageProps, UserInterface } from "@/config/types/public.types";
+import type { Org, User } from "@/config/types/server.types";
 
 function Footer({ name, team, logo }: UserInterface){
     return (
         <footer className="mt-auto w-full">
             <Separator />
             <p className="text-center my-3 text-primary/30">
-                Заметка создана {team ? 'командой' : ''} <a href={`/${team ? 'org' : 'user'}/${name}`} className="hover:underline font-bold">{name} </a> 
+                Заметка создана {team ? 'командой' : ''} <Link href={pages.PROFILE(team, name)} className="hover:underline font-bold">{name} </Link> 
                 {logo && (
                   <>
                     <span>в</span>
-                    <a className="ml-1 opacity-50 hover:opacity-100 group transition-opacity duration-300 font-bold" href="/">
+                    <Link className="ml-1 opacity-50 hover:opacity-100 group transition-opacity duration-300 font-bold" href={pages.ROOT}>
                         <span className="group-hover:underline text-logo-yellow">N</span>
                         <span className="group-hover:underline text-logo-light-yellow">otter</span>
-                    </a>
+                    </Link>
                   </>
                 )}
             </p>

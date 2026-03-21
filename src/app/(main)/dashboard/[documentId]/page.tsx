@@ -11,12 +11,7 @@ import { api } from "../../../../../convex/_generated/api"
 import { Toolbar } from "@/components/toolbar" 
 import { Cover } from "@/components/cover" 
 import { useOrganization, useUser } from "@clerk/nextjs"
-
-interface DocumentIdPageProps {
-  params: {
-    documentId: Id<"documents"> 
-  } 
-}
+import type { DashboardDocumentIdPageProps as DocumentIdPageProps } from "@/config/types/main.types";
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps){
   const Editor = useMemo(

@@ -3,21 +3,17 @@
 import { OrganizationSwitcher, useOrganization, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createOrder } from "../../../../server/order/order";
+import { createOrder } from "../../api/order/order";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useConvexAuth } from "convex/react";
-import { getById as getUser } from "../../../../server/orgs/org";
-import { getById as getOrg } from "../../../../server/users/user";
-import { User } from "../../../../server/users/types";
-import { Org } from "../../../../server/orgs/types";
+import { getById as getUser } from "../../api/orgs/org";
+import { getById as getOrg } from "../../api/users/user";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
-type PriceCalculation = {
-    price: number;
-    oldPrice: number;
-};
+import { pages } from "@/config/routing/pages.route";
+import type { PriceCalculation } from "@/config/types/components.types";
+import type { Org, User } from "@/config/types/server.types";
 
 export default function BuyPremium() {
     const router = useRouter();
@@ -63,7 +59,7 @@ export default function BuyPremium() {
 
     useEffect(() => {
         if (!isAuthenticated) {
-            router.push("/auth/sign-in");
+            router.push(pages.AUTH);
         }
         
         const fetchProfile = async () => {

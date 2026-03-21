@@ -1,15 +1,8 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-
-interface PremiumCardProps {
-  title: string;
-  price: number;
-  className: string;
-  icon?: string;
-  features: string[];
-  btn?: boolean
-}
+import { pages } from "@/config/routing/pages.route";
+import type { PremiumCardProps } from "@/config/types/landing.types";
 
 export default function PremiumCard({ title, price, className, icon, features, btn = true }: PremiumCardProps){
   return (
@@ -28,7 +21,7 @@ export default function PremiumCard({ title, price, className, icon, features, b
         ))}
       </ul>
       {btn && (
-        <Link href={"/buy"} className="mt-auto">
+        <Link href={pages.BUY} className="mt-auto">
             <Button variant={"outline"} className="mt-2">
             Перейти
             </Button>

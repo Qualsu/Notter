@@ -7,16 +7,11 @@ import { useTheme } from "next-themes"
 import "@blocknote/core/style.css" 
 import "@blocknote/mantine/style.css"
 import { useOrganization, useUser } from "@clerk/nextjs"
-import { getById as getUserById } from "../../server/users/user"
-import { getById as getOrgById } from "../../server/orgs/org"
+import { getById as getUserById } from "../app/api/users/user"
+import { getById as getOrgById } from "../app/api/orgs/org"
 import toast from "react-hot-toast"
-import { uploadFile as uploadFileOnServer } from "../../server/files/file"
-
-interface EditorProps {
-  onChange: (value: string) => void 
-  initialContent?: string 
-  editable?: boolean 
-}
+import { uploadFile as uploadFileOnServer } from "../app/api/files/file"
+import type { EditorProps } from "@/config/types/components.types";
 
 export default function Editor({ onChange, initialContent, editable }: EditorProps){
   const { resolvedTheme } = useTheme()

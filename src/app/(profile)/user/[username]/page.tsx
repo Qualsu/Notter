@@ -9,24 +9,20 @@ import Twemoji from 'react-twemoji';
 import { Skeleton } from "@/components/ui/skeleton"
 import { Navbar } from "@/app/(landing)/_components/navbar";
 import toast from "react-hot-toast";
-import Error404 from "@/app/errorPage";
+import Error404 from "@/app/not-found";
 import { useUser } from "@clerk/nextjs";
 import VerifedBadge from "../../_components/verifed";
 import { DocumentList } from "../../_components/documentList";
 import { Badges } from "../../_components/badge";
-import { getById, getByUsername } from "../../../../../server/users/user";
-import { User } from "../../../../../server/users/types";
-import { Org } from "../../../../../server/orgs/types";
+import { getById, getByUsername } from "../../../api/users/user";
 import { Check, LockKeyhole, Pin } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { ModeratorPanel } from "../../_components/moderatorPanel";
-
-interface UsernameProps {
-  params: {
-    username: string;
-  };
-}
+import Link from "next/link";
+import { pages } from "@/config/routing/pages.route";
+import type { UsernameProps } from "@/config/types/profile.types";
+import type { Org, User } from "@/config/types/server.types";
 
 export default function UserProfile({ params }: UsernameProps) {
   const { isLoaded, user } = useUser();
@@ -186,15 +182,15 @@ export default function UserProfile({ params }: UsernameProps) {
                           <Twemoji>{document.icon}</Twemoji>
                         </span>
                       )}
-                      <a
+                      <Link
                         className="text-xl flex flex-row items-center gap-1.5 hover:underline hover:text-primary/70 transition-all duration-300"
-                        href={`/view/${document?._id}`}
+                        href={pages.VIEW(document?._id as string)}
                       >
                         <span className="font-bold">{document?.title}</span>
                         {document?.verifed && (
                           <VerifedBadge text="Заметка верефицирована командой Qualsu" size={6} />
                         )}
-                      </a>
+                      </Link>
                     </div>
                   
                     <div className="border-2 mx-6 pt-6 rounded-lg">
@@ -232,12 +228,12 @@ export default function UserProfile({ params }: UsernameProps) {
                       <Twemoji>{document.icon}</Twemoji>
                     </span>
                   )}
-                  <a
+                  <Link
                     className="text-xl font-bold hover:underline hover:text-primary/70 transition-all duration-300"
-                    href={`/view/${document._id}`}
+                    href={pages.VIEW(document._id)}
                   >
                     {document.title}
-                  </a>
+                  </Link>
                 </div>
                 <div className="border-2 mx-6 pt-6 rounded-lg">
                   <Editor onChange={() => {}} initialContent={document.content} editable={false} />

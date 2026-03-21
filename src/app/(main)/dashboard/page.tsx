@@ -9,6 +9,7 @@ import { api } from "../../../../convex/_generated/api"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { useOrganization, useUser } from "@clerk/nextjs"
+import { pages } from "@/config/routing/pages.route"
 
 export default function Dashboard() {
     const create = useMutation(api.document.create)
@@ -26,7 +27,7 @@ export default function Dashboard() {
             lastEditor: user?.username as string
         })
             .then((documentId) => {
-                router.push(`/dashboard/${documentId}`);
+                router.push(pages.DASHBOARD(documentId));
                 return documentId
             })
             .catch((error) => {

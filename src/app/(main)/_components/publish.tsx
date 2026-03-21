@@ -7,16 +7,12 @@ import { Check, Copy, Globe } from "lucide-react"
 import { Doc } from "../../../../convex/_generated/dataModel"
 import { api } from "../../../../convex/_generated/api"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useOrigin } from "../../../../hooks/use-origin"
+import { useOrigin } from "../../../components/hooks/use-origin"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
-import { getById as getUserByID, updateUser } from "../../../../server/users/user"
-import { getById as getOrgByID, updateOrg } from "../../../../server/orgs/org"
-import { User } from "../../../../server/users/types"
-import { Org } from "../../../../server/orgs/types"
-
-interface PublishProps {
-  initialData: Doc<"documents">
-}
+import { getById as getUserByID, updateUser } from "../../api/users/user"
+import { getById as getOrgByID, updateOrg } from "../../api/orgs/org"
+import type { PublishProps } from "@/config/types/main.types";
+import type { Org, User } from "@/config/types/server.types";
 
 export function Publish({ initialData }: PublishProps) {
   const origin = useOrigin()

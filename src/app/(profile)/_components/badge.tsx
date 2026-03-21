@@ -1,10 +1,5 @@
-import { Org } from "../../../../server/orgs/types";
-import { User } from "../../../../server/users/types"
 import Image from "next/image";
-
-type BadgesProps = {
-    profile: User | Org
-}
+import type { BadgesProps } from "@/config/types/profile.types";
 
 export function Badges({profile}: BadgesProps){
     return (

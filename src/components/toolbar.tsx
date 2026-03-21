@@ -8,14 +8,10 @@ import { ImageIcon, Smile, X } from "lucide-react"
 import { Doc } from "../../convex/_generated/dataModel" 
 import { api } from "../../convex/_generated/api" 
 import { IconPicker } from "./icon-picker" 
-import { useCoverImage } from "../../hooks/use-cover-image" 
+import { useCoverImage } from "./hooks/use-cover-image" 
 import { useOrganization, useUser } from "@clerk/nextjs"
 import Twemoji from 'react-twemoji';
-
-interface ToolbarProps {
-  initialData: Doc<"documents"> 
-  preview?: boolean 
-}
+import type { ToolbarProps } from "@/config/types/components.types";
 
 export function Toolbar({ initialData, preview }: ToolbarProps){
   const inputRef = useRef<ElementRef<"textarea">>(null) 
