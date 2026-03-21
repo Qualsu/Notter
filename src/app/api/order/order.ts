@@ -21,6 +21,17 @@ export async function createOrder(
   }
 };
 
+export async function checkOrder(
+  _id: string
+): Promise<Order | null>{
+  try {
+    const response = await API.get(`/order/check/${_id}`);
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function success(
   _id: string
 ): Promise<Order | null>{
