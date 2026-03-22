@@ -199,7 +199,7 @@ export default function UserProfile({ params }: UsernameProps) {
                   </>
                 )}
                 <div className="mt-8 mx-6">
-                  <h2 className="text-2xl font-bold mb-4">All Notes</h2>
+                  <h2 className="text-2xl font-bold mb-4">Заметки</h2>
                   {profile._id ? (
                     <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
                   ) : (
@@ -244,7 +244,7 @@ export default function UserProfile({ params }: UsernameProps) {
 
           {!profile?.privated && (
             <div className="mt-8 mx-6">
-              <h2 className="text-2xl font-bold mb-4">All Notes</h2>
+              <h2 className="text-2xl font-bold mb-4">Заметки</h2>
               {profile._id ? (
                 <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
               ) : (

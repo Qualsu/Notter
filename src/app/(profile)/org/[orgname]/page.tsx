@@ -131,13 +131,13 @@ export default function OrgProfile({ params }: OrgProps) {
                       <span className="flex flex-row items-center gap-2">
                         {org?.name}
                         {org?.badges.verified && (
-                          <VerifedBadge text="Верефицированная команда" size={7} clicked={false} />
+                          <VerifedBadge text="Верефицированная команда" size={6} clicked={false} />
                         )}
                       </span>
                     </span>
                     <div className="hidden sm:block">
                       {org?.badges.verified && (
-                        <VerifedBadge text="Верефицированная команда" size={7} clicked={false} />
+                        <VerifedBadge text="Верефицированная команда" size={6} clicked={false} />
                       )}
                     </div>
                   </h1>
@@ -198,7 +198,7 @@ export default function OrgProfile({ params }: OrgProps) {
                   </>
                 )}
                 <div className="mt-8 mx-6">
-                  <h2 className="text-2xl font-bold mb-4">All Notes</h2>
+                  <h2 className="text-2xl font-bold mb-4">Заметки</h2>
                   {org._id ? (
                     <DocumentList user={org} profile={params.orgname} setProfile={setOrg} />
                   ) : (
@@ -243,7 +243,7 @@ export default function OrgProfile({ params }: OrgProps) {
 
           {!org?.privated && (
             <div className="mt-8 mx-6">
-              <h2 className="text-2xl font-bold mb-4">All Notes</h2>
+              <h2 className="text-2xl font-bold mb-4">Заметки</h2>
               {org._id ? (
                 <DocumentList user={org} profile={params.orgname} setProfile={setOrg} />
               ) : (

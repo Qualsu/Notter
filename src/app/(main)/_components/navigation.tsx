@@ -178,7 +178,7 @@ export function Navigation() {
     return (
         <>
             <aside ref={sidebarRef} className={cn(
-                "group/sidebar h-full bg-[#fcfcfc] dark:bg-[#111111] overflow-y-auto relative flex w-60 flex-col z-[99999]",
+                "group/sidebar h-full bg-[#fcfcfc] dark:bg-[#111111] overflow-y-auto relative flex w-60 flex-col z-50",
                 isResetting && "transition-all ease-in-out duration-300",
                 isMobile && "w-0"
             )}>
@@ -236,9 +236,6 @@ export function Navigation() {
                     )}
                 </div>
 
-                <div className="absolute bottom-4 left-0 w-full flex justify-center items-center">
-                    <Link href={pages.PROFILE(isOrg, isOrg ? organization?.slug ?? "" : user?.username ?? "")} className="text-sm text-primary/50 hover:text-primary/80 transition-all duration-200">Перейти в профиль</Link>
-                </div>
                 <div onMouseDown={handleMouseDown} onClick={resetWidth} className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
             </aside>
 
