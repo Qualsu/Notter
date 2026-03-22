@@ -18,11 +18,15 @@ export function UserItem(){
     const { organization } = useOrganization()
     const isOrg = organization?.id !== undefined
 
+    const stopMenuEvent = (event: React.SyntheticEvent) => {
+        event.stopPropagation()
+    }
+
     const image = (user as any)?.imageUrl || (user as any)?.profileImageUrl || (user as any)?.image || null
 
     return (
         <div>
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                     <button className="flex items-center w-full gap-2 p-2 hover:bg-accent">
                         <Avatar className="h-6 w-6">
@@ -37,7 +41,14 @@ export function UserItem(){
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="w-52 p-3 flex flex-col items-start ml-2" align="start">
-                    <OrganizationSwitcher afterSelectOrganizationUrl={pages.DASHBOARD()} />
+                    <div
+                        onClick={stopMenuEvent}
+                        onPointerDown={stopMenuEvent}
+                        onKeyDown={stopMenuEvent}
+                        className="w-full"
+                    >
+                        <OrganizationSwitcher afterSelectOrganizationUrl={pages.DASHBOARD()}/>
+                    </div>
 
                     <DropdownMenuSeparator/>
                     
