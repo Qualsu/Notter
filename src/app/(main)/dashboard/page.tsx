@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import EmptyImage from "../../../../public/image/Empty.png"
 import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react"
 import { useMutation } from "convex/react"
@@ -10,6 +9,7 @@ import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { pages } from "@/config/routing/pages.route"
+import { images } from "@/config/routing/image.route"
 
 export default function Dashboard() {
     const create = useMutation(api.document.create)
@@ -52,10 +52,10 @@ export default function Dashboard() {
     return (
         <div className="h-full flex flex-col items-center justify-center space-y-4">
             <Image 
-                src={EmptyImage}
-                width="400"
+                src={images.IMAGE.EMPTY}
+                width={400}
+                height={400}
                 alt="Empty"
-
             />
             <h2>
                 Пока что тут ничего нет

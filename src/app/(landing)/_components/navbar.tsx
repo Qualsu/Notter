@@ -3,7 +3,6 @@
 import { cn } from "@/lib/utils"
 import { useScrollTop } from "../../../components/hooks/use-scroll-top"
 import Image from "next/image";
-import logoImg from "../../../../public/image/NotterIcon.png"
 import { ModeToggle } from "@/components/mode-toggle";
 import { useConvexAuth } from "convex/react";
 import { SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
 import { pages } from "@/config/routing/pages.route";
+import { images } from "@/config/routing/image.route";
 import type { NavbarProps } from "@/config/types/landing.types";
 
 export function Navbar({ logo = true }: NavbarProps){
@@ -24,7 +24,7 @@ export function Navbar({ logo = true }: NavbarProps){
         )}>
             <div className="container mx-3 justify-between flex items-center md:mx-auto">
                 <Link href={pages.ROOT}>
-                    <Image src={logoImg} height="35" width="35" alt="Notter" className={`${!logo && 'hidden'}`}/>
+                    <Image src={images.IMAGE.NOTTER_ICON} height="35" width="35" alt="Notter" className={`${!logo && 'hidden'}`}/>
                 </Link>
                 <div className="flex items-center gap-2">
                     {!isLoading && (

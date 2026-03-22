@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Check, X } from "lucide-react";
 import PremiumCard from "./premium-card";
+import { images } from "@/config/routing/image.route";
 
 export function Premium() {
   const [isTeam, setIsTeam] = useState(false);
@@ -57,7 +58,7 @@ export function Premium() {
           title="Amber"
           price={amberPrice}
           className="border-yellow-300"
-          icon="/badge/Amber.png"
+          icon={images.BADGE.AMBER}
           features={[
             "Сокращенные ссылки для публичных заметок",
             "Уникальный значок в профиле",
@@ -70,7 +71,7 @@ export function Premium() {
           title="Diamond"
           price={diamondPrice}
           className="border-cyan-300"
-          icon="/badge/Diamond.png"
+          icon={images.BADGE.DIAMOND}
           features={[
             "Все преимущества Amber",
             "Кастомные ссылки",

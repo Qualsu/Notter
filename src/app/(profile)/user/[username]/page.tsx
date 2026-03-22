@@ -21,6 +21,7 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 import { ModeratorPanel } from "../../_components/moderatorPanel";
 import Link from "next/link";
 import { pages } from "@/config/routing/pages.route";
+import { images } from "@/config/routing/image.route";
 import type { UsernameProps } from "@/config/types/profile.types";
 import type { Org, User } from "@/config/types/server.types";
 
@@ -107,13 +108,13 @@ export default function UserProfile({ params }: UsernameProps) {
       <div className="p-2 px-4 mt-10 border-8 border-white dark:border-[#0a0a0a]">
         <title>{params.username + "`s profile"}</title>
         <div className="flex flex-col">
-          <Cover url={document?.coverImage || "/default-cover.svg"} preview />
+          <Cover url={document?.coverImage || images.DEFAULT.COVER} preview />
 
           <div className="m-3 flex flex-col md:flex-row md:items-center md:justify-between relative">
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Image
-                  src={profile?.avatar || "/default-profile.png"}
+                  src={profile?.avatar || images.DEFAULT.PROFILE}
                   alt="Profile Picture"
                   width={80}
                   height={80}

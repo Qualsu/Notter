@@ -12,6 +12,7 @@ import { getById as getOrg } from "../../api/users/user";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { pages } from "@/config/routing/pages.route";
+import { images } from "@/config/routing/image.route";
 import type { PriceCalculation } from "@/config/types/components.types";
 import type { Org, User } from "@/config/types/server.types";
 
@@ -118,7 +119,7 @@ export default function BuyPremium() {
                     <span className="text-logo-yellow">N</span>
                     <span className="text-logo-light-yellow">otter </span>
                     <span className="text-logo-cyan">Gem</span>
-                    <Image src="/badge/Diamond.png" alt="Notter Gem" width={40} height={40} className="inline-block ml-2" />
+                    <Image src={images.BADGE.DIAMOND} alt="Notter Gem" width={40} height={40} className="inline-block ml-2" />
                 </h1>
                 <div className="flex flex-col sm:flex-row items-center gap-2 whitespace-nowrap">
                     <p>Выберите аккаунт/организацию:</p>

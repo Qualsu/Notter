@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { pages } from "@/config/routing/pages.route";
+import { images } from "@/config/routing/image.route";
 
 export default function Error404(){
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function Error404(){
       <div className="flex flex-col md:flex-row items-center gap-8">
         <div className="flex-shrink-0">
           <Image
-            src={"/image/error.svg"}
+            src={images.IMAGE.ERROR}
             width={140}
             height={200}
             alt="Notter"

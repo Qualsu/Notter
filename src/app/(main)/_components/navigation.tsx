@@ -45,35 +45,36 @@ export function Navigation() {
     const [documentPublicCount, setDocumentPublicCount] = useState<number>(0)
     const [premiumLevel, setPremiumLevel] = useState<number>(0)
 
-    const fetchOrgData = async () => {
-        if (isOrg && organization?.id) {
-            const orgData = await getOrgById(organization.id)
-            if (orgData) {
-                setDocumentCount(orgData.documents || 0)
-                setDocumentPublicCount(orgData.publicDocuments || 0)
-                setPremiumLevel(orgData.premium || 0)
+    useEffect(() => {
+        const fetchData = async () => {
+            if (isOrg && organization?.id) {
+                const orgData = await getOrgById(organization.id)
+                if (orgData) {
+                    setDocumentCount(orgData.documents || 0)
+                    setDocumentPublicCount(orgData.publicDocuments || 0)
+                    setPremiumLevel(orgData.premium || 0)
+                }
+                return
             }
-        }
-    }
 
-    const fetchUserData = async () => {
-        if (!isOrg && user?.id) {
-            const userData = await getUserById(user.id)
-            if (userData) {
-                setDocumentCount(userData.documents || 0)
-                setDocumentPublicCount(userData.publicDocuments || 0)
-                setPremiumLevel(userData.premium || 0)
+            if (!isOrg && user?.id) {
+                const userData = await getUserById(user.id)
+                if (userData) {
+                    setDocumentCount(userData.documents || 0)
+                    setDocumentPublicCount(userData.publicDocuments || 0)
+                    setPremiumLevel(userData.premium || 0)
+                }
             }
         }
-    }
+
+        fetchData()
+    }, [isOrg, organization?.id, user?.id])
 
     useEffect(() => {
-        if (isOrg) {
-            fetchOrgData()
-        } else {
-            fetchUserData()
+        if (isMobile && params.documentId) {
+            collapse()
         }
-    }, [])
+    }, [isMobile, params.documentId])
 
     let documentLimit: number = 75
     let publicDocumentLimit: number = 10

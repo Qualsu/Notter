@@ -148,7 +148,7 @@ export function DocumentList({
                   )}
                 
 
-                  {(clerkUser?.username === profile || user.owner == clerkUser?.id) && (
+                  {(clerkUser?.id === user._id || (user.owner === clerkUser?.id && clerkUser?.id)) && (
                     <div className="relative">
                       <button
                         onClick={(e) => {
@@ -157,7 +157,7 @@ export function DocumentList({
                         }}
                         className="absolute left-5 -bottom-3"
                       >
-                        {doc._id === user?.pined ? (
+                        {doc._id === user?.pined  ? (
                           <Pin className="w-6 h-6 text-yellow-500 hover:text-yellow-600 transition-all duration-200" />
                         ) : (
                           <Pin className="w-6 h-6 rotate-45 text-yellow-500 opacity-60 hover:opacity-100 transition-all duration-200" />

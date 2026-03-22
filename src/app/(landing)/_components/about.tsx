@@ -1,7 +1,4 @@
-import lamp from "../../../../public/icon/lamp.svg"
-import people from "../../../../public/icon/people.svg"
-import options from "../../../../public/icon/options.svg"
-import sync from "../../../../public/icon/ecosystem.svg"
+import { images } from "@/config/routing/image.route"
 import { Card } from "./card"
 
 export function About(){
@@ -10,22 +7,22 @@ export function About(){
             <Card
                 name="Просто и удобно"
                 description="Мы предоставляем простое, удобное, а главное бесплатное приложения"
-                img={lamp}
+                img={images.ICON.LAMP}
             />
             <Card
                 name="Функционально"
                 description="Большой функционал которого должно хватить для простых и средних задач"
-                img={options}
+                img={images.ICON.OPTIONS}
             />
             <Card
                 name="Работай в команде"
                 description="В Notter присутствует поддержка организаций из Qual ID для работы в команде"
-                img={people}
+                img={images.ICON.PEOPLE}
             />
             <Card
                 name="Синхронизируй"
                 description="Синхронизируя данные вы можете работать с любого устройства"
-                img={sync}
+                img={images.ICON.ECOSYSTEM}
             />
         </>
     )

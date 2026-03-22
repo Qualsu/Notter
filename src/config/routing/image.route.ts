@@ -1,0 +1,30 @@
+export const images = {
+	MANIFEST: "/manifest.json",
+	DEFAULT: {
+		COVER: "/default-cover.svg",
+		PROFILE: "/default-profile.png",
+	},
+	IMAGE: {
+		ERROR: "/image/error.svg",
+		EMPTY: "/image/Empty.png",
+		NOTTER: "/image/Notter.png",
+		NOTTER_ICON: "/image/NotterIcon.png",
+	},
+	ICON: {
+		LAMP: "/icon/lamp.svg",
+		PEOPLE: "/icon/people.svg",
+		OPTIONS: "/icon/options.svg",
+		ECOSYSTEM: "/icon/ecosystem.svg",
+	},
+	BADGE: {
+		VERIFIED: "/badge/verifed.png",
+		NOTTER: "/badge/Notter.png",
+		NOTE_VERIFIED: "/badge/NoteVerifed.png",
+		ORG_VERIFIED: "/badge/OrgVerifed.png",
+		MODERATOR: "/badge/Moderator.png",
+		CONTRIBUTOR: "/badge/Contributor.png",
+		AMBER: "/badge/Amber.png",
+		DIAMOND: "/badge/Diamond.png",
+		ID: "/badge/ID.png",
+	},
+};

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { images } from "@/config/routing/image.route";
 import type { BadgesProps } from "@/config/types/profile.types";
 
 export function Badges({profile}: BadgesProps){
@@ -7,7 +8,7 @@ export function Badges({profile}: BadgesProps){
             {profile?.badges.notter && (
                 <div className="relative group select-none">
                     <Image
-                        src="/badge/Notter.png"
+                        src={images.BADGE.NOTTER}
                         alt="Notter Icon"
                         width={27}
                         height={27}
@@ -22,7 +23,7 @@ export function Badges({profile}: BadgesProps){
             {profile?.verifiedDocuments > 0 && (
                 <div className="relative group select-none">
                     <Image
-                        src="/badge/NoteVerifed.png"
+                        src={images.BADGE.NOTE_VERIFIED}
                         alt="Note Verifed Icon"
                         width={25}
                         height={25}
@@ -37,7 +38,7 @@ export function Badges({profile}: BadgesProps){
             {profile?.verifiedOrgs > 0 && (
                 <div className="relative group select-none mx-0.5">
                     <Image
-                        src="/badge/OrgVerifed.png"
+                        src={images.BADGE.ORG_VERIFIED}
                         alt="Note Verifed Icon"
                         width={28}
                         height={28}
@@ -52,7 +53,7 @@ export function Badges({profile}: BadgesProps){
             {profile?.moderator && (
                 <div className="relative group select-none mx-0.5">
                     <Image
-                        src="/badge/Moderator.png"
+                        src={images.BADGE.MODERATOR}
                         alt="Note Verifed Icon"
                         width={24}
                         height={24}
@@ -67,7 +68,7 @@ export function Badges({profile}: BadgesProps){
             {profile?.badges.contributor && (
                 <div className="relative group select-none">
                     <Image
-                        src="/badge/Contributor.png"
+                        src={images.BADGE.CONTRIBUTOR}
                         alt="Note Verifed Icon"
                         width={28}
                         height={28}
@@ -82,7 +83,7 @@ export function Badges({profile}: BadgesProps){
             {profile?.premium == 1 && (
                 <div className="relative group">
                     <Image
-                        src="/badge/Amber.png"
+                        src={images.BADGE.AMBER}
                         alt="Note Verifed Icon"
                         width={25}
                         height={25}
@@ -97,7 +98,7 @@ export function Badges({profile}: BadgesProps){
             {profile?.premium == 2 && (
                 <div className="relative group select-none">
                     <Image
-                        src="/badge/Diamond.png"
+                        src={images.BADGE.DIAMOND}
                         alt="Note Verifed Icon"
                         width={25}
                         height={25}
@@ -111,7 +112,7 @@ export function Badges({profile}: BadgesProps){
 
             <div className="relative group ml-1.5">
                 <Image
-                    src="/badge/ID.png"
+                    src={images.BADGE.ID}
                     alt="ID Icon"
                     width={25}
                     height={25}

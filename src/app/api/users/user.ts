@@ -1,4 +1,5 @@
 import { API } from "@/config/const/api.const";
+import { apiRoutes } from "@/config/routing/api.route";
 import type { User } from "@/config/types/server.types";
 
 export async function createUser(
@@ -14,7 +15,7 @@ export async function createUser(
   mail: string | null = null
 ): Promise<User | null>{
   try {
-    const response = await API.post(`/users/add/${_id}`, {
+    const response = await API.post(apiRoutes.USERS.ADD(_id), {
       username,
       created,
       firstname,
@@ -33,7 +34,7 @@ export async function createUser(
 
 export async function getByUsername(username: string): Promise<User | null>{
   try {
-    const response = await API.get(`/users/by_username/${username}`);
+    const response = await API.get(apiRoutes.USERS.BY_USERNAME(username));
     return response.data;
   } catch (error) {
     return null;
@@ -42,7 +43,7 @@ export async function getByUsername(username: string): Promise<User | null>{
 
 export async function getById(_id: string): Promise<User | null>{
   try {
-    const response = await API.get(`/users/by_id/${_id}`);
+    const response = await API.get(apiRoutes.USERS.BY_ID(_id));
     return response.data;
   } catch (error) {
     return null;
@@ -66,7 +67,7 @@ export async function updateUser(
   moderator: boolean | null = null
 ): Promise<User | null>{
   try {
-    const response = await API.put(`/users/update/${_id}`, {
+    const response = await API.put(apiRoutes.USERS.UPDATE(_id), {
       username,
       firstname,
       lastname,
@@ -93,7 +94,7 @@ export async function updateUserBadge(
   status: boolean
 ): Promise<{ message: string } | null> {
   try {
-    const response = await API.put(`/users/update_badge/${_id}`, {
+    const response = await API.put(apiRoutes.USERS.UPDATE_BADGE(_id), {
       badge_name: badgeName,
       status
     });
@@ -108,7 +109,9 @@ export async function changeVerifiedOrgs(
   change: number
 ): Promise<{ message: string } | null> {
   try {
-    const response = await API.put(`/users/change_verified_orgs/${_id}?change=${change}`);
+    const response = await API.put(
+      apiRoutes.USERS.CHANGE_VERIFIED_ORGS(_id, change)
+    );
     return response.data;
   } catch (error) {
     return null;

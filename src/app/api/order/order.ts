@@ -1,4 +1,5 @@
 import { API } from "@/config/const/api.const";
+import { apiRoutes } from "@/config/routing/api.route";
 import type { Order } from "@/config/types/server.types";
 
 export async function createOrder(
@@ -9,7 +10,7 @@ export async function createOrder(
   amount: number | null = null
 ): Promise<Order | null>{
   try {
-    const response = await API.post("/order/create", {
+    const response = await API.post(apiRoutes.ORDER.CREATE, {
       userid,
       premium,
       status,
@@ -25,7 +26,7 @@ export async function checkOrder(
   _id: string
 ): Promise<Order | null>{
   try {
-    const response = await API.get(`/order/check/${_id}`);
+    const response = await API.get(apiRoutes.ORDER.CHECK(_id));
     return response.data;
   } catch (error) {
     return null;
@@ -36,7 +37,7 @@ export async function success(
   _id: string
 ): Promise<Order | null>{
   try {
-    const response = await API.put(`/order/success/${_id}`);
+    const response = await API.put(apiRoutes.ORDER.SUCCESS(_id));
     return response.data;
   } catch (error) {
     return null;

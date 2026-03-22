@@ -1,4 +1,5 @@
 import { API } from "@/config/const/api.const";
+import { apiRoutes } from "@/config/routing/api.route";
 import type { Org } from "@/config/types/server.types";
 
 export async function createOrg(
@@ -14,7 +15,7 @@ export async function createOrg(
   verifiedDocuments: number | null = null,
 ): Promise<Org | null>{
   try {
-    const response = await API.post(`/orgs/add/${_id}`, {
+    const response = await API.post(apiRoutes.ORGS.ADD(_id), {
       username,
       owner,
       created,
@@ -33,7 +34,7 @@ export async function createOrg(
 
 export async function getByUsername(username: string): Promise<Org | null>{
   try {
-    const response = await API.get(`/orgs/by_username/${username}`);
+    const response = await API.get(apiRoutes.ORGS.BY_USERNAME(username));
     return response.data;
   } catch (error) {
     return null;
@@ -42,7 +43,7 @@ export async function getByUsername(username: string): Promise<Org | null>{
 
 export async function getById(_id: string): Promise<Org | null>{
   try {
-    const response = await API.get(`/orgs/by_id/${_id}`);
+    const response = await API.get(apiRoutes.ORGS.BY_ID(_id));
     return response.data;
   } catch (error) {
     return null;
@@ -65,7 +66,7 @@ export async function updateOrg(
   verifiedDocuments: number | null = null,
 ): Promise<Org | null>{
   try {
-    const response = await API.put(`/orgs/update/${_id}`, {
+    const response = await API.put(apiRoutes.ORGS.UPDATE(_id), {
       username,
       name,
       owner,
@@ -91,7 +92,7 @@ export async function updateOrgBadge(
   status: boolean
 ): Promise<{ message: string } | null> {
   try {
-    const response = await API.put(`/orgs/update_badge/${_id}`, {
+    const response = await API.put(apiRoutes.ORGS.UPDATE_BADGE(_id), {
       badge_name: badgeName,
       status
     });

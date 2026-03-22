@@ -1,8 +1,8 @@
 import Image from "next/image";
-import logoImg from "../../../../public/image/Notter.png"
 import Link from "next/link";
 import { links } from "@/config/routing/links.route";
 import { pages } from "@/config/routing/pages.route";
+import { images } from "@/config/routing/image.route";
 
 export function Footer(){
     return (
@@ -10,7 +10,7 @@ export function Footer(){
             <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <Link href={pages.ROOT} className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                        <Image src={logoImg} height="50" alt="Notter Logo"/>
+                        <Image src={images.IMAGE.NOTTER} height="50" width="180" alt="Notter Logo"/>
                     </Link>
                     <ul className="flex flex-wrap items-center mb-6 text-sm font-medium sm:mb-0 text-gray-500 dark:text-gray-400">
                         <li>

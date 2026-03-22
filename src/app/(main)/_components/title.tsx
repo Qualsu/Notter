@@ -65,7 +65,7 @@ export function Title({ initialData }: TitleProps){
                     className="h-7 px-2 focus-visible:ring-transparent"
                 />
             ) : (
-              <div className="flex flex-row items-center">
+              <div className="flex flex-row items-center gap-1">
                 <Button
                     onClick={enableInput}
                     variant="ghost"
@@ -74,7 +74,9 @@ export function Title({ initialData }: TitleProps){
                 >
                     <span className="truncate text-sm">{initialData?.title}</span>
                 </Button>
-                {initialData.verifed && <VerifedBadge text="Заметка верефицирована командой Qualsu" size={4} clicked={true} down={true}/>}
+                {initialData.verifed && 
+                  <VerifedBadge text="Заметка верефицирована командой Qualsu" size={4} clicked={true} down={true}/>
+                }
               </div>
             )}
         </div>
