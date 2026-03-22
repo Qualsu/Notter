@@ -3,7 +3,7 @@ import { Card } from "./card"
 
 export function About(){
     return (
-        <>
+        <div className="space-y-2">
             <Card
                 name="Просто и удобно"
                 description="Мы предоставляем простое, удобное, а главное бесплатное приложения"
@@ -24,6 +24,6 @@ export function About(){
                 description="Синхронизируя данные вы можете работать с любого устройства"
                 img={images.ICON.ECOSYSTEM}
             />
-        </>
+        </div>
     )
 }

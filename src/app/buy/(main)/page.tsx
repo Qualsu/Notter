@@ -113,50 +113,106 @@ export default function BuyPremium() {
     };
 
     return (
-        <>
-            <div className="min-h-screen flex flex-col items-center justify-center gap-3">
-                <h1 className="text-5xl font-bold drop-shadow-sm text-center">
-                    <span className="text-logo-yellow">N</span>
-                    <span className="text-logo-light-yellow">otter </span>
-                    <span className="text-logo-cyan">Gem</span>
-                    <Image src={images.BADGE.DIAMOND} alt="Notter Gem" width={40} height={40} className="inline-block ml-2" />
-                </h1>
-                <div className="flex flex-col sm:flex-row items-center gap-2 whitespace-nowrap">
-                    <p>Выберите аккаунт/организацию:</p>
-                    <OrganizationSwitcher />
-                </div>
-                <div className="flex flex-col sm:flex-row items-center whitespace-nowrap gap-2">
-                    <p>Выберите тариф:</p>
-                    <Select onValueChange={(value) => setSelectedPlan(value)} >
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Выберите тариф" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="1">Amber</SelectItem>
-                            <SelectItem value="2">Diamond</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <p className="text-primary/50 text-xs">Ваш текущий: {getCurrentPlan()}</p>
-                {selectedPlan && (
-                    <div className="flex flex-row items-center gap-2">
-                        <span>Цена:
-                        <span> </span>
-                        {calculatePrice().oldPrice > 0 && (
-                            <span className="line-through text-primary/70">{calculatePrice().oldPrice}₽</span>
-                        )}
-                        <span> </span>
-                        {calculatePrice().price}₽</span>
-                        <Button
-                            onClick={handlePayment}
-                            variant={"outline"}
-                            disabled={loading}
-                        >
+        <main className="min-h-screen flex items-center justify-center p-6">
+            <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-extrabold">
+                            <span className="text-logo-yellow">N</span>
+                            <span className="text-logo-light-yellow">otter</span>
+                            <span className="text-logo-cyan"> Gem</span>
+                        </h1>
+                        <Image src={images.BADGE.DIAMOND} alt="Notter Gem" width={36} height={36} />
+                    </div>
+
+                    <p className="text-muted-foreground">Выберите тариф, который подходит вам. Нажмите на карточку, чтобы выбрать.</p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <PlanCard
+                            id="1"
+                            title="Amber"
+                            price={isOrg ? 149 : 29}
+                            icon={images.BADGE.AMBER}
+                            selected={selectedPlan === "1"}
+                            onSelect={() => setSelectedPlan("1")}
+                        />
+
+                        <PlanCard
+                            id="2"
+                            title="Diamond"
+                            price={isOrg ? 299 : 99}
+                            icon={images.BADGE.DIAMOND}
+                            selected={selectedPlan === "2"}
+                            onSelect={() => setSelectedPlan("2")}
+                        />
+                    </div>
+                </section>
+
+                <aside className="bg-card/60 dark:bg-zinc-900/60 backdrop-blur rounded-2xl p-6 shadow-lg">
+                    <div className="mb-4">
+                        <h2 className="text-xl font-semibold">Оплата</h2>
+                        <p className="text-sm text-muted-foreground">Аккаунт / Организация</p>
+                        <div className="mt-2">
+                            <OrganizationSwitcher />
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <div className="flex items-center justify-between">
+                            <div className="text-sm text-muted-foreground">Текущий план</div>
+                            <div className="font-medium">{getCurrentPlan()}</div>
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <div className="text-sm text-muted-foreground">Выбранный тариф</div>
+                        <div className="mt-2 text-lg font-semibold">{selectedPlan === "1" ? "Amber" : selectedPlan === "2" ? "Diamond" : "—"}</div>
+                    </div>
+
+                    <div className="mb-4">
+                        <div className="flex items-baseline gap-3">
+                            {calculatePrice().oldPrice > 0 && (
+                                <div className="text-sm line-through text-primary/70">{calculatePrice().oldPrice}₽</div>
+                            )}
+                            <div className="text-2xl font-bold">{calculatePrice().price}₽</div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">Ежемесячно</div>
+                    </div>
+
+                    <div className="mt-6">
+                        <Button onClick={handlePayment} className="w-full" disabled={loading || !selectedPlan}>
                             {loading ? "Ожидание..." : "Оплатить"}
                         </Button>
                     </div>
-                )}
+                </aside>
             </div>
-        </>
+        </main>
     );
+}
+
+function PlanCard({ id, title, price, icon, selected, onSelect }: { id: string; title: string; price: number; icon?: string; selected: boolean; onSelect: () => void }) {
+    return (
+        <div onClick={onSelect} className={`cursor-pointer p-4 rounded-xl border ${selected ? "border-yellow-400 shadow-lg" : "border-transparent hover:shadow-md"} bg-white/70 dark:bg-zinc-900/50 transition`}> 
+            <div className="flex items-center gap-3">
+                {icon && <Image src={icon} alt={title} width={40} height={40} />}
+                <div>
+                    <div className="text-lg font-semibold">{title}</div>
+                    <div className="text-sm text-muted-foreground">{price}₽ / мес</div>
+                </div>
+            </div>
+            <ul className="mt-3 text-sm text-muted-foreground list-disc pl-5 space-y-1">
+                {title === "Amber" ? (
+                    <>
+                        <li>Сокращенные ссылки</li>
+                        <li>Значок в профиле</li>
+                    </>
+                ) : (
+                    <>
+                        <li>Все преимущества Amber</li>
+                        <li>Кастомные ссылки</li>
+                    </>
+                )}
+            </ul>
+        </div>
+    )
 }
