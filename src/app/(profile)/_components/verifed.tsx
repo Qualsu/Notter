@@ -32,7 +32,7 @@ export default function VerifedBadge({ text, size, clicked = false, down = false
         src={images.BADGE.VERIFIED}
       />
       <span
-        className={`absolute ${down ? "top-5 ml-8" : "-top-8"} left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs transition-opacity duration-200 text-center whitespace-nowrap text-yellow-200 
+        className={`absolute ${down ? "top-5 ml-8" : "-top-8"} left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs transition-opacity duration-200 text-center whitespace-nowrap text-yellow-200
           ${clicked ? (isClicked ? 'opacity-100' : 'opacity-0') : 'opacity-0 group-hover:opacity-100'}
         `}
       >

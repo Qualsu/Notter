@@ -177,8 +177,8 @@ export function SettingsModal() {
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-1">
             <Label>Редирект</Label>
-            <span className="text-[0.8rem] text-muted-foreground">
-              При переходе на главную страницу &apos;/&apos; перенаправлять на &apos;/dashboard&apos;
+            <span className="text-[0.8rem] text-muted-foreground w-full max-w-[350px]">
+              При переходе на главную страницу &apos;/&apos; перенаправлять на дашборд
             </span>
           </div>
           <Switch
@@ -231,7 +231,7 @@ export function SettingsModal() {
               }}
               variant={"outline"}
             >
-              Настройки аккаунта <Settings/>
+              <Settings/> Настройки аккаунта 
             </Button>
           </div>
           <div
@@ -243,7 +243,7 @@ export function SettingsModal() {
           >
             <SignOutButton>
               <Button variant={"destructive"}>
-                Выйти из аккаунта <LogOut/>
+                <LogOut/> Выйти из аккаунта
               </Button>
             </SignOutButton>
           </div>

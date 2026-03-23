@@ -11,18 +11,45 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Check } from "lucide-react"
+import Image from "next/image"
+import { images } from "@/config/routing/image.route"
+import { getById as getUserById } from "../../api/users/user"
+import { getById as getOrgById } from "../../api/orgs/org"
+import { useEffect, useState } from "react"
 
 export function UserItem(){
     const { user } = useUser()
     const { organization } = useOrganization()
     const isOrg = organization?.id !== undefined
+    const [profile, setProfile] = useState<any | null>(null)
 
     const stopMenuEvent = (event: React.SyntheticEvent) => {
         event.stopPropagation()
     }
 
     const image = (user as any)?.imageUrl || (user as any)?.profileImageUrl || (user as any)?.image || null
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                if (isOrg && organization?.id) {
+                    const org = await getOrgById(organization.id)
+                    setProfile(org)
+                    return
+                }
+
+                if (!isOrg && user?.id) {
+                    const u = await getUserById(user.id)
+                    setProfile(u)
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        fetchProfile()
+    }, [isOrg, organization?.id, user?.id])
 
     return (
         <div>
@@ -36,7 +63,21 @@ export function UserItem(){
                                 <AvatarFallback className="text-sm">{(user?.username || "?").charAt(0).toUpperCase()}</AvatarFallback>
                             )}
                         </Avatar>
-                        <div className="text-sm text-muted-foreground font-medium truncate max-w-[8rem]">{user?.username ?? user?.fullName ?? "Пользователь"}</div>
+                        <div className="flex items-center gap-2">
+                                <span className={`text-sm font-medium truncate max-w-[8rem] ${profile?.premium === 1 ? 'text-amber-300' : profile?.premium === 2 ? 'text-cyan-300' : 'text-muted-foreground'}`}>{user?.username ?? user?.fullName ?? "Пользователь"}</span>
+
+                                {profile?.verified && (
+                                  <Check className="w-4 h-4 text-muted-foreground relative right-0" />
+                                )}
+
+                                {profile?.premium === 1 && (
+                                    <Image src={images.BADGE.AMBER} alt="Amber" width={14} height={14} className="object-contain relative right-1" />
+                                )}
+
+                                {profile?.premium === 2 && (
+                                    <Image src={images.BADGE.DIAMOND} alt="Diamond" width={14} height={14} className="object-contain relative right-1" />
+                                )}
+                        </div>
                     </button>
                 </DropdownMenuTrigger>
 

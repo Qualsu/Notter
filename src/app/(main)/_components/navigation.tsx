@@ -21,11 +21,32 @@ import { useSearch } from "../../../components/hooks/use-search"
 import { useSettings } from "../../../components/hooks/use-settings"
 import { Navbar } from "./navbar"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import { pages } from "@/config/routing/pages.route"
 
 export function Navigation() {
     const router = useRouter()
     const settings = useSettings()
+
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
+                e.preventDefault()
+                settings.onOpen()
+            }
+        }
+
+        if (typeof window !== "undefined") {
+            window.addEventListener("keydown", handler)
+        }
+
+        return () => {
+            if (typeof window !== "undefined") {
+                window.removeEventListener("keydown", handler)
+            }
+        }
+    }, [settings])
+
     const seacrh = useSearch()
     const params = useParams()
     const { user } = useUser()
@@ -44,6 +65,20 @@ export function Navigation() {
     const [documentCount, setDocumentCount] = useState<number>(0)
     const [documentPublicCount, setDocumentPublicCount] = useState<number>(0)
     const [premiumLevel, setPremiumLevel] = useState<number>(0)
+    const [isPromoHidden, setIsPromoHidden] = useState<boolean>(() => {
+        try {
+            return typeof window !== "undefined" && localStorage.getItem("gem_banner") === "true"
+        } catch (e) {
+            return false
+        }
+    })
+
+    const hidePromo = () => {
+        try {
+            localStorage.setItem("gem_banner", "true")
+        } catch (e) { }
+        setIsPromoHidden(true)
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -193,7 +228,7 @@ export function Navigation() {
                 <div>
                     <UserItem />
                     <Item label="Поиск" icon={Search} isSearch onClick={seacrh.onOpen} />
-                    <Item label="Настройки" icon={Settings2} onClick={settings.onOpen} />
+                    <Item label="Настройки" icon={Settings2} onClick={settings.onOpen} shortcut="k" />
                     <Item onClick={handleCreate} label="Новая заметка" icon={PlusCircle} />
                 </div>
 
@@ -236,6 +271,17 @@ export function Navigation() {
                         </div>
                     )}
                 </div>
+
+                {premiumLevel === 0 && !isPromoHidden && (
+                    <div className="relative mt-auto mb-4 mx-3 p-3 rounded-2xl bg-card/60 dark:bg-zinc-900/60 backdrop-blur shadow-lg">
+                        <button onClick={hidePromo} aria-label="Закрыть" className="absolute top-2 right-2 text-sm text-muted-foreground hover:text-foreground">✕</button>
+                        <div className="text-sm font-semibold">Попробуйте <span className="text-logo-yellow">N</span><span className="text-logo-light-yellow">otter</span><span className="text-logo-cyan"> Gem</span></div>
+                        <div className="text-xs text-muted-foreground mt-1">Расширьте лимиты и получите дополнительные функции.</div>
+                        <Link href={pages.BUY} className="block mt-3">
+                            <Button className="w-full">Купить Notter Gem</Button>
+                        </Link>
+                    </div>
+                )}
 
                 <div onMouseDown={handleMouseDown} onClick={resetWidth} className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
             </aside>

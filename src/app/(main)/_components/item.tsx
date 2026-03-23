@@ -24,7 +24,8 @@ export function Item({
     level = 0,
     onExpand,
     expanded,
-    lastEditor
+    lastEditor,
+    shortcut
 }: ItemProps){
     const router = useRouter()
     const create = useMutation(api.document.create)
@@ -169,6 +170,11 @@ export function Item({
             {isSearch && (
                 <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted/20 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                     <span className="text-xs">Ctrl</span>S
+                </kbd>
+            )}
+            {shortcut && (
+                <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted/20 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                    <span className="text-xs">Ctrl</span>{shortcut.toUpperCase()}
                 </kbd>
             )}
 

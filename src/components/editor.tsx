@@ -36,7 +36,7 @@ export default function Editor({ onChange, initialContent, editable }: EditorPro
       throw new Error("File too large")
     }
 
-    const url = await uploadFileOnServer(file);
+    const url = await uploadFileOnServer(orgId, file);
     return url;
   };
 
