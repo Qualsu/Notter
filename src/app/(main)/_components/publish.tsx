@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "convex/react"
 import { useState, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
-import { Check, Copy, Globe } from "lucide-react"
+import { Check, Copy, Eye, Globe } from "lucide-react"
 import { Doc } from "../../../../convex/_generated/dataModel"
 import { api } from "../../../../convex/_generated/api"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -231,6 +231,10 @@ export function Publish({ initialData }: PublishProps) {
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
+
+            <span className="flex flex-row text-primary/50 text-xs items-center gap-1">
+              <Eye className="w-4 h-4"/> Просмотров: {initialData.views ?? 0}
+            </span>
 
             <div className="flex flex-row items-center">
               <Checkbox

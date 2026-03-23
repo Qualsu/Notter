@@ -115,7 +115,7 @@ export function TrashBox(){
       </div>
       <div
         className="mt-2 px-1 pb-1 flex-1 overflow-y-auto"
-        style={{ maxHeight: "calc(100vh - 120px)" }} // Можно скорректировать под ваш layout
+        style={{ maxHeight: "calc(100vh - 120px)" }}
       >
         {filteredDocuments?.length === 0 && (
           <p className="pb-2 text-center text-xs text-muted-foreground">

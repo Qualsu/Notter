@@ -475,6 +475,23 @@ export const removeCoverImage = mutation({
   }
 })
 
+export const incrementViews = mutation({
+  args: {
+    id: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const document = await ctx.db.get(args.id)
+
+    if (!document || !document.isPublished || document.isAcrhived) {
+      return
+    }
+
+    await ctx.db.patch(args.id, {
+      views: (document.views ?? 0) + 1,
+    })
+  }
+})
+
 export const getTestPage = query({
   handler: async (ctx) => {
     const document = await ctx.db.query("documents")

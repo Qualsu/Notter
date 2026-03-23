@@ -13,7 +13,7 @@ export default function PremiumCard({ title, price, className, icon, features, b
         )}
         <div>
           <h3 className="text-2xl font-semibold">{title}</h3>
-          <div className="text-sm text-muted-foreground">{price}₽ / мес</div>
+          <div className="text-sm text-muted-foreground">{price}₽ / навсегда</div>
         </div>
       </div>
 

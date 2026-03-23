@@ -14,6 +14,7 @@ import { updateOrg } from "../../app/api/orgs/org"
 import { pages } from "@/config/routing/pages.route"
 import { Button } from "../ui/button"
 import { useRef } from "react"
+import { LogOut, Settings, User } from "lucide-react"
 
 export function SettingsModal() {
   const settings = useSettings()
@@ -23,6 +24,7 @@ export function SettingsModal() {
   const { organization } = useOrganization()
   const [isPrivated, setIsPrivated] = useState<boolean>(false)
   const [watermark, setWatermark] = useState<boolean>(false)
+  const [redirect, setRedirect] = useState<boolean>(false)
   const [userData, setUserData] = useState<any>(null)
   const isOrg = organization?.id !== undefined
   const id = isOrg ? organization?.id : user?.id as string
@@ -40,6 +42,9 @@ export function SettingsModal() {
     }
 
     fetchData()
+
+    const redirectValue = localStorage.getItem("redirect")
+    setRedirect(redirectValue === "true")
   }, [user, id, isOrg])
 
   const handlePrivacyToggle = async (value: boolean) => {
@@ -66,6 +71,12 @@ export function SettingsModal() {
         await updateUser(id, null, null, null, null, null, null, null, null, null, value)
       }
     }
+  }
+
+  const handleRedirectToggle = async (value: boolean) => {
+    setRedirect(value)
+
+    localStorage.setItem("redirect", value ? "true" : "false")
   }
 
   // backdrop modal (simplified)
@@ -163,6 +174,19 @@ export function SettingsModal() {
           <ModeToggle />
         </div>
 
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-y-1">
+            <Label>Редирект</Label>
+            <span className="text-[0.8rem] text-muted-foreground">
+              При переходе на главную страницу &apos;/&apos; перенаправлять на &apos;/dashboard&apos;
+            </span>
+          </div>
+          <Switch
+            checked={redirect}
+            onCheckedChange={handleRedirectToggle}
+          />
+        </div>
+
         {(userData?.owner === user?.id || !isOrg) && (
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-y-1">
@@ -207,7 +231,7 @@ export function SettingsModal() {
               }}
               variant={"outline"}
             >
-              Настройки аккаунта
+              Настройки аккаунта <Settings/>
             </Button>
           </div>
           <div
@@ -219,7 +243,7 @@ export function SettingsModal() {
           >
             <SignOutButton>
               <Button variant={"destructive"}>
-                Выйти из аккаунта
+                Выйти из аккаунта <LogOut/>
               </Button>
             </SignOutButton>
           </div>

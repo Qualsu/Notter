@@ -176,7 +176,7 @@ export default function BuyPremium() {
                             )}
                             <div className="text-2xl font-bold">{calculatePrice().price}₽</div>
                         </div>
-                        <div className="text-xs text-muted-foreground">Ежемесячно</div>
+                        <div className="text-xs text-muted-foreground">Единоразово</div>
                     </div>
 
                     <div className="mt-6">
@@ -197,7 +197,7 @@ function PlanCard({ id, title, price, icon, selected, onSelect }: { id: string; 
                 {icon && <Image src={icon} alt={title} width={40} height={40} />}
                 <div>
                     <div className="text-lg font-semibold">{title}</div>
-                    <div className="text-sm text-muted-foreground">{price}₽ / мес</div>
+                    <div className="text-sm text-muted-foreground">{price}₽ / навсегда</div>
                 </div>
             </div>
             <ul className="mt-3 text-sm text-muted-foreground list-disc pl-5 space-y-1">

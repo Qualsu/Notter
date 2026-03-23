@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic"
 import { useMemo, useEffect, useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useQuery } from "convex/react"
+import { useQuery, useMutation } from "convex/react"
 import { Toolbar } from "@/components/toolbar"
 import { Cover } from "@/components/cover"
 import Error404 from "@/app/not-found"
@@ -52,6 +52,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const [user, setUser] = useState<User | null>(null)
   const { user: clerkUser } = useUser()
   const { organization } = useOrganization()
+  const incrementViews = useMutation(api.document.incrementViews)
   
   const document = useQuery(
     isShort
@@ -65,6 +66,13 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
           userId: organization?.id ?? clerkUser?.id
         }
   )
+
+  useEffect(() => {
+    if (document?._id && document.isPublished && !document.isAcrhived) {
+      incrementViews({ id: document._id })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [document?._id])
 
   useEffect(() => {
     const fetchProfile = async () => {

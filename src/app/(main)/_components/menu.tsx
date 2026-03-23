@@ -39,7 +39,7 @@ export function Menu({ documentId }: MenuProps) {
     userId: orgId,
   });
 
-  const [openModal, setOpenModal] = useState(false); // Стейт для открытия модального окна
+  const [openModal, setOpenModal] = useState(false);
   const [profile, setProfile] = useState<User | Org | null>(null)
 
   useEffect(() => {
