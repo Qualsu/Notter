@@ -134,11 +134,11 @@ export function Menu({ documentId }: MenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" className="h-8 rounded-lg hover:bg-black/5 dark:hover:bg-white/10">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
+      <DropdownMenuContent className="w-60 rounded-xl border-white/60 bg-white/95 shadow-xl dark:border-white/10 dark:bg-zinc-950/95" align="end" alignOffset={8} forceMount>
         <Protect
           condition={(check) => {
             return check({
@@ -185,8 +185,8 @@ export function Menu({ documentId }: MenuProps) {
 
       </DropdownMenuContent>
       {openModal && profile?.premium == 2 && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black/80 bg-opacity-50 z-50">
-          <div className="bg-black p-4 rounded-md w-96">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-zinc-950 p-5 shadow-2xl">
             <h3 className="text-lg font-semibold mb-4">Загрузите JSON файл</h3>
             <Dropzone
               accept={{ 'application/json': [] }}
@@ -200,7 +200,7 @@ export function Menu({ documentId }: MenuProps) {
               <DropzoneEmptyState />
               <DropzoneContent />
             </Dropzone>
-            <Button onClick={() => setOpenModal(false)} className="mt-4" variant={"outline"}>
+            <Button onClick={() => setOpenModal(false)} className="mt-4 w-full rounded-xl" variant={"outline"}>
               Закрыть
             </Button>
           </div>

@@ -231,15 +231,15 @@ export function ModeratorPanel({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
-        <Button onClick={() => setDialogOpen(true)} variant={"outline"} size={"icon"}>
+        <Button onClick={() => setDialogOpen(true)} variant={"outline"} size={"icon"} className="h-8 w-8 rounded-lg border-border/70 bg-background/70 hover:bg-background">
           <Menu />
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
-        <DialogTitle>Панель Модератора</DialogTitle>
+      <DialogContent className="rounded-2xl border-white/40 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/95">
+        <DialogTitle className="text-lg font-semibold">Панель Модератора</DialogTitle>
         <DialogDescription>
-          <p>_id: {_id}</p>
+          <p className="text-xs">_id: {_id}</p>
           <p>User ID: {userId}</p>
           <p>Short ID: {shortId}</p>
           <p className="flex flex-row items-center gap-1">
@@ -254,7 +254,7 @@ export function ModeratorPanel({
           <p>Creator: {creatorName}</p>
           <p>Last editor: {lastEditor}</p>
 
-          <hr className="my-3" />
+          <hr className="my-3 border-black/10 dark:border-white/10" />
 
           <div className="flex items-center gap-3">
             <p className="whitespace-nowrap">Short ID:</p>
@@ -300,17 +300,17 @@ export function ModeratorPanel({
 
           <div className="flex flex-row items-center gap-2">
             <ConfirmModal onConfirm={() => onRemove(_id)}>
-                <Button variant={"outline"} className="mt-4">
+                <Button variant={"outline"} className="mt-4 rounded-lg">
                 Удалить <Trash className="h-4 w-4 text-muted-foreground" />
                 </Button>
             </ConfirmModal>
 
-            <Button variant={"outline"} className="mt-4" onClick={downloadJson}>
+            <Button variant={"outline"} className="mt-4 rounded-lg" onClick={downloadJson}>
                 <FileJson className="h-4 w-4" /> Скачать JSON
             </Button>
           </div>
         </DialogDescription>
-        <DialogClose onClick={() => setDialogOpen(false)}>Закрыть</DialogClose>
+        <DialogClose onClick={() => setDialogOpen(false)} className="rounded-lg border border-border/70 px-3 py-1 text-sm hover:bg-background/70">Закрыть</DialogClose>
       </DialogContent>
     </Dialog>
   );

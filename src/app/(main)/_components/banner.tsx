@@ -49,10 +49,10 @@ export function Banner({ documentId }: BannerProps){
 
     return (
     <div
-      className="fixed w-full z-[100000] flex justify-center bg-rose-500 p-0"
+      className="fixed z-[100000] flex w-full justify-center bg-transparent p-2"
       style={{ minHeight: 40 }}
     >
-      <div className="flex flex-col md:flex-row items-center gap-3 w-full max-w-2xl px-4 py-2 text-center md:text-left text-sm text-white">
+      <div className="flex w-full max-w-3xl flex-col items-center gap-3 rounded-2xl border border-rose-300/60 bg-rose-500/95 px-4 py-2 text-center text-sm text-white shadow-xl backdrop-blur md:flex-row md:text-left">
         <p className="mb-2 md:mb-0">
           Эта заметка перемещена в архив
         </p>
@@ -69,7 +69,7 @@ export function Banner({ documentId }: BannerProps){
               size="sm"
               onClick={onRestore}
               variant="outline"
-              className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
+              className="h-auto rounded-lg border-white/80 bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
             >
               Восстановить
             </Button>
@@ -77,7 +77,7 @@ export function Banner({ documentId }: BannerProps){
               <Button
                 size="sm"
                 variant="outline"
-                className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
+                className="h-auto rounded-lg border-white/80 bg-transparent p-1 px-2 font-normal text-white transition hover:bg-white hover:text-rose-500"
               >
                 Удалить безвозвратно
               </Button>

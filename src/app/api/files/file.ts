@@ -12,7 +12,7 @@ export async function uploadFile(userid: string, file: File) {
 }
 
 export async function deleteFile(url: string) {
-  const response = await API.delete(apiRoutes.FILES.DELETE, { url });
+  const response = await API.delete(apiRoutes.FILES.DELETE, { data: { url } });
 
   return response.data.success;
 }

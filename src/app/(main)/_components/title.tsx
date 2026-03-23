@@ -62,7 +62,7 @@ export function Title({ initialData }: TitleProps){
                     onChange={onChange}
                     onKeyDown={onKeyDown}
                     value={title}
-                    className="h-7 px-2 focus-visible:ring-transparent"
+                  className="h-8 rounded-lg border-border/60 bg-background/70 px-2.5 text-sm focus-visible:ring-1 focus-visible:ring-ring"
                 />
             ) : (
               <div className="flex flex-row items-center gap-1">
@@ -70,7 +70,7 @@ export function Title({ initialData }: TitleProps){
                     onClick={enableInput}
                     variant="ghost"
                     size="sm"
-                    className="h-auto p-1 font-normal"
+                  className="h-8 rounded-lg px-2.5 font-normal hover:bg-black/5 dark:hover:bg-white/10"
                 >
                     <span className="truncate text-sm">{initialData?.title}</span>
                 </Button>

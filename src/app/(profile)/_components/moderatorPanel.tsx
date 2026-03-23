@@ -194,15 +194,15 @@ export function ModeratorPanel({ user }: UserProps) {
     <>
       <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger>
-          <Button onClick={handleOpenDialog} variant={"outline"} size={"icon"}>
+          <Button onClick={handleOpenDialog} variant={"outline"} size={"icon"} className="h-8 w-8 rounded-lg border-border/70 bg-background/70 hover:bg-background">
             <Menu />
           </Button>
         </DialogTrigger>
 
-        <DialogContent>
-          <DialogTitle>Панель Модератора</DialogTitle>
+        <DialogContent className="rounded-2xl border-white/40 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/95">
+          <DialogTitle className="text-lg font-semibold">Панель Модератора</DialogTitle>
           <DialogDescription>
-            <p>_id: {user?._id}</p>
+            <p className="text-xs">_id: {user?._id}</p>
             {isOrg && <p>Owner _id: {user?.owner}</p>}
             {isOrg && <p>Members:</p>}
             {isOrg && user?.members.map((member) => (
@@ -214,7 +214,7 @@ export function ModeratorPanel({ user }: UserProps) {
             <p>Verified Documents: {user?.verifiedDocuments}</p>
             {!isOrg && <p>Verified orgs: {user?.verifiedOrgs}</p>}
             
-            <hr className="my-3" />
+            <hr className="my-3 border-black/10 dark:border-white/10" />
 
             <div className="flex items-center gap-3">
               <p>Watermark: </p>
@@ -261,7 +261,7 @@ export function ModeratorPanel({ user }: UserProps) {
               />
             </div>
           </DialogDescription>
-          <DialogClose onClick={handleCloseDialog}>
+          <DialogClose onClick={handleCloseDialog} className="rounded-lg border border-border/70 px-3 py-1 text-sm hover:bg-background/70">
             Закрыть
           </DialogClose>
         </DialogContent>

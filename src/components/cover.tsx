@@ -25,6 +25,7 @@ export function Cover({ url, preview }: CoverImageProps){
   
   const onRemove = async () => {
     if (url) {
+      console.log(url)
       await deleteFile(url);
     }
 

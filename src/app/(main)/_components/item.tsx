@@ -135,8 +135,8 @@ export function Item({
             onClick={onClick} 
             role="button" 
             style={{paddingLeft: level ? `${(level * 12) + 12}px` : "12px"}} 
-            className={cn(`group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium`,
-            active && "bg-primary/5 text-primary"
+            className={cn(`group mb-0.5 flex min-h-[34px] w-full items-center rounded-xl py-1.5 pr-2 text-sm font-medium text-muted-foreground transition hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10`,
+            active && "bg-gradient-to-r from-logo-yellow/20 to-logo-cyan/20 text-foreground shadow-sm"
             )}
             draggable={id === undefined ? false : true}
             onDragStart={handleDragStart}
@@ -147,10 +147,10 @@ export function Item({
             {!!id && (
                 <div 
                     role="button" 
-                    className="h-full rounded-sm hover:bg-primary/5 mr-1"
+                    className="mr-1 rounded-md p-0.5 hover:bg-background/70"
                     onClick={handleExpand}
                 >
-                    <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50"/>
+                    <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/70"/>
                 </div>
             )}
             {documentIcon ? (
@@ -158,7 +158,7 @@ export function Item({
                     {documentIcon}
                 </div>
             ) : (
-                <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground"/>
+                <Icon className="mr-2 h-[17px] w-[17px] shrink-0 text-muted-foreground"/>
             )}
             
             <span className="truncate">
@@ -168,12 +168,12 @@ export function Item({
 
 
             {isSearch && (
-                <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted/20 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                <kbd className="ml-auto inline-flex h-5 select-none items-center gap-1 rounded-md border border-border/60 bg-background/70 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
                     <span className="text-xs">Ctrl</span>S
                 </kbd>
             )}
             {shortcut && (
-                <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted/20 px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                <kbd className="ml-auto inline-flex h-5 select-none items-center gap-1 rounded-md border border-border/60 bg-background/70 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
                     <span className="text-xs">Ctrl</span>{shortcut.toUpperCase()}
                 </kbd>
             )}
@@ -182,11 +182,11 @@ export function Item({
                 <div className="ml-auto flex items-center gap-x-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                            <div role="button" className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary/5">
+                            <div role="button" className="ml-auto rounded-md p-1 opacity-0 transition group-hover:opacity-100 hover:bg-background/70">
                                 <MoreHorizontal className="h-4 w-4 text-muted-foreground"/>
                             </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-60" align="start" side="right" forceMount>
+                        <DropdownMenuContent className="w-60 rounded-xl border-white/60 bg-white/95 shadow-xl dark:border-white/10 dark:bg-zinc-950/95" align="start" side="right" forceMount>
                             <Protect
                                 condition={(check) => {
                                     return check({
@@ -209,7 +209,7 @@ export function Item({
                     <div 
                         role="button" 
                         onClick={onCreate} 
-                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-primary/5"
+                        className="ml-auto rounded-md p-1 opacity-0 transition group-hover:opacity-100 hover:bg-background/70"
                     >
                         <Plus className="h-4 w-4 text-muted-foreground"/>
                     </div>

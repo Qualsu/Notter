@@ -14,7 +14,7 @@ export function Badges({profile}: BadgesProps){
                         height={27}
                         className="transform transition-transform duration-200 hover:scale-110"
                     />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-yellow-200">
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap text-yellow-200 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                     Разработчик Notter
                     </span>
                 </div>
@@ -29,7 +29,7 @@ export function Badges({profile}: BadgesProps){
                         height={25}
                         className="transform transition-transform duration-200 hover:scale-110"
                     />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                     Создатель верефицированных заметок
                     </span>
                 </div>
@@ -44,7 +44,7 @@ export function Badges({profile}: BadgesProps){
                         height={28}
                         className="transform transition-transform duration-200 hover:scale-110"
                     />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                         Владелец верефицированной команды
                     </span>
                 </div>
@@ -59,7 +59,7 @@ export function Badges({profile}: BadgesProps){
                         height={24}
                         className="transform transition-transform duration-200 hover:scale-110"
                     />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-orange-300">
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap text-orange-300 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                     Модератор
                     </span>
                 </div>
@@ -74,7 +74,7 @@ export function Badges({profile}: BadgesProps){
                         height={28}
                         className="transform transition-transform duration-200 hover:scale-110"
                     />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap text-rose-400">
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap text-rose-400 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                     Внесенный вклад
                     </span>
                 </div>
@@ -89,7 +89,7 @@ export function Badges({profile}: BadgesProps){
                         height={25}
                         className="transform transition-transform duration-200 hover:scale-110"
                     />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                     Notter Gem: <span className="text-amber-300">Amber</span>
                     </span>
                 </div>
@@ -104,7 +104,7 @@ export function Badges({profile}: BadgesProps){
                         height={25}
                         className="transform transition-transform duration-200 hover:scale-110"
                     />
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                     Notter Gem: <span className="text-cyan-300">Diamond</span>
                     </span>
                 </div>
@@ -118,7 +118,7 @@ export function Badges({profile}: BadgesProps){
                     height={25}
                     className="transform transition-transform duration-200 hover:scale-110"
                 />
-                <span className="absolute -top-12 left-1/2 -translate-x-1/2 bg-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center whitespace-nowrap">
+                <span className="absolute -top-14 left-1/2 -translate-x-1/2 rounded-lg border border-white/20 bg-zinc-950/95 px-2 py-1 text-center text-xs whitespace-nowrap opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
                     Дата регистрации:
                     <p>{profile?.created ? new Date(profile.created).toLocaleDateString() : "undefined"}</p>
                 </span>
