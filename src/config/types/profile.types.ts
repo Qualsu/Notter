@@ -1,6 +1,6 @@
 import type { Id } from "../../../convex/_generated/dataModel"
 import type * as React from "react"
-import type { Org, User } from "./server.types"
+import type { Org, User } from "./api.types"
 
 export type VerifedBadgeProps = {
   text: string;

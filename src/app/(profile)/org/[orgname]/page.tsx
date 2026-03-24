@@ -24,7 +24,7 @@ import Link from "next/link";
 import { pages } from "@/config/routing/pages.route";
 import { images } from "@/config/routing/image.route";
 import type { OrgProps } from "@/config/types/profile.types";
-import type { Org, User } from "@/config/types/server.types";
+import type { Org, User } from "@/config/types/api.types";
 
 export default function OrgProfile({ params }: OrgProps) {
   const { isLoaded, user } = useUser();

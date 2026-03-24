@@ -12,7 +12,7 @@ import { Protect, useOrganization, useUser } from "@clerk/nextjs"
 import { getById as getUserByID, updateUser } from "../../api/users/user"
 import { getById as getOrgByID, updateOrg } from "../../api/orgs/org"
 import type { PublishProps } from "@/config/types/main.types";
-import type { Org, User } from "@/config/types/server.types";
+import type { Org, User } from "@/config/types/api.types";
 
 export function Publish({ initialData }: PublishProps) {
   const origin = useOrigin()

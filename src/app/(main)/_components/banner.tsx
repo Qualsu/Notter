@@ -49,11 +49,11 @@ export function Banner({ documentId }: BannerProps){
 
     return (
     <div
-      className="fixed z-[100000] flex w-full justify-center bg-transparent p-2"
+      className="flex w-full justify-center bg-transparent p-2"
       style={{ minHeight: 40 }}
     >
-      <div className="flex w-full max-w-3xl flex-col items-center gap-3 rounded-2xl border border-rose-300/60 bg-rose-500/95 px-4 py-2 text-center text-sm text-white shadow-xl backdrop-blur md:flex-row md:text-left">
-        <p className="mb-2 md:mb-0">
+      <div className="flex w-full max-w-3xl justify-center flex-col items-center gap-3 rounded-2xl border border-rose-300/60 bg-rose-500/95 px-4 py-2 text-center text-sm text-white shadow-xl backdrop-blur md:flex-row md:text-left">
+        <p className=" md:mb-0">
           Эта заметка перемещена в архив
         </p>
         <Protect

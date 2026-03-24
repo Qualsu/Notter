@@ -11,8 +11,8 @@ export async function uploadFile(userid: string, file: File) {
   return `${API.defaults.baseURL ?? ""}${response.data.url}`;
 }
 
-export async function deleteFile(url: string) {
-  const response = await API.delete(apiRoutes.FILES.DELETE, { data: { url } });
+export async function deleteFile(userid: string, fileid: string) {
+  const response = await API.delete(apiRoutes.FILES.DELETE, { data: { userid, fileid } });
 
   return response.data.success;
 }

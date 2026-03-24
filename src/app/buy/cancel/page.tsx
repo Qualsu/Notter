@@ -10,8 +10,8 @@ export default function CancelBuy() {
     const merchantOrderId = searchParams.get('MERCHANT_ORDER_ID');
     
     return (
-        <main className="min-h-screen flex items-center justify-center p-6">
-            <div className="w-full max-w-2xl bg-card/60 dark:bg-zinc-900/60 backdrop-blur rounded-2xl p-8 shadow-lg text-center">
+        <main className="relative z-10 min-h-screen flex items-center justify-center p-6">
+            <div className="w-full max-w-2xl rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg text-center">
                 <div className="mb-4">
                     <h1 className="text-3xl font-extrabold">
                         <span className="text-logo-yellow">N</span>

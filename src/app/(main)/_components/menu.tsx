@@ -23,7 +23,7 @@ import { getById as getOrg } from "../../api/orgs/org";
 import { getById as getUser } from "../../api/users/user";
 import { pages } from "@/config/routing/pages.route";
 import type { MenuProps } from "@/config/types/main.types";
-import type { Org, User } from "@/config/types/server.types";
+import type { Org, User } from "@/config/types/api.types";
 
 export function Menu({ documentId }: MenuProps) {
   const router = useRouter();

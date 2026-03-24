@@ -1,6 +1,6 @@
 import { API } from "@/config/const/api.const";
 import { apiRoutes } from "@/config/routing/api.route";
-import type { Order } from "@/config/types/server.types";
+import type { Order } from "@/config/types/api.types";
 
 export async function createOrder(
   _id: string,

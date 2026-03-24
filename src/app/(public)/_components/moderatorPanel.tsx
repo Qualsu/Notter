@@ -16,7 +16,7 @@ import { ConfirmModal } from "@/components/modal/confirm-modal";
 import { sendMail } from "../../api/mail/mail";
 import { pages } from "@/config/routing/pages.route";
 import type { ModeratorPanelDocumentProps as DocumentProps } from "@/config/types/public.types";
-import type { User } from "@/config/types/server.types";
+import type { User } from "@/config/types/api.types";
 
 export function ModeratorPanel({
   _id,

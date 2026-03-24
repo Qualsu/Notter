@@ -18,7 +18,7 @@ import { useOrganization, useUser } from "@clerk/clerk-react"
 import Link from "next/link"
 import { pages } from "@/config/routing/pages.route"
 import type { PublicDocumentComponentProps as DocumentIdPageProps, UserInterface } from "@/config/types/public.types";
-import type { Org, User } from "@/config/types/server.types";
+import type { Org, User } from "@/config/types/api.types";
 
 function Footer({ name, team, logo }: UserInterface){
     return (

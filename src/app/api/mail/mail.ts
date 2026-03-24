@@ -1,6 +1,6 @@
 import { API } from "@/config/const/api.const";
 import { apiRoutes } from "@/config/routing/api.route";
-import type { Mail } from "@/config/types/server.types";
+import type { Mail } from "@/config/types/api.types";
 
 export async function sendMail({
   to,

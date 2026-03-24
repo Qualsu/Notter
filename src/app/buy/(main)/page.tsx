@@ -14,7 +14,7 @@ import Image from "next/image";
 import { pages } from "@/config/routing/pages.route";
 import { images } from "@/config/routing/image.route";
 import type { PriceCalculation } from "@/config/types/components.types";
-import type { Org, User } from "@/config/types/server.types";
+import type { Org, User } from "@/config/types/api.types";
 
 export default function BuyPremium() {
     const router = useRouter();
@@ -113,8 +113,8 @@ export default function BuyPremium() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center p-6">
-            <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
+        <main className="relative z-10 min-h-screen flex items-center justify-center p-6">
+            <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg mt-10">
                 <section className="space-y-4">
                     <div className="flex items-center gap-3">
                         <h1 className="text-3xl font-extrabold">
@@ -192,7 +192,7 @@ export default function BuyPremium() {
 
 function PlanCard({ id, title, price, icon, selected, onSelect }: { id: string; title: string; price: number; icon?: string; selected: boolean; onSelect: () => void }) {
     return (
-        <div onClick={onSelect} className={`cursor-pointer p-4 rounded-xl border ${selected ? "border-yellow-400 shadow-lg" : "border-transparent hover:shadow-md"} bg-white/70 dark:bg-zinc-900/50 transition`}> 
+        <div onClick={onSelect} className={`cursor-pointer p-4 rounded-xl border transition ${selected ? "border-logo-yellow shadow-lg" : "border-border/50 hover:shadow-md"} bg-card/70 dark:bg-zinc-900/60`}> 
             <div className="flex items-center gap-3">
                 {icon && <Image src={icon} alt={title} width={40} height={40} />}
                 <div>

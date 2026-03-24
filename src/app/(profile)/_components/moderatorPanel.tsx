@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { useUser } from "@clerk/clerk-react";
 import { sendMail } from "../../api/mail/mail";
 import type { UserProps } from "@/config/types/profile.types";
-import type { Org, User } from "@/config/types/server.types";
+import type { Org, User } from "@/config/types/api.types";
 
 export function ModeratorPanel({ user }: UserProps) {
   const [isDialogOpen, setDialogOpen] = useState(false);

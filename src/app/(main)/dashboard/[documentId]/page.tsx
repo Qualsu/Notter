@@ -12,6 +12,7 @@ import { Toolbar } from "@/components/toolbar"
 import { Cover } from "@/components/cover" 
 import { useOrganization, useUser } from "@clerk/nextjs"
 import type { DashboardDocumentIdPageProps as DocumentIdPageProps } from "@/config/types/main.types";
+import Error404 from "@/app/not-found"
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps){
   const Editor = useMemo(
@@ -56,7 +57,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   }
 
   if (document === null) {
-    return <div>Not found</div> 
+    return <Error404 />
   }
 
   return (

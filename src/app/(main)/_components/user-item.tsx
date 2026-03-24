@@ -78,25 +78,23 @@ export function UserItem(){
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="ml-1 flex w-56 flex-col items-start rounded-xl border-white/60 bg-white/95 p-3 shadow-xl dark:border-white/10 dark:bg-zinc-950/95" align="start">
-                    <div className="flex flex-col justify-center items-center">
-                        <div
-                            onClick={stopMenuEvent}
-                            onPointerDown={stopMenuEvent}
-                            onKeyDown={stopMenuEvent}
-                            className="w-full"
-                        >
-                            <OrganizationSwitcher afterSelectOrganizationUrl={pages.DASHBOARD()}/>
-                        </div>
-
-                        <DropdownMenuSeparator/>
-                        
-                        <Link 
-                            href={pages.PROFILE(isOrg, isOrg ? organization?.slug ?? "" : user?.username ?? "")} 
-                            className="flex flex-row text-sm text-primary/70 transition hover:text-primary"
-                        >
-                            Перейти в профиль <ChevronRight className="w-5 h-5"/>
-                        </Link>
+                    <div
+                        onClick={stopMenuEvent}
+                        onPointerDown={stopMenuEvent}
+                        onKeyDown={stopMenuEvent}
+                        className="w-full"
+                    >
+                        <OrganizationSwitcher afterSelectOrganizationUrl={pages.DASHBOARD()}/>
                     </div>
+
+                    <DropdownMenuSeparator/>
+                    
+                    <Link 
+                        href={pages.PROFILE(isOrg, isOrg ? organization?.slug ?? "" : user?.username ?? "")} 
+                        className="flex flex-row text-sm text-primary/70 transition hover:text-primary"
+                    >
+                        Перейти в профиль <ChevronRight className="w-5 h-5"/>
+                    </Link>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>

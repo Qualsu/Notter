@@ -214,7 +214,7 @@ export function Navigation() {
     return (
         <>
             <aside ref={sidebarRef} className={cn(
-                "group/sidebar relative z-50 flex h-full w-60 flex-col overflow-y-auto border-r border-white/50 bg-white/65 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/70",
+                "group/sidebar relative z-50 flex h-full w-60 flex-col overflow-y-auto border-r border-white/50 bg-white/65 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/70 custom-scrollbar",
                 isResetting && "transition-all ease-in-out duration-300",
                 isMobile && "w-0"
             )}>
@@ -286,7 +286,7 @@ export function Navigation() {
                     </div>
                 )}
 
-                <div onMouseDown={handleMouseDown} onClick={resetWidth} className="absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-transparent opacity-0 transition group-hover/sidebar:opacity-100" />
+                <div onMouseDown={handleMouseDown} onClick={resetWidth} className="absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-transparent opacity-0 transition group-hover/sidebar:opacity-100 resize-handle" />
             </aside>
 
             <div ref={navbarRef} className={cn(
