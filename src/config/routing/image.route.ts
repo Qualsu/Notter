@@ -7,6 +7,7 @@ export const images = {
 	IMAGE: {
 		ERROR: "/image/error.svg",
 		EMPTY: "/image/Empty.png",
+		LANDING: "/image/Landing.png",
 		NOTTER: "/image/Notter.png",
 		NOTTER_ICON: "/image/NotterIcon.png",
 	},

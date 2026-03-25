@@ -12,7 +12,7 @@ export function Heading() {
   const { isAuthenticated } = useConvexAuth()
 
   return (
-    <section className="grid md:grid-cols-2 gap-8 items-center py-1 px-4">
+    <section className="grid md:grid-cols-2 items-center py-1 px-4">
       <div className="space-y-6 text-left">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
           Новый уровень построения задач. Встречайте <span className="text-logo-yellow">N</span>
@@ -31,7 +31,7 @@ export function Heading() {
       </div>
 
       <div className="flex justify-center">
-        <Image src={images.IMAGE.EMPTY} alt="lamp" width={500} height={500} />
+        <Image src={images.IMAGE.LANDING} alt="lamp" width={500} height={500} className="drop-shadow-[0_0_10px_rgba(0,0,0,0.5)] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"/>
       </div>
     </section>
   )
