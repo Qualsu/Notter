@@ -8,8 +8,8 @@ export const images = {
 		ERROR: "/image/error.svg",
 		EMPTY: "/image/Empty.png",
 		LANDING: "/image/Landing.png",
-		NOTTER: "/image/Notter.png",
-		NOTTER_ICON: "/image/NotterIcon.png",
+		LOGO: "/image/logo.png",
+		ICON: "/image/icon.png",
 	},
 	ICON: {
 		LAMP: "/icon/lamp.svg",

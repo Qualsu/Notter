@@ -24,7 +24,7 @@ export function Navbar({ logo = true }: NavbarProps){
         )}>
             <div className="container mx-3 justify-between flex items-center md:mx-auto">
                 <Link href={pages.ROOT}>
-                    <Image src={images.IMAGE.NOTTER_ICON} height="35" width="35" alt="Notter" className={`${!logo && 'hidden'}`}/>
+                    <Image src={images.IMAGE.ICON} height="35" width="35" alt="Notter" className={`${!logo && 'hidden'}`}/>
                 </Link>
                 <div className="flex items-center gap-2">
                     {!isLoading && (
