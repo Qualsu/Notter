@@ -65,6 +65,13 @@ function replaceAll() {
 
 export default function ConsoleLogoToggle() {
   useEffect(() => {
+    console.log(`
+      beta new logo functions:
+      - setNewLogo()
+      - replaceLogoAssets()
+      - clearNewLogo()
+    `)
+
     const isDark = () => {
       try {
         if (typeof document === 'undefined') return false

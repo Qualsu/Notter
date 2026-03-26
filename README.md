@@ -1,4 +1,4 @@
-<img src="public/image/Notter.png" width="300px">
+<img src="public/image/logo.png" width="300px">
 
 # Notter
 
