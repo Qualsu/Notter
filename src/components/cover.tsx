@@ -8,15 +8,12 @@ import { useMutation, useQuery } from "convex/react"
 import { useParams } from "next/navigation" 
 import { Skeleton } from "./ui/skeleton" 
 import { api } from "../../convex/_generated/api" 
-import { useCoverImage } from "../../hooks/use-cover-image" 
+import { useCoverImage } from "./hooks/use-cover-image" 
 import { Id } from "../../convex/_generated/dataModel" 
 import { useOrganization, useUser } from "@clerk/nextjs"
-import { deleteFile } from "../../server/files/file"
-
-interface CoverImageProps {
-  url?: string 
-  preview?: boolean 
-}
+import { deleteFile } from "../app/api/files/file"
+import type { CoverImageProps } from "@/config/types/components.types";
+import toast from "react-hot-toast"
 
 export function Cover({ url, preview }: CoverImageProps){
   const { user } = useUser()
@@ -29,13 +26,22 @@ export function Cover({ url, preview }: CoverImageProps){
   
   const onRemove = async () => {
     if (url) {
-      await deleteFile(url);
+      const fileId = url.split("/").pop()?.split("?")[0];
+      console.log(fileId);
+      if (fileId) 
+        await deleteFile(orgId, fileId);
     }
 
-    removeCoverImage({
+    const promise = removeCoverImage({
       id: params.documentId as Id<"documents">,
       userId: orgId
-    }) 
+    });
+
+    toast.promise(promise, {
+      loading: "Удаление обложки...",
+      success: "Обложка удалена",
+      error: "Ошибка при удалении обложки"
+    });
   } 
 
   return (

@@ -19,15 +19,11 @@ import { api } from "../../../../convex/_generated/api";
 import { Protect } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/ui/shadcn-io/dropzone";
-import { User } from "../../../../server/users/types";
-import { Org } from "../../../../server/orgs/types";
-import { getById as getOrg } from "../../../../server/orgs/org";
-import { getById as getUser } from "../../../../server/users/user";
-
-
-interface MenuProps {
-  documentId: Id<"documents">;
-}
+import { getById as getOrg } from "../../api/orgs/org";
+import { getById as getUser } from "../../api/users/user";
+import { pages } from "@/config/routing/pages.route";
+import type { MenuProps } from "@/config/types/main.types";
+import type { Org, User } from "@/config/types/api.types";
 
 export function Menu({ documentId }: MenuProps) {
   const router = useRouter();
@@ -43,7 +39,7 @@ export function Menu({ documentId }: MenuProps) {
     userId: orgId,
   });
 
-  const [openModal, setOpenModal] = useState(false); // Стейт для открытия модального окна
+  const [openModal, setOpenModal] = useState(false);
   const [profile, setProfile] = useState<User | Org | null>(null)
 
   useEffect(() => {
@@ -72,7 +68,7 @@ export function Menu({ documentId }: MenuProps) {
       error: "Не удалось переместить в архив",
     });
 
-    router.push("/dashboard");
+    router.push(pages.DASHBOARD());
   };
 
   const onRestore = () => {
@@ -87,7 +83,7 @@ export function Menu({ documentId }: MenuProps) {
       error: "Не удалось восстановить",
     });
 
-    router.push(`/dashboard/${documentId}`);
+    router.push(pages.DASHBOARD(documentId));
   };
 
   const downloadJson = () => {
@@ -122,7 +118,7 @@ export function Menu({ documentId }: MenuProps) {
             loading: "Обновляем заметку..."
           })
           promise.then(() => {
-            router.push("/dashboard");
+            router.push(pages.DASHBOARD());
           });
         } else {
           toast.error("Ошибка чтения файла");
@@ -138,11 +134,11 @@ export function Menu({ documentId }: MenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" className="h-8 rounded-lg hover:bg-black/5 dark:hover:bg-white/10">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
+      <DropdownMenuContent className="w-60 rounded-xl border-white/60 bg-white/95 shadow-xl dark:border-white/10 dark:bg-zinc-950/95" align="end" alignOffset={8} forceMount>
         <Protect
           condition={(check) => {
             return check({
@@ -189,8 +185,8 @@ export function Menu({ documentId }: MenuProps) {
 
       </DropdownMenuContent>
       {openModal && profile?.premium == 2 && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black/80 bg-opacity-50 z-50">
-          <div className="bg-black p-4 rounded-md w-96">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-zinc-950 p-5 shadow-2xl">
             <h3 className="text-lg font-semibold mb-4">Загрузите JSON файл</h3>
             <Dropzone
               accept={{ 'application/json': [] }}
@@ -200,12 +196,11 @@ export function Menu({ documentId }: MenuProps) {
                 setOpenModal(false);
               }}
               onError={console.error}
-              className=""
             >
               <DropzoneEmptyState />
               <DropzoneContent />
             </Dropzone>
-            <Button onClick={() => setOpenModal(false)} className="mt-4" variant={"outline"}>
+            <Button onClick={() => setOpenModal(false)} className="mt-4 w-full rounded-xl" variant={"outline"}>
               Закрыть
             </Button>
           </div>

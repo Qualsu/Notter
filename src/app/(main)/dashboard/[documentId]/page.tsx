@@ -11,12 +11,8 @@ import { api } from "../../../../../convex/_generated/api"
 import { Toolbar } from "@/components/toolbar" 
 import { Cover } from "@/components/cover" 
 import { useOrganization, useUser } from "@clerk/nextjs"
-
-interface DocumentIdPageProps {
-  params: {
-    documentId: Id<"documents"> 
-  } 
-}
+import type { DashboardDocumentIdPageProps as DocumentIdPageProps } from "@/config/types/main.types";
+import Error404 from "@/app/not-found"
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps){
   const Editor = useMemo(
@@ -46,9 +42,9 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
 
   if (document === undefined) {
     return (
-      <div>
+      <div className="pt-14">
         <Cover.Skeleton />
-        <div className="mx-auto mt-10 md:max-w-3xl lg:max-w-4xl">
+        <div className="mx-auto mt-10 px-4 md:max-w-3xl lg:max-w-4xl">
           <div className="space-y-4 pl-8 pt-4">
             <Skeleton className="h-14 w-1/2" />
             <Skeleton className="h-4 w-4/5" />
@@ -61,13 +57,15 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   }
 
   if (document === null) {
-    return <div>Not found</div> 
+    return <Error404 />
   }
 
   return (
-    <div className="pb-40">
+    <div className="relative pb-40 pt-14 overflow-hidden">
+      <div className="pointer-events-none absolute -left-16 top-16 h-64 w-64 rounded-full bg-logo-yellow/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-12 bottom-12 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
       <Cover url={document.coverImage} preview={document.isAcrhived ? true : false}/>
-      <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
+      <div className={`relative z-10 mx-auto px-4 md:max-w-3xl lg:max-w-4xl rounded-3xl border bg-white/70 border-white/40 dark:border-white/10 dark:bg-zinc-950/70 pb-6 ${document.coverImage && 'mt-6'}`}>
         <Toolbar initialData={document} preview={document.isAcrhived ? true : false}/>
         <Editor onChange={onChange} initialContent={document.content} editable={document.isAcrhived ? false : true}/>
       </div>

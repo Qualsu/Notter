@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
-import { User } from "../../../../server/users/types";
-import { getById as getUserById } from "../../../../server/users/user";
-import { getById as getOrgById } from "../../../../server/orgs/org";
+import { getById as getUserById } from "../../api/users/user";
+import { getById as getOrgById } from "../../api/orgs/org";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Check, FileJson, Menu, Trash, X } from "lucide-react";
@@ -14,21 +13,10 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { ConfirmModal } from "@/components/modal/confirm-modal";
-import { sendMail } from "../../../../server/mail/mail";
-
-interface DocumentProps {
-  _id: Id<"documents">;
-  userId: string;
-  title: string
-  shortId?: string;
-  isShort?: boolean;
-  isPublished: boolean;
-  isAcrhived?: boolean;
-  creatorName?: string;
-  lastEditor?: string;
-  verifed?: boolean;
-  content?: string
-}
+import { sendMail } from "../../api/mail/mail";
+import { pages } from "@/config/routing/pages.route";
+import type { ModeratorPanelDocumentProps as DocumentProps } from "@/config/types/public.types";
+import type { User } from "@/config/types/api.types";
 
 export function ModeratorPanel({
   _id,
@@ -85,31 +73,32 @@ export function ModeratorPanel({
     try {
       let subject = "";
       let message = "";
+      const viewUrl = pages.VIEW_URL(_id);
 
       switch (action) {
         case "публикация":
           subject = `Публикация вашей заметки "${title}" была обновлена`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "короткая ссылка":
           subject = `Ссылка на вашу заметку "${title}" была обновлена`;
-          message = `${userData.username}!\n\nShort ID вашей заметки "${title}" был ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nShort ID вашей заметки "${title}" был ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "архивация":
           subject = `Архивация вашей заметки "${title}" была обновлена`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "верификация":
           subject = `Верификация вашей заметки "${title}" была обновлена`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была ${details}.\nПосмотреть: ${viewUrl}`;
           break;
         case "удаление":
           subject = `Удаление вашей заметки "${title}"`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была удалена.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была удалена.\nПосмотреть: ${viewUrl}`;
           break;
         default:
           subject = `Изменение вашей заметки "${title}"`;
-          message = `${userData.username}!\n\nВаша заметка "${title}" была обновлена. Детали: ${details}.\nПосмотреть: ${`https://notter.tech/view/${_id}`}`;
+          message = `${userData.username}!\n\nВаша заметка "${title}" была обновлена. Детали: ${details}.\nПосмотреть: ${viewUrl}`;
           break;
       }
 
@@ -214,7 +203,7 @@ export function ModeratorPanel({
     try {
       await promise;
       await sendNotification("документ удален", true, "документ удален");
-      router.push("/dashboard");
+      router.push(pages.DASHBOARD());
     } catch (error: any) {
       const errorMessage = error.message || "Ошибка при удалении";
       await sendNotification("удаление документа", false, errorMessage);
@@ -242,15 +231,15 @@ export function ModeratorPanel({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
-        <Button onClick={() => setDialogOpen(true)} variant={"outline"} size={"icon"}>
+        <Button onClick={() => setDialogOpen(true)} variant={"outline"} size={"icon"} className="h-8 w-8 rounded-lg border-border/70 bg-background/70 hover:bg-background">
           <Menu />
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
-        <DialogTitle>Панель Модератора</DialogTitle>
+      <DialogContent className="rounded-2xl border-white/40 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/95">
+        <DialogTitle className="text-lg font-semibold">Панель Модератора</DialogTitle>
         <DialogDescription>
-          <p>_id: {_id}</p>
+          <p className="text-xs">_id: {_id}</p>
           <p>User ID: {userId}</p>
           <p>Short ID: {shortId}</p>
           <p className="flex flex-row items-center gap-1">
@@ -265,7 +254,7 @@ export function ModeratorPanel({
           <p>Creator: {creatorName}</p>
           <p>Last editor: {lastEditor}</p>
 
-          <hr className="my-3" />
+          <hr className="my-3 border-black/10 dark:border-white/10" />
 
           <div className="flex items-center gap-3">
             <p className="whitespace-nowrap">Short ID:</p>
@@ -311,17 +300,17 @@ export function ModeratorPanel({
 
           <div className="flex flex-row items-center gap-2">
             <ConfirmModal onConfirm={() => onRemove(_id)}>
-                <Button variant={"outline"} className="mt-4">
+                <Button variant={"outline"} className="mt-4 rounded-lg">
                 Удалить <Trash className="h-4 w-4 text-muted-foreground" />
                 </Button>
             </ConfirmModal>
 
-            <Button variant={"outline"} className="mt-4" onClick={downloadJson}>
+            <Button variant={"outline"} className="mt-4 rounded-lg" onClick={downloadJson}>
                 <FileJson className="h-4 w-4" /> Скачать JSON
             </Button>
           </div>
         </DialogDescription>
-        <DialogClose onClick={() => setDialogOpen(false)}>Закрыть</DialogClose>
+        <DialogClose onClick={() => setDialogOpen(false)} className="rounded-lg border border-border/70 px-3 py-1 text-sm hover:bg-background/70">Закрыть</DialogClose>
       </DialogContent>
     </Dialog>
   );

@@ -5,10 +5,10 @@ import { Archive, ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings2 } 
 import { useParams, useRouter } from "next/navigation"
 import { ElementRef, useEffect, useRef, useState } from "react"
 import { useMediaQuery } from 'usehooks-ts'
-import { useMutation, useQuery } from "convex/react"
+import { useMutation } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
-import { getById as getUserById } from "../../../../server/users/user"
-import { getById as getOrgById } from "../../../../server/orgs/org"
+import { getById as getUserById } from "../../api/users/user"
+import { getById as getOrgById } from "../../api/orgs/org"
 import { Progress } from "@/components/ui/progress"
 import { toast } from "react-hot-toast"
 import { useOrganization, useUser } from "@clerk/clerk-react"
@@ -17,13 +17,36 @@ import { Item } from "./item"
 import { DocumentList } from "./document-list"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { TrashBox } from "./trash-box"
-import { useSearch } from "../../../../hooks/use-search"
-import { useSettings } from "../../../../hooks/use-settings"
+import { useSearch } from "../../../components/hooks/use-search"
+import { useSettings } from "../../../components/hooks/use-settings"
 import { Navbar } from "./navbar"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { pages } from "@/config/routing/pages.route"
 
 export function Navigation() {
     const router = useRouter()
     const settings = useSettings()
+
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
+                e.preventDefault()
+                settings.onOpen()
+            }
+        }
+
+        if (typeof window !== "undefined") {
+            window.addEventListener("keydown", handler)
+        }
+
+        return () => {
+            if (typeof window !== "undefined") {
+                window.removeEventListener("keydown", handler)
+            }
+        }
+    }, [settings])
+
     const seacrh = useSearch()
     const params = useParams()
     const { user } = useUser()
@@ -42,36 +65,51 @@ export function Navigation() {
     const [documentCount, setDocumentCount] = useState<number>(0)
     const [documentPublicCount, setDocumentPublicCount] = useState<number>(0)
     const [premiumLevel, setPremiumLevel] = useState<number>(0)
-
-    const fetchOrgData = async () => {
-        if (isOrg && organization?.id) {
-            const orgData = await getOrgById(organization.id)
-            if (orgData) {
-                setDocumentCount(orgData.documents || 0)
-                setDocumentPublicCount(orgData.publicDocuments || 0)
-                setPremiumLevel(orgData.premium || 0)
-            }
+    const [isPromoHidden, setIsPromoHidden] = useState<boolean>(() => {
+        try {
+            return typeof window !== "undefined" && localStorage.getItem("gem_banner") === "true"
+        } catch {
+            return false
         }
-    }
+    })
 
-    const fetchUserData = async () => {
-        if (!isOrg && user?.id) {
-            const userData = await getUserById(user.id)
-            if (userData) {
-                setDocumentCount(userData.documents || 0)
-                setDocumentPublicCount(userData.publicDocuments || 0)
-                setPremiumLevel(userData.premium || 0)
-            }
-        }
+    const hidePromo = () => {
+        try {
+            localStorage.setItem("gem_banner", "true")
+        } catch { }
+        setIsPromoHidden(true)
     }
 
     useEffect(() => {
-        if (isOrg) {
-            fetchOrgData()
-        } else {
-            fetchUserData()
+        const fetchData = async () => {
+            if (isOrg && organization?.id) {
+                const orgData = await getOrgById(organization.id)
+                if (orgData) {
+                    setDocumentCount(orgData.documents || 0)
+                    setDocumentPublicCount(orgData.publicDocuments || 0)
+                    setPremiumLevel(orgData.premium || 0)
+                }
+                return
+            }
+
+            if (!isOrg && user?.id) {
+                const userData = await getUserById(user.id)
+                if (userData) {
+                    setDocumentCount(userData.documents || 0)
+                    setDocumentPublicCount(userData.publicDocuments || 0)
+                    setPremiumLevel(userData.premium || 0)
+                }
+            }
         }
-    }, [user?.id, organization?.id])
+
+        fetchData()
+    }, [isOrg, organization?.id, user?.id])
+
+    useEffect(() => {
+        if (isMobile && params.documentId) {
+            collapse()
+        }
+    }, [isMobile, params.documentId])
 
     let documentLimit: number = 75
     let publicDocumentLimit: number = 10
@@ -106,7 +144,7 @@ export function Navigation() {
             creatorName: isOrg ? organization?.slug as string : user?.username as string,
         })
             .then((documentId) => {
-                router.push(`/dashboard/${documentId}`)
+                router.push(pages.DASHBOARD(documentId))
                 return documentId
             })
             .catch((error) => {
@@ -176,81 +214,91 @@ export function Navigation() {
     return (
         <>
             <aside ref={sidebarRef} className={cn(
-                "group/sidebar h-full bg-[#fcfcfc] dark:bg-[#111111] overflow-y-auto relative flex w-60 flex-col z-[99999]",
+                "group/sidebar relative z-50 flex h-full w-60 flex-col overflow-y-auto border-r border-white/50 bg-white/65 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/70 custom-scrollbar",
                 isResetting && "transition-all ease-in-out duration-300",
                 isMobile && "w-0"
             )}>
                 <div onClick={collapse} role="button" className={cn(
-                    "h-6 w-6 text-muted-foreground rounded-sm hover:bg-primary/5 dark:hover:bg-primary/10 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition",
+                    "absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg border border-transparent text-muted-foreground opacity-0 transition hover:border-border hover:bg-background/70 group-hover/sidebar:opacity-100",
                     isMobile && "opacity-100"
                 )}>
-                    <ChevronsLeft className="h-6 w-6" />
+                    <ChevronsLeft className="h-4 w-4" />
                 </div>
 
-                <div>
+                <div className="border-b border-black/5 px-2 pb-3 pt-2 dark:border-white/10">
                     <UserItem />
                     <Item label="Поиск" icon={Search} isSearch onClick={seacrh.onOpen} />
-                    <Item label="Настройки" icon={Settings2} onClick={settings.onOpen} />
+                    <Item label="Настройки" icon={Settings2} onClick={settings.onOpen} shortcut="k" />
                     <Item onClick={handleCreate} label="Новая заметка" icon={PlusCircle} />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2 px-2">
                     <DocumentList />
                     <Item onClick={handleCreate} icon={Plus} label="Добавить заметку" />
                     <Popover>
-                        <PopoverTrigger className="w-full mt-4">
+                        <PopoverTrigger className="mt-2 w-full">
                             <Item label="Архив" icon={Archive} />
                         </PopoverTrigger>
-                        <PopoverContent className="p-0 w-72 z-[99999]" side={isMobile ? "bottom" : "right"}>
+                        <PopoverContent className="z-[99999] w-80 rounded-2xl border-white/60 bg-white/90 p-0 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/90" side={isMobile ? "bottom" : "right"}>
                             <TrashBox />
                         </PopoverContent>
                     </Popover>
                 </div>
 
-                <div className="mt-4 mx-3">
-                    <div className="text-sm text-muted-foreground">
-                        <span className="font-bold">Заметки:</span> {documentCount}/{documentLimit}
+                <div className="mx-3 mt-4 rounded-2xl border border-black/5 bg-background/60 p-3 dark:border-white/10 dark:bg-zinc-900/60">
+                    <div className="text-xs uppercase tracking-wide text-muted-foreground">
+                        Лимиты пространства
                     </div>
-                    <Progress value={documentProgress} max={100} className={`mt-2 ${getProgressColor(documentProgress)}`} />
-
-                    <div className="text-sm text-muted-foreground mt-4">
-                        <span className="font-bold">Публичные заметки:</span> {documentPublicCount}/{publicDocumentLimit}
+                    <div className="mt-3 text-sm text-muted-foreground">
+                        <span className="font-semibold text-foreground">Заметки:</span> {documentCount}/{documentLimit}
                     </div>
-                    <Progress value={publicDocumentProgress} max={100} className={`mt-2 ${getProgressColor(publicDocumentProgress)}`} />
+                    <Progress value={documentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(documentProgress)}`} />
 
-                    {/* Новый блок предупреждений при превышении лимита */}
+                    <div className="mt-4 text-sm text-muted-foreground">
+                        <span className="font-semibold text-foreground">Публичные:</span> {documentPublicCount}/{publicDocumentLimit}
+                    </div>
+                    <Progress value={publicDocumentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(publicDocumentProgress)}`} />
+
                     {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
-                        <div className="mt-2 text-sm text-red-400 dark:text-red-200">
+                        <div className="mt-3 rounded-xl border border-red-300/50 bg-red-50/70 p-2 text-xs text-red-700 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-200">
                             {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
                                 <div>
                                     Достигнут лимит по заметкам. Оформите{" "}
-                                    <a href="/buy" className="group inline-flex transition-all duration-300">
+                                    <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
                                         <span className="group-hover:text-logo-yellow group-hover:underline transition-colors duration-300">N</span>
                                         <span className="group-hover:text-logo-light-yellow group-hover:underline transition-colors duration-300 mr-1">otter</span>
                                         <span className="group-hover:text-logo-cyan group-hover:underline transition-colors duration-300">Gem</span>
-                                    </a>
+                                    </Link>
                                 </div>
                             )}
                         </div>
                     )}
                 </div>
 
-                <div className="absolute bottom-4 left-0 w-full flex justify-center items-center">
-                    <a href={isOrg ? `/org/${organization?.slug}` : `/user/${user?.username}`} className="text-sm text-primary/50 hover:text-primary/80 transition-all duration-200">Перейти в профиль</a>
-                </div>
-                <div onMouseDown={handleMouseDown} onClick={resetWidth} className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
+                {premiumLevel === 0 && !isPromoHidden && (
+                    <div className="relative mx-3 mb-4 mt-auto overflow-hidden rounded-2xl border border-logo-cyan/20 bg-gradient-to-br from-logo-yellow/20 via-background to-logo-cyan/20 p-3 shadow-lg">
+                        <button onClick={hidePromo} aria-label="Закрыть" className="absolute right-2 top-2 text-sm text-muted-foreground hover:text-foreground">✕</button>
+                        <div className="text-sm font-semibold">Попробуйте <span className="text-logo-yellow">N</span><span className="text-logo-light-yellow">otter</span><span className="text-logo-cyan"> Gem</span></div>
+                        <div className="mt-1 text-xs text-muted-foreground">Расширьте лимиты и получите дополнительные функции.</div>
+                        <Link href={pages.BUY} className="block mt-3">
+                            <Button className="h-9 w-full rounded-xl">Купить Notter Gem</Button>
+                        </Link>
+                    </div>
+                )}
+
+                <div onMouseDown={handleMouseDown} onClick={resetWidth} className="absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-transparent opacity-0 transition group-hover/sidebar:opacity-100 resize-handle" />
             </aside>
 
             <div ref={navbarRef} className={cn(
-                "absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]",
+                "absolute left-60 top-0 z-[99999] w-[calc(100%-240px)]",
                 isResetting && "transition-all ease-in-out duration-300",
                 isMobile && "left-0 w-full"
             )}>
                 {!!params.documentId ? (
                     <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
                 ) : (
-                    <nav className="bg-transparent px-3 py-2 w-full">
-                        {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 text-muted-foreground hover:bg-primary/5 dark:hover:bg-primary/10" />}
+                    <nav className="w-full px-4 py-3">
+                        {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-6 w-6 rounded-md p-1 text-muted-foreground hover:bg-background/70" />}
                     </nav>
                 )}
             </div>

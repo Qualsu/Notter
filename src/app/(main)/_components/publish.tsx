@@ -3,20 +3,16 @@ import { useMutation, useQuery } from "convex/react"
 import { useState, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
-import { Check, Copy, Globe } from "lucide-react"
+import { Check, Copy, Eye, Globe } from "lucide-react"
 import { Doc } from "../../../../convex/_generated/dataModel"
 import { api } from "../../../../convex/_generated/api"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useOrigin } from "../../../../hooks/use-origin"
+import { useOrigin } from "../../../components/hooks/use-origin"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
-import { getById as getUserByID, updateUser } from "../../../../server/users/user"
-import { getById as getOrgByID, updateOrg } from "../../../../server/orgs/org"
-import { User } from "../../../../server/users/types"
-import { Org } from "../../../../server/orgs/types"
-
-interface PublishProps {
-  initialData: Doc<"documents">
-}
+import { getById as getUserByID, updateUser } from "../../api/users/user"
+import { getById as getOrgByID, updateOrg } from "../../api/orgs/org"
+import type { PublishProps } from "@/config/types/main.types";
+import type { Org, User } from "@/config/types/api.types";
 
 export function Publish({ initialData }: PublishProps) {
   const origin = useOrigin()
@@ -200,17 +196,17 @@ export function Publish({ initialData }: PublishProps) {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <Button size="sm" variant="ghost">
+      <PopoverTrigger asChild>
+        <Button size="sm" variant="ghost" className="h-8 rounded-lg hover:bg-black/5 dark:hover:bg-white/10">
           Опубликовать
           {initialData.isPublished && <Globe className="h-4 w-4 text-sky-500" />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72" align="end" alignOffset={8} forceMount>
+      <PopoverContent className="w-80 rounded-2xl border-white/60 bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/95" align="end" alignOffset={8} forceMount>
         {initialData.isPublished ? (
           <div className="space-y-4">
             <div className="flex items-center gap-x-2">
-              <Globe className="h-4 w-4 animate-pulse text-sky-500" />
+              <Globe className="h-4 w-4 text-sky-500" />
               <p className="text-xs font-medium text-sky-500">
                 Эта заметка находится в открытом доступе
               </p>
@@ -219,7 +215,7 @@ export function Publish({ initialData }: PublishProps) {
             <div className="flex items-center">
               <input
                 value={editingShortId ? customShortId : url}
-                className="h-8 flex-1 rounded-l-md border bg-muted px-2 text-xs"
+                className="h-9 flex-1 rounded-l-lg border border-border/60 bg-background/70 px-3 text-xs"
                 onClick={() => {
                   if (isShortUrl && canUseCustomShort) {
                     setEditingShortId(true);
@@ -231,12 +227,16 @@ export function Publish({ initialData }: PublishProps) {
                 autoFocus
                 disabled={!isShortUrl || !canUseCustomShort}
               />
-              <Button onClick={onCopy} disabled={copied} className="h-8 rounded-l-none">
+              <Button onClick={onCopy} disabled={copied} className="h-9 rounded-l-none rounded-r-lg px-3">
                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
 
-            <div className="flex flex-row items-center">
+            <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/10 px-2 py-1 text-xs text-sky-700 dark:text-sky-200">
+              <Eye className="w-4 h-4"/> Просмотров: {initialData.views ?? 0}
+            </span>
+
+            <div className="flex items-center rounded-lg border border-border/60 bg-background/60 px-2.5 py-2">
               <Checkbox
                 checked={isShortUrl}
                 onCheckedChange={handleCheckboxChange}
@@ -254,7 +254,7 @@ export function Publish({ initialData }: PublishProps) {
             >
               <Button
                 size="sm"
-                className="w-full text-xs"
+                className="h-9 w-full rounded-xl text-xs"
                 disabled={isSubmitting}
                 onClick={onUnpublish}
               >
@@ -263,9 +263,9 @@ export function Publish({ initialData }: PublishProps) {
             </Protect>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/70 bg-background/50 p-4 text-center">
             <Globe className="mb-2 h-8 w-8 text-muted-foreground" />
-            <p>Поделитесь своей заметкой</p>
+            <p className="font-medium">Поделитесь своей заметкой</p>
             <Protect
               condition={(check) => check({ role: "org:admin" }) || organization?.id === undefined}
               fallback={
@@ -280,7 +280,7 @@ export function Publish({ initialData }: PublishProps) {
               <Button
                 disabled={isSubmitting}
                 onClick={onPublish}
-                className="w-full text-xs"
+                className="h-9 w-full rounded-xl text-xs"
                 size="sm"
               >
                 Опубликовать

@@ -5,6 +5,7 @@ import Image from "next/image";
 import * as React from "react";
 import { useDropzone, type DropzoneOptions } from "react-dropzone";
 import { twMerge } from "tailwind-merge";
+import type { InputProps } from "@/config/types/components.types";
 
 const variants = {
   base: "relative rounded-md flex justify-center items-center flex-col cursor-pointer min-h-[150px] min-w-[200px] border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out",
@@ -15,16 +16,6 @@ const variants = {
     "bg-gray-200 border-gray-300 cursor-default pointer-events-none bg-opacity-30 dark:bg-gray-700",
   accept: "border border-blue-500 bg-blue-500 bg-opacity-10",
   reject: "border border-red-700 bg-red-700 bg-opacity-10",
-};
-
-type InputProps = {
-  width?: number;
-  height?: number;
-  className?: string;
-  value?: File | string;
-  onChange?: (file?: File) => void | Promise<void>;
-  disabled?: boolean;
-  dropzoneOptions?: Omit<DropzoneOptions, "disabled">;
 };
 
 const ERROR_MESSAGES = {

@@ -5,15 +5,18 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import ConvexClientProvider from '@/components/providers/convex-provider'
 import { Toaster } from 'react-hot-toast';
 import { ModalProvider } from '@/components/providers/modal-provider'
+import { RequestProvider } from '@/components/providers/request-provider'
+import { images } from '@/config/routing/image.route'
+import ConsoleLogoToggle from '@/components/console-logo-toggle'
 
 const font = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Notter',
   description: "Новый уровень построения задач. Встречайте Notter",
-  manifest: '/manifest.json',
+  manifest: images.MANIFEST,
   icons: {
-    icon: "https://combative-moose-852.convex.site/getImage?storageId=kg20r77k2jdafrwmw8am9tseb575dp7c"
+    icon: images.IMAGE.ICON,
   }
 }
 
@@ -48,7 +51,10 @@ export default function RootLayout({
             }}
             />
             <ModalProvider/>
-            {children}
+            <RequestProvider>
+              <ConsoleLogoToggle />
+              {children}
+            </RequestProvider>
           </ThemeProvider>
         </ConvexClientProvider>
       </body>
