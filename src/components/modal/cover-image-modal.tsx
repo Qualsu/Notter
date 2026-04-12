@@ -61,7 +61,7 @@ export function CoverImageModal(){
     setIsSubmitting(true);
     setFile(file);
 
-    const fileUrl = await uploadFile(orgId, file);
+    const fileUrl = await uploadFile(orgId, params.documentId as string, file);
 
     await update({
       id: params.documentId as Id<"documents">,

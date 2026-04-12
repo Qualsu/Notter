@@ -1,12 +1,15 @@
 import { API } from "@/config/const/api.const";
 import { apiRoutes } from "@/config/routing/api.route";
 
-export async function uploadFile(userid: string, file: File) {
+export async function uploadFile(userid: string, documentid: string, file: File) {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("userid", userid);
+  formData.append("documentid", documentid);
 
-  const response = await API.post(apiRoutes.FILES.UPLOAD, formData);
+  const response = await API.post(apiRoutes.FILES.UPLOAD, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 
   return `${API.defaults.baseURL ?? ""}${response.data.url}`;
 }

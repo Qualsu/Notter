@@ -67,7 +67,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
       <Cover url={document.coverImage} preview={document.isAcrhived ? true : false}/>
       <div className={`relative z-10 mx-auto px-4 md:max-w-3xl lg:max-w-4xl rounded-3xl border bg-white/70 border-white/40 dark:border-white/10 dark:bg-zinc-950/70 pb-6 ${document.coverImage && 'mt-6'}`}>
         <Toolbar initialData={document} preview={document.isAcrhived ? true : false}/>
-        <Editor onChange={onChange} initialContent={document.content} editable={document.isAcrhived ? false : true}/>
+        <Editor onChange={onChange} initialContent={document.content} editable={document.isAcrhived ? false : true} documentId={document._id}/>
       </div>
     </div>
   ) 

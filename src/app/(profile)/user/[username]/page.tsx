@@ -202,7 +202,7 @@ export default function UserProfile({ params }: UsernameProps) {
                     </div>
                   
                     <div className="mx-6 rounded-2xl border border-black/10 bg-background/70 pt-6 shadow-sm dark:border-white/10">
-                      <Editor onChange={() => {}} initialContent={document?.content} editable={false} />
+                      <Editor onChange={() => {}} initialContent={document?.content} editable={false} documentId={document?._id as string}/>
                     </div>
                   </>
                 )}
@@ -244,7 +244,7 @@ export default function UserProfile({ params }: UsernameProps) {
                   </Link>
                 </div>
                 <div className="mx-6 rounded-2xl border border-black/10 bg-background/70 pt-6 shadow-sm dark:border-white/10">
-                  <Editor onChange={() => {}} initialContent={document.content} editable={false} />
+                  <Editor onChange={() => {}} initialContent={document.content} editable={false} documentId={document?._id as string}/>
                 </div>
               </>
             )

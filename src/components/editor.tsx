@@ -1,11 +1,9 @@
 "use client" 
 
-import { BlockNoteEditor, BlockNoteSchema, defaultBlockSpecs, PartialBlock } from "@blocknote/core" 
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core" 
 import { useCreateBlockNote } from "@blocknote/react" 
 import { BlockNoteView } from "@blocknote/mantine"
 import { useTheme } from "next-themes" 
-import "@blocknote/core/style.css" 
-import "@blocknote/mantine/style.css"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { getById as getUserById } from "../app/api/users/user"
 import { getById as getOrgById } from "../app/api/orgs/org"
@@ -13,7 +11,7 @@ import toast from "react-hot-toast"
 import { uploadFile as uploadFileOnServer } from "../app/api/files/file"
 import type { EditorProps } from "@/config/types/components.types";
 
-export default function Editor({ onChange, initialContent, editable }: EditorProps){
+export default function Editor({ onChange, initialContent, editable, documentId }: EditorProps){
   const { resolvedTheme } = useTheme()
   const { user } = useUser()
   const { organization } = useOrganization()
@@ -36,17 +34,9 @@ export default function Editor({ onChange, initialContent, editable }: EditorPro
       throw new Error("File too large")
     }
 
-    const url = await uploadFileOnServer(orgId, file);
+    const url = await uploadFileOnServer(orgId, documentId, file);
     return url;
   };
-
-  const { audio, file, video, ...remainingBlockSpecs } = defaultBlockSpecs;
-
-  const schema = BlockNoteSchema.create({
-    blockSpecs: {
-      ...remainingBlockSpecs,
-    },
-  });
   
   const editor: BlockNoteEditor = useCreateBlockNote({
     initialContent: initialContent

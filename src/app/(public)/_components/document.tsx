@@ -145,7 +145,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
             </div>
             <div className="rounded-2xl border border-black/10 dark:border-white/10 bg-background/70 pt-4 shadow-sm">
               <Toolbar initialData={document} preview={user?.moderator ? false : true} />
-              <Editor onChange={() => {}} initialContent={document.content} editable={false}/>
+              <Editor onChange={() => {}} initialContent={document.content} editable={false} documentId={document._id as string}/>
             </div>
             <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean}/>
           </div>
