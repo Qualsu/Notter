@@ -13,6 +13,7 @@ export interface CoverImageProps {
 }
 
 export interface EditorProps {
+  documentId: string
   onChange: (value: string) => void
   initialContent?: string
   editable?: boolean
