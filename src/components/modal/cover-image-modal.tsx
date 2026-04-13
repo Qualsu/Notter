@@ -32,6 +32,8 @@ export function CoverImageModal(){
   const { organization } = useOrganization()
   const isOrg = organization?.id !== undefined
   const orgId = isOrg ? organization?.id as string : user?.id as string
+  const avatar = user?.imageUrl || ""
+  const username = user?.username || ""
 
   const onClose = () => {
     setFile(undefined) 
@@ -61,7 +63,7 @@ export function CoverImageModal(){
     setIsSubmitting(true);
     setFile(file);
 
-    const fileUrl = await uploadFile(orgId, params.documentId as string, file);
+    const fileUrl = await uploadFile(orgId, params.documentId as string, avatar, username, file);
 
     await update({
       id: params.documentId as Id<"documents">,

@@ -17,6 +17,8 @@ export default function Editor({ onChange, initialContent, editable, documentId 
   const { organization } = useOrganization()
   const isOrg = organization?.id !== undefined
   const orgId = isOrg ? organization?.id as string : user?.id as string
+  const avatar = user?.imageUrl || ""
+  const username = user?.username || ""
 
   const handleUpload = async (file: File) => {
     const userdata = isOrg
@@ -34,7 +36,7 @@ export default function Editor({ onChange, initialContent, editable, documentId 
       throw new Error("File too large")
     }
 
-    const url = await uploadFileOnServer(orgId, documentId, file);
+    const url = await uploadFileOnServer(orgId, documentId as string, avatar, username, file);
     return url;
   };
   
