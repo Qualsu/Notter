@@ -1,7 +1,6 @@
 "use client" 
 
 import dynamic from "next/dynamic" 
-import { useMemo } from "react" 
 
 import { Skeleton } from "@/components/ui/skeleton" 
 
@@ -14,11 +13,9 @@ import { useOrganization, useUser } from "@clerk/nextjs"
 import type { DashboardDocumentIdPageProps as DocumentIdPageProps } from "@/config/types/main.types";
 import Error404 from "@/app/not-found"
 
+const Editor = dynamic(() => import("@/components/editor"), { ssr: false })
+
 export default function DocumentIdPage({ params }: DocumentIdPageProps){
-  const Editor = useMemo(
-    () => dynamic(() => import("@/components/editor"), { ssr: false }),
-    []
-  ) 
   
   const { user } = useUser()
   const { organization } = useOrganization()

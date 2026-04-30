@@ -1,15 +1,10 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import "@blocknote/core/style.css" 
-import "@blocknote/mantine/style.css"
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import ConvexClientProvider from '@/components/providers/convex-provider'
 import { Toaster } from 'react-hot-toast';
-import { ModalProvider } from '@/components/providers/modal-provider'
-import { RequestProvider } from '@/components/providers/request-provider'
 import { images } from '@/config/routing/image.route'
-import ConsoleLogoToggle from '@/components/console-logo-toggle'
 
 const font = Inter({ subsets: ['latin'] })
 
@@ -52,11 +47,7 @@ export default function RootLayout({
               },
             }}
             />
-            <ModalProvider/>
-            <RequestProvider>
-              <ConsoleLogoToggle />
-              {children}
-            </RequestProvider>
+            {children}
           </ThemeProvider>
         </ConvexClientProvider>
       </body>

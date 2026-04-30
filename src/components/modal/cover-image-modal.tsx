@@ -64,6 +64,11 @@ export function CoverImageModal(){
     setFile(file);
 
     const fileUrl = await uploadFile(orgId, params.documentId as string, avatar, username, file);
+    if (!fileUrl) {
+      toast.error("Не удалось загрузить обложку");
+      setIsSubmitting(false);
+      return;
+    }
 
     await update({
       id: params.documentId as Id<"documents">,

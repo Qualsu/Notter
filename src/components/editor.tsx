@@ -1,5 +1,7 @@
 "use client" 
 
+import "@blocknote/core/style.css" 
+import "@blocknote/mantine/style.css"
 import { BlockNoteEditor, PartialBlock } from "@blocknote/core" 
 import { useCreateBlockNote } from "@blocknote/react" 
 import { BlockNoteView } from "@blocknote/mantine"
@@ -37,6 +39,10 @@ export default function Editor({ onChange, initialContent, editable, documentId 
     }
 
     const url = await uploadFileOnServer(orgId, documentId as string, avatar, username, file);
+    if (!url) {
+      toast.error("Не удалось загрузить файл")
+      throw new Error("Upload failed")
+    }
     return url;
   };
   

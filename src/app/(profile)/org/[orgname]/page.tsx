@@ -3,10 +3,10 @@
 import { Cover } from "@/components/cover";
 import Image from "next/image";
 import { useQuery } from "convex/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import Twemoji from 'react-twemoji';
 import { Skeleton } from "@/components/ui/skeleton";
+import Twemoji from "react-twemoji";
 import { Navbar } from "@/app/(landing)/_components/navbar";
 import toast from "react-hot-toast";
 import Error404 from "@/app/not-found";
@@ -25,6 +25,8 @@ import { pages } from "@/config/routing/pages.route";
 import { images } from "@/config/routing/image.route";
 import type { OrgProps } from "@/config/types/profile.types";
 import type { Org, User } from "@/config/types/api.types";
+
+const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 export default function OrgProfile({ params }: OrgProps) {
   const { isLoaded, user } = useUser();
@@ -46,8 +48,6 @@ export default function OrgProfile({ params }: OrgProps) {
     userId: org?._id,
     documentId: org?.pined === undefined ? null : org?.pined == "" ? null : org?.pined as Id<"documents"> | null,
   });
-  const Editor = useMemo(() => dynamic(() => import("@/components/editor"), { ssr: false }), []);
-
   if (!isLoaded || document === undefined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">

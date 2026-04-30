@@ -1,8 +1,11 @@
-import { API } from "@/config/const/api.const";
-import { apiRoutes } from "@/config/routing/api.route";
-import type { User } from "@/config/types/api.types";
+import { apiPut } from "../client"
+import { createProfileApi } from "../profile-api"
+import { apiRoutes } from "@/config/routing/api.route"
+import type { User } from "@/config/types/api.types"
 
-export async function createUser(
+const usersApi = createProfileApi<User>(apiRoutes.USERS)
+
+export function createUser(
   _id: string,
   username: string,
   created: Date | null = null,
@@ -13,44 +16,24 @@ export async function createUser(
   publicDocuments: number | null = null,
   verifiedDocuments: number | null = null,
   mail: string | null = null
-): Promise<User | null>{
-  try {
-    const response = await API.post(apiRoutes.USERS.ADD(_id), {
-      username,
-      created,
-      firstname,
-      lastname,
-      avatar,
-      documents,
-      publicDocuments,
-      verifiedDocuments,
-      mail
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
+): Promise<User | null> {
+  return usersApi.create(_id, {
+    username,
+    created,
+    firstname,
+    lastname,
+    avatar,
+    documents,
+    publicDocuments,
+    verifiedDocuments,
+    mail,
+  })
+}
 
-export async function getByUsername(username: string): Promise<User | null>{
-  try {
-    const response = await API.get(apiRoutes.USERS.BY_USERNAME(username));
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
+export const getByUsername = usersApi.getByUsername
+export const getById = usersApi.getById
 
-export async function getById(_id: string): Promise<User | null>{
-  try {
-    const response = await API.get(apiRoutes.USERS.BY_ID(_id));
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
-
-export async function updateUser(
+export function updateUser(
   _id: string,
   username: string | null = null,
   firstname: string | null = null,
@@ -65,55 +48,26 @@ export async function updateUser(
   mail: string | null = null,
   premium: number | null = null,
   moderator: boolean | null = null
-): Promise<User | null>{
-  try {
-    const response = await API.put(apiRoutes.USERS.UPDATE(_id), {
-      username,
-      firstname,
-      lastname,
-      avatar,
-      privated,
-      pined,
-      documents,
-      publicDocuments,
-      verifiedDocuments,
-      watermark,
-      mail,
-      premium,
-      moderator
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
-
-export async function updateUserBadge(
-  _id: string,
-  badgeName: string,
-  status: boolean
-): Promise<{ message: string } | null> {
-  try {
-    const response = await API.put(apiRoutes.USERS.UPDATE_BADGE(_id), {
-      badge_name: badgeName,
-      status
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
+): Promise<User | null> {
+  return usersApi.update(_id, {
+    username,
+    firstname,
+    lastname,
+    avatar,
+    privated,
+    pined,
+    documents,
+    publicDocuments,
+    verifiedDocuments,
+    watermark,
+    mail,
+    premium,
+    moderator,
+  })
 }
 
-export async function changeVerifiedOrgs(
-  _id: string,
-  change: number
-): Promise<{ message: string } | null> {
-  try {
-    const response = await API.put(
-      apiRoutes.USERS.CHANGE_VERIFIED_ORGS(_id, change)
-    );
-    return response.data;
-  } catch (error) {
-    return null;
-  }
+export const updateUserBadge = usersApi.updateBadge
+
+export function changeVerifiedOrgs(_id: string, change: number) {
+  return apiPut<{ message: string }>(apiRoutes.USERS.CHANGE_VERIFIED_ORGS(_id, change))
 }

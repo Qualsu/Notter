@@ -1,8 +1,10 @@
-import { API } from "@/config/const/api.const";
-import { apiRoutes } from "@/config/routing/api.route";
-import type { Org } from "@/config/types/api.types";
+import { createProfileApi } from "../profile-api"
+import { apiRoutes } from "@/config/routing/api.route"
+import type { Org } from "@/config/types/api.types"
 
-export async function createOrg(
+const orgsApi = createProfileApi<Org>(apiRoutes.ORGS)
+
+export function createOrg(
   _id: string,
   username: string | null,
   owner: string | null,
@@ -12,45 +14,25 @@ export async function createOrg(
   avatar: string | null = null,
   documents: number | null = null,
   publicDocuments: number | null = null,
-  verifiedDocuments: number | null = null,
-): Promise<Org | null>{
-  try {
-    const response = await API.post(apiRoutes.ORGS.ADD(_id), {
-      username,
-      owner,
-      created,
-      members,
-      name,
-      avatar,
-      documents,
-      publicDocuments,
-      verifiedDocuments
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
+  verifiedDocuments: number | null = null
+): Promise<Org | null> {
+  return orgsApi.create(_id, {
+    username,
+    owner,
+    created,
+    members,
+    name,
+    avatar,
+    documents,
+    publicDocuments,
+    verifiedDocuments,
+  })
+}
 
-export async function getByUsername(username: string): Promise<Org | null>{
-  try {
-    const response = await API.get(apiRoutes.ORGS.BY_USERNAME(username));
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
+export const getByUsername = orgsApi.getByUsername
+export const getById = orgsApi.getById
 
-export async function getById(_id: string): Promise<Org | null>{
-  try {
-    const response = await API.get(apiRoutes.ORGS.BY_ID(_id));
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
-
-export async function updateOrg(
+export function updateOrg(
   _id: string,
   username: string | null = null,
   owner: string | null = null,
@@ -63,41 +45,22 @@ export async function updateOrg(
   members: string[] | null = null,
   watermark: boolean | null = null,
   premium: number | null = null,
-  verifiedDocuments: number | null = null,
-): Promise<Org | null>{
-  try {
-    const response = await API.put(apiRoutes.ORGS.UPDATE(_id), {
-      username,
-      name,
-      owner,
-      avatar,
-      privated,
-      pined,
-      documents,
-      members,
-      publicDocuments,
-      watermark,
-      premium,
-      verifiedDocuments
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-};
-
-export async function updateOrgBadge(
-  _id: string,
-  badgeName: string,
-  status: boolean
-): Promise<{ message: string } | null> {
-  try {
-    const response = await API.put(apiRoutes.ORGS.UPDATE_BADGE(_id), {
-      badge_name: badgeName,
-      status
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
+  verifiedDocuments: number | null = null
+): Promise<Org | null> {
+  return orgsApi.update(_id, {
+    username,
+    name,
+    owner,
+    avatar,
+    privated,
+    pined,
+    documents,
+    members,
+    publicDocuments,
+    watermark,
+    premium,
+    verifiedDocuments,
+  })
 }
+
+export const updateOrgBadge = orgsApi.updateBadge

@@ -1,79 +1,76 @@
-"use client" 
+"use client"
 
-import { ElementRef, useRef, useState } from "react" 
-import { useMutation } from "convex/react" 
+import { ElementRef, useRef, useState } from "react"
+import { useMutation } from "convex/react"
 import TextareaAutosize from "react-textarea-autosize"
-import { Button } from "./ui/button" 
-import { ImageIcon, Smile, X } from "lucide-react" 
-import { Doc } from "../../convex/_generated/dataModel" 
-import { api } from "../../convex/_generated/api" 
-import { IconPicker } from "./icon-picker" 
-import { useCoverImage } from "./hooks/use-cover-image" 
+import { ImageIcon, Smile, X } from "lucide-react"
 import { useOrganization, useUser } from "@clerk/nextjs"
-import Twemoji from 'react-twemoji';
-import type { ToolbarProps } from "@/config/types/components.types";
+import Twemoji from "react-twemoji"
 
-export function Toolbar({ initialData, preview }: ToolbarProps){
-  const inputRef = useRef<ElementRef<"textarea">>(null) 
+import { Button } from "./ui/button"
+import { api } from "../../convex/_generated/api"
+import { IconPicker } from "./icon-picker"
+import { useCoverImage } from "./hooks/use-cover-image"
+import type { ToolbarProps } from "@/config/types/components.types"
 
-  const [isEditing, setIsEditing] = useState(false) 
-  const [value, setValue] = useState(initialData.title) 
-
+export function Toolbar({ initialData, preview }: ToolbarProps) {
+  const inputRef = useRef<ElementRef<"textarea">>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [value, setValue] = useState(initialData.title)
   const { user } = useUser()
   const { organization } = useOrganization()
-  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
-
-  const update = useMutation(api.document.update) 
+  const orgId = organization?.id !== undefined ? organization.id : user?.id as string
+  const update = useMutation(api.document.update)
   const removeIcon = useMutation(api.document.removeIcon)
-  const coverImage = useCoverImage() 
+  const coverImage = useCoverImage()
 
   const enableInput = () => {
-    if (preview) return 
+    if (preview) return
 
-    setIsEditing(true) 
+    setIsEditing(true)
     setTimeout(() => {
-      setValue(initialData.title) 
-      inputRef.current?.focus() 
-    }, 0) 
-  } 
+      setValue(initialData.title)
+      inputRef.current?.focus()
+    }, 0)
+  }
 
-  const disableInput = () => setIsEditing(false) 
+  const disableInput = () => setIsEditing(false)
 
   const onInput = (value: string) => {
-    setValue(value) 
+    setValue(value)
     update({
       id: initialData._id,
       title: value || "Новая заметка",
       userId: orgId,
-      lastEditor: user?.username as string
-    }) 
-  } 
+      lastEditor: user?.username as string,
+    })
+  }
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter") {
-      event.preventDefault() 
-      disableInput() 
+      event.preventDefault()
+      disableInput()
     }
-  } 
+  }
 
   const onIconSelect = (icon: string) => {
     update({
       id: initialData._id,
       icon,
       userId: orgId,
-      lastEditor: user?.username as string
-    }) 
-  } 
+      lastEditor: user?.username as string,
+    })
+  }
 
   const onRemoveIcon = () => {
     removeIcon({
       id: initialData._id,
-      userId: orgId
-    }) 
-  } 
+      userId: orgId,
+    })
+  }
 
   return (
-    <Twemoji options={{ className: 'twemoji-lg' }}>
+    <Twemoji options={{ className: "twemoji-lg" }}>
       <div className="group relative pl-12">
         {!!initialData.icon && !preview && (
           <div className="group/icon flex items-center gap-x-2 pt-6">
@@ -140,5 +137,5 @@ export function Toolbar({ initialData, preview }: ToolbarProps){
         )}
       </div>
     </Twemoji>
-  ) 
-} 
+  )
+}

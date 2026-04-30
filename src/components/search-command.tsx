@@ -1,10 +1,11 @@
-"use client" 
+"use client"
 
-import { useEffect, useState } from "react" 
-import { File } from "lucide-react" 
-import { useQuery } from "convex/react" 
-import { useRouter } from "next/navigation" 
-import { useOrganization, useUser } from "@clerk/nextjs" 
+import { useEffect, useState } from "react"
+import { File } from "lucide-react"
+import { useQuery } from "convex/react"
+import { useRouter } from "next/navigation"
+import { useOrganization, useUser } from "@clerk/nextjs"
+import Twemoji from "react-twemoji"
 
 import {
   CommandDialog,
@@ -13,58 +14,57 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command" 
-import { api } from "../../convex/_generated/api" 
-import { useSearch } from "./hooks/use-search" 
-import Twemoji from 'react-twemoji';
+} from "@/components/ui/command"
+import { api } from "../../convex/_generated/api"
+import { useSearch } from "./hooks/use-search"
 import { pages } from "@/config/routing/pages.route"
 
-export function SearchCommand(){
-  const { user } = useUser() 
+export function SearchCommand() {
+  const { user } = useUser()
   const { organization } = useOrganization()
   const router = useRouter()
-  const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
-  const documents = useQuery(api.document.getSearch, {
-    userId: orgId
-  }) 
-  const [isMounted, setIsMounted] = useState(false) 
-  const [searchValue, setSearchValue] = useState("");
-
-  const toggle = useSearch((store) => store.toggle) 
-  const isOpen = useSearch((store) => store.isOpen) 
-  const onClose = useSearch((store) => store.onClose) 
+  const orgId = organization?.id !== undefined ? organization.id : user?.id as string
+  const toggle = useSearch((store) => store.toggle)
+  const isOpen = useSearch((store) => store.isOpen)
+  const onClose = useSearch((store) => store.onClose)
+  const documents = useQuery(
+    api.document.getSearch,
+    isOpen && orgId ? { userId: orgId } : "skip"
+  )
+  const [isMounted, setIsMounted] = useState(false)
+  const [searchValue, setSearchValue] = useState("")
 
   useEffect(() => {
-    setIsMounted(true) 
-  }, []) 
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault() 
-        toggle() 
+        e.preventDefault()
+        toggle()
       }
-    } 
+    }
 
-    document.addEventListener("keydown", down) 
-    return () => document.removeEventListener("keydown", down) 
-  }, [toggle]) 
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
+  }, [toggle])
 
   const onSelect = (id: string) => {
-    router.push(pages.DASHBOARD(id)) 
-    onClose() 
-  } 
+    router.push(pages.DASHBOARD(id))
+    onClose()
+  }
 
   if (!isMounted) {
-    return null 
+    return null
   }
 
   const filteredDocuments = documents?.filter((document) => {
-    if (!searchValue.trim()) return true;
-    const queryWords = searchValue.toLowerCase().split(/\s+/).filter(Boolean);
-    const title = document.title.toLowerCase();
-    return queryWords.every(word => title.includes(word));
-  });
+    if (!searchValue.trim()) return true
+    const queryWords = searchValue.toLowerCase().split(/\s+/).filter(Boolean)
+    const title = document.title.toLowerCase()
+    return queryWords.every((word) => title.includes(word))
+  })
 
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
@@ -84,7 +84,7 @@ export function SearchCommand(){
                 title={document.title}
                 onSelect={() => onSelect(document._id)}
               >
-                <Twemoji options={{ className: 'twemoji' }}>
+                <Twemoji options={{ className: "twemoji" }}>
                   {document.icon ? (
                     <p className="mr-2 text-[1.125rem]">{document.icon}</p>
                   ) : (
@@ -99,4 +99,4 @@ export function SearchCommand(){
       </CommandList>
     </CommandDialog>
   )
-} 
+}
