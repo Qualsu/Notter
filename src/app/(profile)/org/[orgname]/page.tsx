@@ -32,13 +32,16 @@ export default function OrgProfile({ params }: OrgProps) {
   const { isLoaded, user } = useUser();
   const [org, setOrg] = useState<Org | User | null>(null);
   const [account, setAccount] = useState<User | null>(null);
+  const [orgLoading, setOrgLoading] = useState(true);
 
   useEffect(() => {
     const fetchOrg = async () => {
+      setOrgLoading(true);
       const orgData = await getByUsername(params.orgname);
       const accountData = await getById(user?.id as string);
       setOrg(orgData);
       setAccount(accountData);
+      setOrgLoading(false);
     };
 
     fetchOrg();
@@ -48,7 +51,7 @@ export default function OrgProfile({ params }: OrgProps) {
     userId: org?._id,
     documentId: org?.pined === undefined ? null : org?.pined == "" ? null : org?.pined as Id<"documents"> | null,
   });
-  if (!isLoaded || document === undefined) {
+  if (!isLoaded || orgLoading || document === undefined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
         <div className="mx-auto w-full max-w-[1380px] rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">

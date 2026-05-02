@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton"
 import Twemoji from "react-twemoji";
-import { Navbar } from "@/app/(landing)/_components/navbar";
 import toast from "react-hot-toast";
 import Error404 from "@/app/not-found";
 import { useUser } from "@clerk/nextjs";
@@ -31,13 +30,16 @@ export default function UserProfile({ params }: UsernameProps) {
   const { isLoaded, user } = useUser();
   const [profile, setProfile] = useState<User | Org | null>(null);
   const [account, setAccount] = useState<User | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setProfileLoading(true);
       const profileData = await getByUsername(params.username);
       const accountData = await getById(user?.id as string);
       setProfile(profileData);
-      setAccount(accountData)
+      setAccount(accountData);
+      setProfileLoading(false);
     };
 
     fetchProfile();
@@ -47,7 +49,7 @@ export default function UserProfile({ params }: UsernameProps) {
     userId: profile?._id,
     documentId: profile?.pined === undefined ? null : profile?.pined == "" ? null : profile?.pined as Id<"documents"> | null,
   });
-  if (!isLoaded || document === undefined) {
+  if (!isLoaded || profileLoading || document === undefined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
         <div className="mx-auto w-full max-w-[1380px] rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
@@ -97,16 +99,12 @@ export default function UserProfile({ params }: UsernameProps) {
 
   if (!profile) {
     return (
-      <>
-        <Navbar />
-        <Error404 />;
-      </>
+        <Error404 />
     )
   }
 
   return (
     <>
-      <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-12 pt-20 dark:to-logo-cyan/10">
         <title>{params.username + "`s profile"}</title>
         <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
