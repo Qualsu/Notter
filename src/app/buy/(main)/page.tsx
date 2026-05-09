@@ -114,7 +114,7 @@ export default function BuyPremium() {
 
     return (
         <main className="relative z-10 min-h-screen flex items-center justify-center p-6">
-            <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg mt-10">
+            <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg mt-10">
                 <section className="space-y-4">
                     <div className="flex items-center gap-3">
                         <h1 className="text-3xl font-extrabold">
@@ -205,11 +205,19 @@ function PlanCard({ id, title, price, icon, selected, onSelect }: { id: string; 
                     <>
                         <li>Сокращенные ссылки</li>
                         <li>Значок в профиле</li>
+                        <li>До 200 заметок</li>
+                        <li>До 100 публичных заметок</li>
+                        <li>Лимит на загрузку до 3 МБ</li>
                     </>
                 ) : (
                     <>
                         <li>Все преимущества Amber</li>
                         <li>Кастомные ссылки</li>
+                        <li>Отключение упоминаний Notter</li>
+                        <li>Ззаметки в JSON</li>
+                        <li>До 1000 заметок</li>
+                        <li>До 1000 публичных заметок</li>
+                        <li>Лимит на загрузку до 10 МБ</li>
                     </>
                 )}
             </ul>

@@ -127,7 +127,7 @@ export function DocumentList({
                       <Link
                         href={pages.VIEW(doc._id)}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-lg text-primary/80 transition-all duration-300 hover:text-primary hover:underline"
+                        className="text-lg text-primary/80 transition-all duration-300 hover:text-primary"
                       >
                         {doc.title}
                       </Link>

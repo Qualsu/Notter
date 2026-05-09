@@ -259,33 +259,23 @@ export function Navigation() {
                     </div>
                     <Progress value={publicDocumentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(publicDocumentProgress)}`} />
 
-                    {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
+                    {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) ? (
                         <div className="mt-3 rounded-xl border border-red-300/50 bg-red-50/70 p-2 text-xs text-red-700 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-200">
-                            {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) && (
-                                <div>
-                                    Достигнут лимит по заметкам. Оформите{" "}
-                                    <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
-                                        <span className="group-hover:text-logo-yellow group-hover:underline transition-colors duration-300">N</span>
-                                        <span className="group-hover:text-logo-light-yellow group-hover:underline transition-colors duration-300 mr-1">otter</span>
-                                        <span className="group-hover:text-logo-cyan group-hover:underline transition-colors duration-300">Gem</span>
-                                    </Link>
-                                </div>
-                            )}
+                            <span>Достигнут лимит по заметкам. Оформите{" "}</span>
+                            <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
+                                <span className="group-hover:text-logo-yellow transition-colors duration-300">N</span>
+                                <span className="group-hover:text-logo-light-yellow transition-colors duration-300 mr-1">otter</span>
+                                <span className="group-hover:text-logo-cyan transition-colors duration-300">Gem</span>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="mt-2">
+                            <Link className="text-sm text-primary/50 hover:text-primary transition-colors duration-200" href={pages.BUY}>
+                                Увеличить лимиты
+                            </Link>
                         </div>
                     )}
                 </div>
-
-                {premiumLevel === 0 && !isPromoHidden && (
-                    <div className="relative mx-3 mb-4 mt-auto overflow-hidden rounded-2xl border border-logo-cyan/20 bg-gradient-to-br from-logo-yellow/20 via-background to-logo-cyan/20 p-3 shadow-lg">
-                        <button onClick={hidePromo} aria-label="Закрыть" className="absolute right-2 top-2 text-sm text-muted-foreground hover:text-foreground">✕</button>
-                        <div className="text-sm font-semibold">Попробуйте <span className="text-logo-yellow">N</span><span className="text-logo-light-yellow">otter</span><span className="text-logo-cyan"> Gem</span></div>
-                        <div className="mt-1 text-xs text-muted-foreground">Расширьте лимиты и получите дополнительные функции.</div>
-                        <Link href={pages.BUY} className="block mt-3">
-                            <Button className="h-9 w-full rounded-xl">Купить Notter Gem</Button>
-                        </Link>
-                    </div>
-                )}
-
                 <div onMouseDown={handleMouseDown} onClick={resetWidth} className="absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-transparent opacity-0 transition group-hover/sidebar:opacity-100 resize-handle" />
             </aside>
 

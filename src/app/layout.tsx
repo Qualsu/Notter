@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import ConvexClientProvider from '@/components/providers/convex-provider'
 import { Toaster } from 'react-hot-toast';
 import { images } from '@/config/routing/image.route'
+import { ThemeIcons } from '@/components/theme-icons'
 
 const font = Inter({ subsets: ['latin'] })
 
@@ -47,6 +48,7 @@ export default function RootLayout({
               },
             }}
             />
+            <ThemeIcons />
             {children}
           </ThemeProvider>
         </ConvexClientProvider>

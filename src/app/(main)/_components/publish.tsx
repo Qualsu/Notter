@@ -13,6 +13,7 @@ import { getById as getUserByID, updateUser } from "../../api/users/user"
 import { getById as getOrgByID, updateOrg } from "../../api/orgs/org"
 import type { PublishProps } from "@/config/types/main.types";
 import type { Org, User } from "@/config/types/api.types";
+import Link from "next/link"
 
 export function Publish({ initialData }: PublishProps) {
   const origin = useOrigin()
@@ -261,6 +262,16 @@ export function Publish({ initialData }: PublishProps) {
                 Отменить публикацию
               </Button>
             </Protect>
+            
+            <Link href={url}>
+              <Button 
+                className="h-9 w-full rounded-xl text-xs mt-2"
+                size="sm"
+                variant={"outline"}
+              >
+                Перейти
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/70 bg-background/50 p-4 text-center">

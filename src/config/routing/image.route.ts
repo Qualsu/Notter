@@ -9,7 +9,9 @@ export const images = {
 		EMPTY: "/image/Empty.png",
 		LANDING: "/image/Landing.png",
 		LOGO: "/image/logo.png",
+		DARK_LOGO: "/image/logo-dark.png",
 		ICON: "/image/icon.png",
+		DARK_ICON: "/image/icon-dark.png",
 	},
 	ICON: {
 		LAMP: "/icon/lamp.svg",

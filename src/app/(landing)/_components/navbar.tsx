@@ -35,7 +35,14 @@ export function Navbar({ logo = true }: NavbarProps) {
             height="35"
             width="35"
             alt="Notter"
-            className={`${!logo && "hidden"}`}
+            className={`${!logo && "hidden"} block dark:hidden`}
+          />
+          <Image
+            src={images.IMAGE.DARK_ICON}
+            height="35"
+            width="35"
+            alt="Notter"
+            className={`${!logo && "hidden"} hidden dark:block`}
           />
         </Link>
 

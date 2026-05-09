@@ -92,10 +92,10 @@ export default function OrgProfile({ params }: OrgProps) {
     try {
       if (org?.username && navigator) {
         await navigator.clipboard.writeText(org.username);
-        toast.success("Username copied to clipboard!");
+        toast.success("Юзернейм скопирован!");
       }
     } catch (error) {
-      toast.error("Failed to copy username");
+      toast.error("Не удалось скопировать юзернейм");
     }
   };
 
@@ -156,10 +156,10 @@ export default function OrgProfile({ params }: OrgProps) {
                   <ModeratorPanel user={org} />
                 </div>
                 <p
-                  className="mt-1 inline-flex cursor-pointer rounded-lg bg-background/70 px-2.5 py-1 text-base text-primary/80 transition-all duration-300 hover:text-primary hover:underline"
+                  className="mt-1 inline-flex cursor-pointer rounded-lg bg-background/70 py-1 text-base text-primary/80 transition-all duration-300 hover:text-primary"
                   onClick={copyUsername}
                 >
-                  {org?.username}
+                  @{org?.username}
                 </p>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function OrgProfile({ params }: OrgProps) {
                         </span>
                       )}
                       <Link
-                        className="text-xl flex flex-row items-center gap-1.5 hover:underline hover:text-primary/70 transition-all duration-300"
+                        className="text-xl flex flex-row items-center gap-1.5 hover:text-primary/70 transition-all duration-300"
                         href={pages.VIEW(document?._id as string)}
                       >
                         <span className="font-bold">{document?.title}</span>
@@ -239,7 +239,7 @@ export default function OrgProfile({ params }: OrgProps) {
                     </span>
                   )}
                   <Link
-                    className="text-xl font-bold transition-all duration-300 hover:text-primary/70 hover:underline"
+                    className="text-xl font-bold transition-all duration-300 hover:text-primary/70"
                     href={pages.VIEW(document._id)}
                   >
                     {document.title}

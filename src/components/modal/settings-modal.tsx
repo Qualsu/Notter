@@ -16,6 +16,20 @@ import { Button } from "../ui/button"
 import { useRef } from "react"
 import { LogOut, Settings, User } from "lucide-react"
 
+const readRedirectPreference = () => {
+  if (typeof window === "undefined") return false
+
+  const localValue = localStorage.getItem("redirect")
+  if (localValue !== null) {
+    return localValue === "true"
+  }
+
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("redirect="))
+    ?.split("=")[1] === "true"
+}
+
 export function SettingsModal() {
   const settings = useSettings()
   const router = useRouter()
@@ -43,8 +57,7 @@ export function SettingsModal() {
 
     fetchData()
 
-    const redirectValue = localStorage.getItem("redirect")
-    setRedirect(redirectValue === "true")
+    setRedirect(readRedirectPreference())
   }, [user, id, isOrg])
 
   const handlePrivacyToggle = async (value: boolean) => {
@@ -77,6 +90,7 @@ export function SettingsModal() {
     setRedirect(value)
 
     localStorage.setItem("redirect", value ? "true" : "false")
+    document.cookie = `redirect=${value ? "true" : "false"}; Path=/; Max-Age=31536000; SameSite=Lax`
   }
 
   // backdrop modal (simplified)

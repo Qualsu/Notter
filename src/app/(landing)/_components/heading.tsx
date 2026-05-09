@@ -30,7 +30,7 @@ export function Heading() {
         </span>
       </div>
 
-      <div className="flex justify-center mt-10 md:mt-0 mx-4">
+      <div className="hidden md:flex justify-center mt-10 md:mt-0 mx-4">
         <Image src={images.IMAGE.LANDING} alt="lamp" width={500} height={500} className="drop-shadow-[0_0_10px_rgba(0,0,0,0.5)] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"/>
       </div>
     </section>

@@ -27,17 +27,17 @@ function Footer({ name, team, logo }: UserInterface) {
   return (
     <footer className="mt-8 w-full">
       <Separator className="bg-black/10 dark:bg-white/10" />
-      <p className="my-4 text-center text-sm text-primary/50">
-        Заметка создана {team ? "командой" : ""}{" "}
-        <Link href={pages.PROFILE(team, name)} className="font-semibold hover:underline">
+      <p className="my-4 text-center text-sm text-primary/60">
+        <span>Заметка создана {team ? "командой" : ""}{" "}</span>
+        <Link href={pages.PROFILE(team, name)} className="font-semibold hover:text-primary transition-colors duration-200">
           {name}
         </Link>
         {logo && (
           <>
             <span> в</span>
-            <Link className="group ml-1 font-bold opacity-60 transition-opacity duration-300 hover:opacity-100" href={pages.ROOT}>
-              <span className="group-hover:underline text-logo-yellow">N</span>
-              <span className="group-hover:underline text-logo-light-yellow">otter</span>
+            <Link className="group ml-1 font-bold opacity-60 transition-opacity duration-200 hover:opacity-100" href={pages.ROOT}>
+              <span className="text-logo-yellow">N</span>
+              <span className="text-logo-light-yellow">otter</span>
             </Link>
           </>
         )}
