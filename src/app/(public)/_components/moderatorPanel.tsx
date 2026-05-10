@@ -230,7 +230,7 @@ export function ModeratorPanel({
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button onClick={() => setDialogOpen(true)} variant={"outline"} size={"icon"} className="h-8 w-8 rounded-lg border-border/70 bg-background/70 hover:bg-background">
           <Menu />
         </Button>

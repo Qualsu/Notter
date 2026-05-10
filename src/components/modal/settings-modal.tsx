@@ -15,6 +15,7 @@ import { pages } from "@/config/routing/pages.route"
 import { Button } from "../ui/button"
 import { useRef } from "react"
 import { LogOut, Settings, User } from "lucide-react"
+import { isDesktopApp } from "@/lib/desktop-app"
 
 const readRedirectPreference = () => {
   if (typeof window === "undefined") return false
@@ -39,6 +40,7 @@ export function SettingsModal() {
   const [isPrivated, setIsPrivated] = useState<boolean>(false)
   const [watermark, setWatermark] = useState<boolean>(false)
   const [redirect, setRedirect] = useState<boolean>(false)
+  const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const [userData, setUserData] = useState<any>(null)
   const isOrg = organization?.id !== undefined
   const id = isOrg ? organization?.id : user?.id as string
@@ -57,6 +59,7 @@ export function SettingsModal() {
 
     fetchData()
 
+    setIsDesktop(isDesktopApp())
     setRedirect(readRedirectPreference())
   }, [user, id, isOrg])
 
@@ -188,7 +191,7 @@ export function SettingsModal() {
           <ModeToggle />
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className={isDesktop ? "hidden" : "flex items-center justify-between"}>
           <div className="flex flex-col gap-y-1">
             <Label>Редирект</Label>
             <span className="text-[0.8rem] text-muted-foreground w-full max-w-[350px]">

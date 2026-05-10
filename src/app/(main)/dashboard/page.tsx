@@ -55,7 +55,7 @@ export default function Dashboard() {
             <div className="pointer-events-none absolute -right-12 bottom-12 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
             <section className="relative z-10 w-full max-w-3xl rounded-3xl border border-white/40 bg-white/70 p-6 text-center shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/70 sm:p-10">
                 <div className="mx-auto mb-4 inline-flex rounded-2xl border border-logo-yellow/30 bg-logo-yellow/10 px-3 py-1 text-xs font-semibold tracking-wide text-foreground/80">
-                    Welcome to Notter Dashboard
+                    Welcome to Notter
                 </div>
                 <Image 
                     src={images.IMAGE.EMPTY}

@@ -12,6 +12,7 @@ export const images = {
 		DARK_LOGO: "/image/logo-dark.png",
 		ICON: "/image/icon.png",
 		DARK_ICON: "/image/icon-dark.png",
+		INSTALL_PWA: "/image/install-pwa.png"
 	},
 	ICON: {
 		LAMP: "/icon/lamp.svg",

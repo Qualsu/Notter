@@ -5,19 +5,26 @@ import { toast } from "react-hot-toast";
 import { Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice?: Promise<{ outcome: "accepted" | "dismissed"; platform?: string }>;
-};
+import { InstallModal } from "@/components/modal/install-modal";
+import type {
+  BeforeInstallPromptEvent,
+  NavigatorWithStandalone,
+} from "@/config/types/components.types";
 
 const isIosStandalone = () =>
-  Boolean((navigator as Navigator & { standalone?: boolean }).standalone);
+  Boolean((navigator as NavigatorWithStandalone).standalone);
+
+const isMobileDevice = () => {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+};
 
 const InstallPWA = () => {
   const [promptInstall, setPromptInstall] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -36,6 +43,7 @@ const InstallPWA = () => {
 
     const appInstalledHandler = () => {
       setPromptInstall(null);
+      setIsModalOpen(false);
       setIsInstalled(true);
       toast.success("Notter установлен");
     };
@@ -52,9 +60,7 @@ const InstallPWA = () => {
     };
   }, []);
 
-  const onClick = async (event: React.MouseEvent) => {
-    event.preventDefault();
-
+  const installPwa = async () => {
     if (!promptInstall) {
       toast(
         "Если окно установки не появилось, откройте сайт в Chrome или Edge через HTTPS/localhost и нажмите значок установки в адресной строке."
@@ -68,25 +74,45 @@ const InstallPWA = () => {
 
       if (choice?.outcome === "accepted") {
         toast.success("Установка запущена");
+        setIsModalOpen(false);
       }
     } finally {
       setPromptInstall(null);
     }
   };
 
+  const onClick = async (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    if (isMobileDevice()) {
+      await installPwa();
+      return;
+    }
+
+    setIsModalOpen(true);
+  };
+
   if (isInstalled) return null;
 
   return (
-    <Button
-      className="link-button"
-      id="setup_button"
-      aria-label="Установить приложение"
-      title="Установить приложение"
-      onClick={onClick}
-      variant="outline"
-    >
-      Установить <Download className="ml-2 h-4 w-4" />
-    </Button>
+    <>
+      <Button
+        className="link-button"
+        id="setup_button"
+        aria-label="Установить приложение"
+        title="Установить приложение"
+        onClick={onClick}
+        variant="outline"
+      >
+        Установить <Download className="ml-2 h-4 w-4" />
+      </Button>
+      <InstallModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onInstallPwa={installPwa}
+        canInstallPwa={Boolean(promptInstall)}
+      />
+    </>
   );
 };
 
