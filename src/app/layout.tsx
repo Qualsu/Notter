@@ -1,28 +1,29 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { ThemeProvider } from '@/components/providers/theme-provider'
-import ConvexClientProvider from '@/components/providers/convex-provider'
-import { Toaster } from 'react-hot-toast';
-import { images } from '@/config/routing/image.route'
-import { ThemeIcons } from '@/components/theme-icons'
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import { Toaster } from "react-hot-toast"
 
-const font = Inter({ subsets: ['latin'] })
+import "./globals.css"
+import ConvexClientProvider from "@/components/providers/convex-provider"
+import { ThemeProvider } from "@/components/providers/theme-provider"
+import { ThemeIcons } from "@/components/theme-icons"
+import { images } from "@/config/routing/image.route"
+
+const font = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: 'Notter',
+  title: "Notter",
   description: "Новый уровень построения задач. Встречайте Notter",
   manifest: images.MANIFEST,
   icons: {
     icon: images.IMAGE.ICON,
-  }
+  },
 }
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={font.className}>
@@ -34,19 +35,19 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Toaster
-            position="bottom-center"
-            toastOptions={{
-              style: {
-                color: 'black',
-                background: 'white',
-                fontSize: '13px',
-                borderRadius: '5px',
-              },
-              iconTheme: {
-                primary: 'black',
-                secondary: 'white',
-              },
-            }}
+              position="bottom-center"
+              toastOptions={{
+                style: {
+                  color: "black",
+                  background: "white",
+                  fontSize: "13px",
+                  borderRadius: "5px",
+                },
+                iconTheme: {
+                  primary: "black",
+                  secondary: "white",
+                },
+              }}
             />
             <ThemeIcons />
             {children}

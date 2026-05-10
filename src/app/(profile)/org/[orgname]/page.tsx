@@ -1,9 +1,9 @@
 "use client";
 
+import { use, useEffect, useState } from "react";
 import { Cover } from "@/components/cover";
 import Image from "next/image";
 import { useQuery } from "convex/react";
-import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import Twemoji from "react-twemoji";
@@ -29,6 +29,7 @@ import type { Org, User } from "@/config/types/api.types";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 export default function OrgProfile({ params }: OrgProps) {
+  const { orgname } = use(params);
   const { isLoaded, user } = useUser();
   const [org, setOrg] = useState<Org | User | null>(null);
   const [account, setAccount] = useState<User | null>(null);
@@ -37,7 +38,7 @@ export default function OrgProfile({ params }: OrgProps) {
   useEffect(() => {
     const fetchOrg = async () => {
       setOrgLoading(true);
-      const orgData = await getByUsername(params.orgname);
+      const orgData = await getByUsername(orgname);
       const accountData = await getById(user?.id as string);
       setOrg(orgData);
       setAccount(accountData);
@@ -45,7 +46,7 @@ export default function OrgProfile({ params }: OrgProps) {
     };
 
     fetchOrg();
-  }, [params.orgname, user?.id]);
+  }, [orgname, user?.id]);
 
   const document = useQuery(api.document.getById, {
     userId: org?._id,
@@ -211,7 +212,7 @@ export default function OrgProfile({ params }: OrgProps) {
                 <div className="mt-8 mx-6">
                   <h2 className="mb-4 text-2xl font-bold">Заметки</h2>
                   {org._id ? (
-                    <DocumentList user={org} profile={params.orgname} setProfile={setOrg} />
+                    <DocumentList user={org} profile={orgname} setProfile={setOrg} />
                   ) : (
                     <p className="text-muted-foreground">Org not loaded</p>
                   )}
@@ -256,7 +257,7 @@ export default function OrgProfile({ params }: OrgProps) {
             <div className="mt-8 mx-6">
               <h2 className="mb-4 text-2xl font-bold">Заметки</h2>
               {org._id ? (
-                <DocumentList user={org} profile={params.orgname} setProfile={setOrg} />
+                <DocumentList user={org} profile={orgname} setProfile={setOrg} />
               ) : (
                 <p className="text-muted-foreground">Org not loaded</p>
               )}

@@ -1,5 +1,6 @@
 "use client" 
 
+import { use } from "react"
 import dynamic from "next/dynamic" 
 
 import { Skeleton } from "@/components/ui/skeleton" 
@@ -16,13 +17,14 @@ import Error404 from "@/app/not-found"
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false })
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps){
+  const { documentId } = use(params)
   
   const { user } = useUser()
   const { organization } = useOrganization()
   const orgId = organization?.id !== undefined ? organization?.id as string : user?.id as string
 
   const document = useQuery(api.document.getById, {
-    documentId: params.documentId,
+    documentId,
     userId: orgId
   })
 
@@ -30,7 +32,7 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
   
   const onChange = (content: string) => {
     update({
-      id: params.documentId,
+      id: documentId,
       content,
       userId: orgId,
       lastEditor: user?.username as string

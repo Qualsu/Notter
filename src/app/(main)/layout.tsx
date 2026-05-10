@@ -2,8 +2,9 @@
 
 import { useConvexAuth } from "convex/react"
 import { Loader2 } from "lucide-react"
-import { redirect, useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
+import { useEffect } from "react"
 import { Navigation } from "./_components/navigation"
 import { pages } from "@/config/routing/pages.route"
 import { RequestProvider } from "@/components/providers/request-provider"
@@ -25,7 +26,14 @@ export default function MainLayout({
   }) {
     const { isAuthenticated, isLoading } = useConvexAuth()
     const params = useParams()
+    const router = useRouter()
     const isDocumentPage = Boolean(params.documentId)
+
+    useEffect(() => {
+      if (!isLoading && !isAuthenticated) {
+        router.replace(pages.AUTH)
+      }
+    }, [isAuthenticated, isLoading, router])
 
     if (isLoading){
         return (
@@ -36,7 +44,11 @@ export default function MainLayout({
     }
     
     if(!isAuthenticated){
-      return redirect(pages.AUTH)
+      return (
+        <div className="h-full flex items-center justify-center">
+          <Loader2 className="animate-spin"/>
+        </div>
+      )
     }
 
     return (

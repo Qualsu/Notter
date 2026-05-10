@@ -84,7 +84,7 @@ export function CoverImageModal(){
   return (
     <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>
       <DialogTitle>
-        <h1 className="sr-only">Изменить обложку</h1>
+        <p className="sr-only">Изменить обложку</p>
       </DialogTitle>
       <DialogContent>
         <DialogHeader>

@@ -1,19 +1,20 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
-import { useAuth, SignedIn } from "@clerk/nextjs"
+import Link from "next/link"
 import { SignedOut, SignInButton, UserButton } from "@clerk/clerk-react"
+import { SignedIn, useAuth } from "@clerk/nextjs"
 import { useConvexAuth } from "convex/react"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
 import { ModeToggle } from "@/components/mode-toggle"
-import { useScrollTop } from "../../../components/hooks/use-scroll-top"
-import { pages } from "@/config/routing/pages.route"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
 import { images } from "@/config/routing/image.route"
+import { pages } from "@/config/routing/pages.route"
 import type { NavbarProps } from "@/config/types/landing.types"
+import { cn } from "@/lib/utils"
+
+import { useScrollTop } from "../../../components/hooks/use-scroll-top"
 
 export function Navbar({ logo = true }: NavbarProps) {
   const scrolled = useScrollTop()
@@ -32,40 +33,40 @@ export function Navbar({ logo = true }: NavbarProps) {
         <Link href={pages.ROOT}>
           <Image
             src={images.IMAGE.ICON}
-            height="35"
-            width="35"
+            height={35}
+            width={35}
             alt="Notter"
-            className={`${!logo && "hidden"} block dark:hidden`}
+            className={`${!logo ? "hidden" : ""} block dark:hidden`}
           />
           <Image
             src={images.IMAGE.DARK_ICON}
-            height="35"
-            width="35"
+            height={35}
+            width={35}
             alt="Notter"
-            className={`${!logo && "hidden"} hidden dark:block`}
+            className={`${!logo ? "hidden" : ""} hidden dark:block`}
           />
         </Link>
 
         <div className="flex items-center gap-2">
           {authLoading ? (
-            <div className={`${!logo && "hidden"} flex items-center gap-2 mr-3`}>
-              <Skeleton className="h-8 w-20 rounded-md mr-1" />
+            <div className={`${!logo ? "hidden" : ""} mr-3 flex items-center gap-2`}>
+              <Skeleton className="mr-1 h-8 w-20 rounded-md" />
               <Skeleton className="h-8 w-8 rounded-full" />
             </div>
           ) : (
             <>
               <SignedIn>
-                <Link href={pages.DASHBOARD()} className={`${!logo && "hidden"}`}>
+                <Link href={pages.DASHBOARD()} className={!logo ? "hidden" : undefined}>
                   <Button variant="ghost">Перейти</Button>
                 </Link>
-                <div className={`${!logo && "hidden"} mr-4 mt-1 items-center`}>
+                <div className={`${!logo ? "hidden" : ""} mr-4 mt-1 items-center`}>
                   <UserButton />
                 </div>
               </SignedIn>
 
               <SignedOut>
                 <SignInButton>
-                  <Link href={pages.AUTH} className={`${!logo && "hidden"}`}>
+                  <Link href={pages.AUTH} className={!logo ? "hidden" : undefined}>
                     <Button variant="ghost">Войти</Button>
                   </Link>
                 </SignInButton>

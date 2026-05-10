@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { File } from "lucide-react"
+import { useOrganization, useUser } from "@clerk/nextjs"
 import { useQuery } from "convex/react"
 import { useRouter } from "next/navigation"
-import { useOrganization, useUser } from "@clerk/nextjs"
 import Twemoji from "react-twemoji"
 
+import { api } from "../../convex/_generated/api"
+import { pages } from "@/config/routing/pages.route"
+import { useSearch } from "./hooks/use-search"
 import {
   CommandDialog,
   CommandEmpty,
@@ -15,15 +18,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { api } from "../../convex/_generated/api"
-import { useSearch } from "./hooks/use-search"
-import { pages } from "@/config/routing/pages.route"
 
 export function SearchCommand() {
   const { user } = useUser()
   const { organization } = useOrganization()
   const router = useRouter()
-  const orgId = organization?.id !== undefined ? organization.id : user?.id as string
+  const orgId = organization?.id ?? (user?.id as string | undefined)
   const toggle = useSearch((store) => store.toggle)
   const isOpen = useSearch((store) => store.isOpen)
   const onClose = useSearch((store) => store.onClose)
@@ -61,6 +61,7 @@ export function SearchCommand() {
 
   const filteredDocuments = documents?.filter((document) => {
     if (!searchValue.trim()) return true
+
     const queryWords = searchValue.toLowerCase().split(/\s+/).filter(Boolean)
     const title = document.title.toLowerCase()
     return queryWords.every((word) => title.includes(word))

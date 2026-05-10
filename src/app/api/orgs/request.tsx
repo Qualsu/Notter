@@ -14,9 +14,12 @@ export function useRequestOrg() {
 
     const syncOrg = async () => {
       const memberships = await organization.getMemberships()
-      const members = memberships.data.map((member) => member.publicUserData.userId as string)
+      const members = memberships.data.flatMap((member) => {
+        const userId = member.publicUserData?.userId
+        return userId ? [userId] : []
+      })
       const admin = memberships.data.find((member) => member.role === "org:admin")
-      const adminId = admin?.publicUserData.userId ?? null
+      const adminId = admin?.publicUserData?.userId ?? null
 
       const existingOrg = await getById(organization.id)
       if (!existingOrg) {

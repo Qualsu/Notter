@@ -1,9 +1,9 @@
 "use client";
 
+import { use, useEffect, useState } from "react";
 import { Cover } from "@/components/cover";
 import Image from "next/image";
 import { useQuery } from "convex/react";
-import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton"
 import Twemoji from "react-twemoji";
@@ -27,6 +27,7 @@ import type { Org, User } from "@/config/types/api.types";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 export default function UserProfile({ params }: UsernameProps) {
+  const { username } = use(params);
   const { isLoaded, user } = useUser();
   const [profile, setProfile] = useState<User | Org | null>(null);
   const [account, setAccount] = useState<User | null>(null);
@@ -35,7 +36,7 @@ export default function UserProfile({ params }: UsernameProps) {
   useEffect(() => {
     const fetchProfile = async () => {
       setProfileLoading(true);
-      const profileData = await getByUsername(params.username);
+      const profileData = await getByUsername(username);
       const accountData = await getById(user?.id as string);
       setProfile(profileData);
       setAccount(accountData);
@@ -43,7 +44,7 @@ export default function UserProfile({ params }: UsernameProps) {
     };
 
     fetchProfile();
-  }, [params.username, user?.id]);
+  }, [username, user?.id]);
 
   const document = useQuery(api.document.getById, {
     userId: profile?._id,
@@ -106,7 +107,7 @@ export default function UserProfile({ params }: UsernameProps) {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-12 pt-20 dark:to-logo-cyan/10">
-        <title>{params.username + "`s profile"}</title>
+        <title>{username + "`s profile"}</title>
         <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
         <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
 
@@ -207,7 +208,7 @@ export default function UserProfile({ params }: UsernameProps) {
                 <div className="mt-8 mx-6">
                   <h2 className="mb-4 text-2xl font-bold">Заметки</h2>
                   {profile._id ? (
-                    <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
+                    <DocumentList user={profile} profile={username} setProfile={setProfile} />
                   ) : (
                     <p className="text-muted-foreground">User not loaded</p>
                   )}
@@ -252,7 +253,7 @@ export default function UserProfile({ params }: UsernameProps) {
             <div className="mt-8 mx-6">
               <h2 className="mb-4 text-2xl font-bold">Заметки</h2>
               {profile._id ? (
-                <DocumentList user={profile} profile={params.username} setProfile={setProfile} />
+                <DocumentList user={profile} profile={username} setProfile={setProfile} />
               ) : (
                 <p className="text-muted-foreground">User not loaded</p>
               )}

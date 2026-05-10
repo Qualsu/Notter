@@ -27,7 +27,7 @@ export interface ModeratorPanelDocumentProps {
 }
 
 export interface DocumentIdPageProps {
-  params: {
+  params: Promise<{
     documentId: Id<"documents">
-  }
+  }>
 }

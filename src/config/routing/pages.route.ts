@@ -1,10 +1,10 @@
 export const pages = {
-    ROOT: '/',
-    URL: 'https://notter.su',
-    AUTH: '/auth/sign-in',
-    BUY: '/buy',
-    DASHBOARD: (id?: string) => id ? `/dashboard/${id}` : '/dashboard',
-    VIEW: (id: string) => `/view/${id}`,
-    VIEW_URL: (id: string) => `${URL}/${pages.VIEW(id)}`,
-    PROFILE: (team: boolean, id: string) => team ? `/org/${id}` : `/user/${id}`,
+  ROOT: "/",
+  URL: "https://notter.su",
+  AUTH: "/auth/sign-in",
+  BUY: "/buy",
+  DASHBOARD: (id?: string) => (id ? `/dashboard/${id}` : "/dashboard"),
+  VIEW: (id: string) => `/view/${id}`,
+  VIEW_URL: (id: string) => `https://notter.su${pages.VIEW(id)}`,
+  PROFILE: (team: boolean, id: string) => (team ? `/org/${id}` : `/user/${id}`),
 }
