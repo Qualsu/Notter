@@ -15,6 +15,7 @@ import { pages } from "@/config/routing/pages.route";
 import { images } from "@/config/routing/image.route";
 import type { PriceCalculation } from "@/config/types/components.types";
 import type { Org, User } from "@/config/types/api.types";
+import BackButton from "@/components/back-button";
 
 export default function BuyPremium() {
     const router = useRouter();
@@ -114,7 +115,9 @@ export default function BuyPremium() {
 
     return (
         <main className="relative z-10 min-h-screen flex items-center justify-center p-6">
-            <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg mt-10">
+            <div className="relative mt-10 w-full max-w-6xl">
+                <BackButton className="mb-4 xl:absolute xl:-left-14 xl:top-0 xl:mb-0 lg:-left-16" />
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg">
                 <section className="space-y-4">
                     <div className="flex items-center gap-3">
                         <h1 className="text-3xl font-extrabold">
@@ -184,6 +187,7 @@ export default function BuyPremium() {
                         </Button>
                     </div>
                 </aside>
+                </div>
             </div>
         </main>
     );

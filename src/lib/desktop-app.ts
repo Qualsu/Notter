@@ -1,6 +1,6 @@
-const DESKTOP_QUERY_PARAM = "notter_desktop"
-const DESKTOP_STORAGE_KEY = "notter-desktop"
-const DESKTOP_COOKIE = "notter-desktop"
+const DESKTOP_QUERY_PARAM = "desktop"
+const DESKTOP_STORAGE_KEY = "desktop"
+const DESKTOP_COOKIE = "desktop"
 
 type DesktopNavigator = Navigator & {
   userAgentData?: {
@@ -16,7 +16,7 @@ type DesktopWindow = Window & {
 const hasDesktopQueryParam = () => {
   const params = new URLSearchParams(window.location.search)
 
-  return params.get(DESKTOP_QUERY_PARAM) === "1"
+  return params.get(DESKTOP_QUERY_PARAM) === "true"
 }
 
 const hasDesktopRuntime = () => {

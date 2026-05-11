@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { LockKeyhole, Pin, Share2 } from "lucide-react";
 
 import Error404 from "@/app/not-found";
+import BackButton from "@/components/back-button";
 import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { pages } from "@/config/routing/pages.route";
@@ -107,9 +108,9 @@ function ProfileSkeleton() {
 
           <Skeleton className="mb-3 ml-3 block h-10 w-[120px] rounded-xl md:hidden" />
 
-          <hr className="mx-3 border-black/10 dark:border-white/10" />
+          <hr className="border-black/10 dark:border-white/10" />
 
-          <div className="mx-6 mt-8">
+          <div className="mt-8">
             <Skeleton className="mb-4 h-8 w-[200px]" />
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
@@ -205,135 +206,133 @@ export default function ProfilePage({ kind, slug }: ProfilePageComponentProps) {
     }
   };
 
-  const showPinnedDocument = Boolean(document);
+  const pinnedDocument = document ?? null;
+  const showPinnedDocument = pinnedDocument !== null;
   const showPrivateContent = !profile.privated || canViewPrivate;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-12 pt-20 dark:to-logo-cyan/10">
-      <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
-      <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-12 pt-20 dark:to-logo-cyan/10">
+        <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
+        <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
 
-      <div className="relative mx-auto flex w-full max-w-[1380px] flex-col rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
-        <div className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
-          <Cover url={document?.coverImage || images.DEFAULT.COVER} preview />
-        </div>
+        <div className="relative mx-auto w-full max-w-[1380px]">
+          <BackButton className="mb-4 2xl:absolute 2xl:-left-14 2xl:top-0 2xl:mb-0 xl:-left-16" />
+          <div className="flex w-full flex-col rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
+          <div className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
+            <Cover url={document?.coverImage || images.DEFAULT.COVER} preview />
+          </div>
 
-        <div className="relative m-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Image
-                src={profile.avatar || images.DEFAULT.PROFILE}
-                alt={profileKind === "org" ? "Org Avatar" : "Profile Picture"}
-                width={80}
-                height={80}
-                className="rounded-full ring-2 ring-white/70 dark:ring-white/15"
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="flex items-center gap-2 text-3xl">
-                  <span className="hidden whitespace-nowrap font-bold sm:block">{profileName}</span>
-                  <span className="block font-bold sm:hidden">
-                    <span className="flex flex-row items-center gap-2">
-                      {profileName}
-                      {profile.badges.verified && (
-                        <VerifedBadge text={verifiedBadgeText} size={profileKind === "org" ? 6 : 7} clicked={false} />
-                      )}
-                    </span>
-                  </span>
-                  <div className="hidden sm:block">
-                    {profile.badges.verified && (
-                      <VerifedBadge text={verifiedBadgeText} size={profileKind === "org" ? 6 : 7} clicked={false} />
-                    )}
-                  </div>
-                </h1>
-
-                <ModeratorPanel user={profile} />
-              </div>
-
-              <span className="flex items-center gap-1.5">
-                <p
-                  className="inline-flex cursor-pointer rounded-lg bg-background/70 py-1 text-base text-primary/80 transition-all duration-300 hover:text-primary"
-                  onClick={() => {
-                    copyUsername();
-                  }}
-                >
-                  @{profile.username}
-                </p>
-                <Share2
-                  className="h-5 w-5 text-primary/80 transition-all duration-300 hover:text-primary"
-                  onClick={shareProfile}
+          <div className="relative my-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Image
+                  src={profile.avatar || images.DEFAULT.PROFILE}
+                  alt={profileKind === "org" ? "Org Avatar" : "Profile Picture"}
+                  width={80}
+                  height={80}
+                  className="rounded-full ring-2 ring-white/70 dark:ring-white/15"
                 />
-              </span>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-3xl font-bold leading-tight">
+                    <span>{profileName}</span>
+                    {profile.badges.verified && (
+                      <span className="ml-2 inline-flex translate-y-[-0.08em] align-middle">
+                        <VerifedBadge text={verifiedBadgeText} size={profileKind === "org" ? 6 : 7} clicked={false} />
+                      </span>
+                    )}
+                  </h1>
+
+                  <ModeratorPanel user={profile} />
+                </div>
+
+                <span className="flex items-center gap-1.5">
+                  <p
+                    className="inline-flex cursor-pointer rounded-lg bg-background/70 py-1 text-base text-primary/80 transition-all duration-300 hover:text-primary"
+                    onClick={() => {
+                      copyUsername();
+                    }}
+                  >
+                    @{profile.username}
+                  </p>
+                  <Share2
+                    className="h-5 w-5 text-primary/80 transition-all duration-300 hover:text-primary"
+                    onClick={shareProfile}
+                  />
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-2 flex max-w-max flex-row items-center gap-2 rounded-2xl border border-black/5 bg-background/70 p-2.5 shadow-sm dark:border-white/10 md:mt-0">
+              <Badges profile={profile} />
             </div>
           </div>
 
-          <div className="mt-2 flex max-w-max flex-row items-center gap-2 rounded-2xl border border-black/5 bg-background/70 p-2.5 shadow-sm dark:border-white/10 md:mt-0">
-            <Badges profile={profile} />
+          <hr className="border-black/10 dark:border-white/10" />
+
+          {profile.privated && !showPrivateContent ? (
+            <div className="my-4 flex flex-col items-center justify-center rounded-2xl border border-amber-300/50 bg-amber-50/80 p-4 text-amber-800 dark:border-amber-300/20 dark:bg-amber-900/30 dark:text-amber-100">
+              <div className="flex items-center gap-2">
+                <LockKeyhole className="h-6 w-6 text-amber-500" />
+                <strong>{privateCopy.title}</strong>
+              </div>
+              <p className="text-center">{privateCopy.description}</p>
+            </div>
+          ) : (
+            <>
+              {profile.privated && (
+                <div className="my-4 flex flex-col items-center justify-center rounded-2xl border border-amber-300/50 bg-amber-50/80 p-4 text-amber-800 dark:border-amber-300/20 dark:bg-amber-900/30 dark:text-amber-100">
+                  <div className="flex items-center gap-2">
+                    <LockKeyhole className="h-6 w-6 text-amber-500" />
+                    <strong>{privateCopy.title}</strong>
+                  </div>
+                  <p className="text-center">{privateCopy.description}</p>
+                </div>
+              )}
+
+              {showPinnedDocument && (
+                <>
+                  <div className="my-4 flex flex-row items-center rounded-xl border border-black/5 bg-background/70 px-3 py-2 text-muted-foreground dark:border-white/10">
+                    <Pin className="mr-1 h-5 w-5 -rotate-45" />
+                    {pinnedDocument?.icon && (
+                      <span className="m-1 inline-block h-6 w-6" style={{ lineHeight: 0 }}>
+                        <Twemoji>{pinnedDocument.icon}</Twemoji>
+                      </span>
+                    )}
+                    <Link
+                      className="flex flex-row items-center gap-1.5 text-xl transition-all duration-300 hover:text-primary/70"
+                      href={pages.VIEW(pinnedDocument._id)}
+                    >
+                      <span className="font-bold">{pinnedDocument.title}</span>
+                      {pinnedDocument.verifed && (
+                        <VerifedBadge text="Заметка верифицирована командой Qualsu" size={6} />
+                      )}
+                    </Link>
+                  </div>
+
+                  <div className="rounded-2xl border border-black/10 bg-background/70 pt-6 shadow-sm dark:border-white/10">
+                    <Editor
+                      onChange={() => {}}
+                      initialContent={pinnedDocument.content}
+                      editable={false}
+                      documentId={pinnedDocument._id}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="mt-8">
+                <h2 className="mx-2 mb-4 text-2xl font-bold">Заметки</h2>
+                <DocumentList user={profile} profile={slug} setProfile={setProfile} />
+              </div>
+            </>
+          )}
           </div>
         </div>
-
-        <hr className="mx-3 border-black/10 dark:border-white/10" />
-
-        {profile.privated && !showPrivateContent ? (
-          <div className="mx-6 my-4 flex flex-col items-center justify-center rounded-2xl border border-amber-300/50 bg-amber-50/80 p-4 text-amber-800 dark:border-amber-300/20 dark:bg-amber-900/30 dark:text-amber-100">
-            <div className="flex items-center gap-2">
-              <LockKeyhole className="h-6 w-6 text-amber-500" />
-              <strong>{privateCopy.title}</strong>
-            </div>
-            <p className="text-center">{privateCopy.description}</p>
-          </div>
-        ) : (
-          <>
-            {profile.privated && (
-              <div className="mx-6 my-4 flex flex-col items-center justify-center rounded-2xl border border-amber-300/50 bg-amber-50/80 p-4 text-amber-800 dark:border-amber-300/20 dark:bg-amber-900/30 dark:text-amber-100">
-                <div className="flex items-center gap-2">
-                  <LockKeyhole className="h-6 w-6 text-amber-500" />
-                  <strong>{privateCopy.title}</strong>
-                </div>
-                <p className="text-center">{privateCopy.description}</p>
-              </div>
-            )}
-
-            {showPinnedDocument && (
-              <>
-                <div className="mx-6 my-4 flex flex-row items-center rounded-xl border border-black/5 bg-background/70 px-3 py-2 text-muted-foreground dark:border-white/10">
-                  <Pin className="mr-1 h-5 w-5 -rotate-45" />
-                  {document?.icon && (
-                    <span className="m-1 inline-block h-6 w-6" style={{ lineHeight: 0 }}>
-                      <Twemoji>{document.icon}</Twemoji>
-                    </span>
-                  )}
-                  <Link
-                    className="flex flex-row items-center gap-1.5 text-xl transition-all duration-300 hover:text-primary/70"
-                    href={pages.VIEW(document._id)}
-                  >
-                    <span className="font-bold">{document?.title}</span>
-                    {document?.verifed && (
-                      <VerifedBadge text="Заметка верифицирована командой Qualsu" size={6} />
-                    )}
-                  </Link>
-                </div>
-
-                <div className="mx-6 rounded-2xl border border-black/10 bg-background/70 pt-6 shadow-sm dark:border-white/10">
-                  <Editor
-                    onChange={() => {}}
-                    initialContent={document?.content}
-                    editable={false}
-                    documentId={document._id}
-                  />
-                </div>
-              </>
-            )}
-
-            <div className="mx-6 mt-8">
-              <h2 className="mb-4 text-2xl font-bold">Заметки</h2>
-              <DocumentList user={profile} profile={slug} setProfile={setProfile} />
-            </div>
-          </>
-        )}
       </div>
-    </div>
+    </>
   );
 }

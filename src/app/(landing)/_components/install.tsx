@@ -97,7 +97,7 @@ const InstallPWA = () => {
   return (
     <>
       <Button
-        className="link-button"
+        className="link-button mt-2 md:mt-0"
         id="setup_button"
         aria-label="Установить приложение"
         title="Установить приложение"

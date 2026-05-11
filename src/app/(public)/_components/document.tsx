@@ -20,6 +20,7 @@ import type { PublicDocumentComponentProps, UserInterface } from "@/config/types
 import type { Org, User } from "@/config/types/api.types"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { isValidConvexId } from "@/lib/convex-id"
+import { IframeModal } from "@/app/(main)/_components/iframe-modal"
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false })
 
@@ -120,21 +121,26 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
-        <div className="mx-auto w-full max-w-[1380px] rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
-          <div className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
-            <Cover.Skeleton />
-          </div>
-          <div className="mx-auto mt-8 w-full max-w-5xl px-2 sm:px-4">
-            <div className="space-y-4">
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-4 w-4/5" />
-              <Skeleton className="h-4 w-2/5" />
-              <Skeleton className="h-4 w-3/5" />
+      <>
+        <Navbar logo={profile?.watermark as boolean | undefined} />
+        <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
+        <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
+          <div className="mx-auto w-full max-w-[1380px] rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
+            <div className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
+              <Cover.Skeleton />
+            </div>
+            <div className="mx-auto mt-8 w-full max-w-5xl px-2 sm:px-4">
+              <div className="space-y-4">
+                <Skeleton className="h-10 w-1/2" />
+                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-2/5" />
+                <Skeleton className="h-4 w-3/5" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </>
     )
   }
 
@@ -196,16 +202,16 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
   return (
     <>
       <Navbar logo={profile?.watermark as boolean | undefined} />
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
-        <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
-        <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
-
+      <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
+      <div className="min-h-screen flex justify-content items-center flex-col bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
         <div className="relative mx-auto flex w-full max-w-[1380px] flex-col rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
           <div className="mx-auto mt-6 w-full max-w-5xl flex-grow px-2 sm:px-4">
             {content}
             <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean} />
           </div>
         </div>
+        <IframeModal iframeUrl={"wef"}/>
       </div>
     </>
   )

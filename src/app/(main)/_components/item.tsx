@@ -182,7 +182,7 @@ export function Item({
                 <div className="ml-auto flex items-center gap-x-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                            <div role="button" className="ml-auto rounded-md p-1 opacity-0 transition group-hover:opacity-100 hover:bg-background/70">
+                            <div role="button" className="ml-auto rounded-md p-1 transition hover:bg-background/70">
                                 <MoreHorizontal className="h-4 w-4 text-muted-foreground"/>
                             </div>
                         </DropdownMenuTrigger>
@@ -209,7 +209,7 @@ export function Item({
                     <div 
                         role="button" 
                         onClick={onCreate} 
-                        className="ml-auto rounded-md p-1 opacity-0 transition group-hover:opacity-100 hover:bg-background/70"
+                        className="ml-auto rounded-md p-1 transition hover:bg-background/70"
                     >
                         <Plus className="h-4 w-4 text-muted-foreground"/>
                     </div>
