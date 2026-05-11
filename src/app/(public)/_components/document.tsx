@@ -16,7 +16,7 @@ import { getByUsername as getByOrgname } from "../../api/orgs/org"
 import { getById, getByUsername } from "../../api/users/user"
 import { ModeratorPanel } from "./moderatorPanel"
 import { pages } from "@/config/routing/pages.route"
-import type { PublicDocumentComponentProps as DocumentIdPageProps, UserInterface } from "@/config/types/public.types"
+import type { PublicDocumentComponentProps, UserInterface } from "@/config/types/public.types"
 import type { Org, User } from "@/config/types/api.types"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { isValidConvexId } from "@/lib/convex-id"
@@ -29,7 +29,7 @@ function Footer({ name, team, logo }: UserInterface) {
       <Separator className="bg-black/10 dark:bg-white/10" />
       <p className="my-4 text-center text-sm text-primary/60">
         <span>Заметка создана {team ? "командой" : ""}{" "}</span>
-        <Link href={pages.PROFILE(team, name)} className="font-semibold hover:text-primary transition-colors duration-200">
+        <Link href={pages.PROFILE(team, name)} className="font-semibold transition-colors duration-200 hover:text-primary">
           {name}
         </Link>
         {logo && (
@@ -46,7 +46,7 @@ function Footer({ name, team, logo }: UserInterface) {
   )
 }
 
-export default function DocumentIdPage({ params }: DocumentIdPageProps) {
+export default function DocumentIdPage({ params, iframe = false }: PublicDocumentComponentProps) {
   const isShort = params.documentId.length >= 4 && params.documentId.length <= 30
   const documentId = isValidConvexId(params.documentId) ? params.documentId : null
   const [profile, setProfile] = useState<User | Org | null>(null)
@@ -59,7 +59,9 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const document = useQuery(
     isShort ? api.document.getByShortId : api.document.getById,
     isShort
-      ? { shortId: params.documentId }
+      ? {
+          shortId: params.documentId,
+        }
       : documentId
         ? {
             documentId,
@@ -87,15 +89,17 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
 
       setProfile(profileData)
 
-      const userData = await getById(clerkUser?.id as string)
-      setUser(userData)
+      if (clerkUser?.id) {
+        const userData = await getById(clerkUser.id)
+        setUser(userData)
+      }
     }
 
     fetchProfile()
   }, [document, clerkUser])
 
   if (!isShort && documentId === null) {
-    return (
+    return iframe ? <Error404 /> : (
       <>
         <Navbar />
         <Error404 />
@@ -104,6 +108,17 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   }
 
   if (document === undefined) {
+    if (iframe) {
+      return (
+        <div className="min-h-screen bg-background px-4 py-6">
+          <div className="mx-auto w-full max-w-5xl space-y-4">
+            <Skeleton className="h-10 w-1/2" />
+            <Skeleton className="h-[640px] w-full rounded-2xl" />
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
         <div className="mx-auto w-full max-w-[1380px] rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
@@ -124,12 +139,58 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   }
 
   if ((!document?.isPublished && !canModerate) || document === null || (isShort && !document.isShort && !canModerate)) {
-    return (
+    return iframe ? <Error404 /> : (
       <>
         <Navbar />
         <Error404 />
       </>
     )
+  }
+
+  const content = (
+    <div className={iframe ? "min-h-screen bg-background px-4 py-6 text-foreground" : "rounded-2xl border border-black/10 bg-background/70 pt-4 shadow-sm dark:border-white/10"}>
+      {document.coverImage && (
+        <div className={iframe ? "mb-4 overflow-hidden rounded-2xl border border-black/10 dark:border-white/10" : "overflow-hidden rounded-2xl border border-black/10 dark:border-white/10"}>
+          <Cover url={document.coverImage} preview />
+        </div>
+      )}
+
+      <div className={iframe ? "mx-auto w-full max-w-5xl" : ""}>
+        {!iframe && (
+          <div className="mb-2 flex justify-end">
+            <ModeratorPanel
+              _id={document._id}
+              userId={document.userId}
+              shortId={document.shortId}
+              isShort={document.isShort}
+              isPublished={document.isPublished}
+              creatorName={document.creatorName}
+              lastEditor={document.lastEditor}
+              verifed={document.verifed}
+              content={document.content}
+              title={document.title}
+              isAcrhived={document.isAcrhived}
+            />
+          </div>
+        )}
+
+        {!!document.icon && (
+          <Twemoji options={{ className: "twemoji-lg" }}>
+            <p className={iframe ? "ml-13 px-0 pt-2 text-5xl sm:text-6xl" : "px-12 pt-6 text-6xl"}>{document.icon}</p>
+          </Twemoji>
+        )}
+
+        <h1 className={iframe ? "ml-13 px-0 pb-4 pt-2 mt-2 text-5xl font-bold text-[#3F3F3F] dark:text-[#CFCFCF]" : "px-12 pb-2 pt-4 text-5xl font-bold text-[#3F3F3F] dark:text-[#CFCFCF]"}>
+          {document.title}
+        </h1>
+
+        <Editor onChange={() => {}} initialContent={document.content} editable={false} documentId={document._id as string}/>
+      </div>
+    </div>
+  )
+
+  if (iframe) {
+    return content
   }
 
   return (
@@ -140,39 +201,8 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
         <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
 
         <div className="relative mx-auto flex w-full max-w-[1380px] flex-col rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
-          {document.coverImage && (
-            <div className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
-              <Cover url={document.coverImage} preview />
-            </div>
-          )}
-
           <div className="mx-auto mt-6 w-full max-w-5xl flex-grow px-2 sm:px-4">
-            <div className="mb-2 flex justify-end">
-              <ModeratorPanel
-                _id={document._id}
-                userId={document.userId}
-                shortId={document.shortId}
-                isShort={document.isShort}
-                isPublished={document.isPublished}
-                creatorName={document.creatorName}
-                lastEditor={document.lastEditor}
-                verifed={document.verifed}
-                content={document.content}
-                title={document.title}
-                isAcrhived={document.isAcrhived}
-              />
-            </div>
-            <div className="rounded-2xl border border-black/10 dark:border-white/10 bg-background/70 pt-4 shadow-sm">
-              {!!document.icon && (
-                <Twemoji options={{ className: "twemoji-lg" }}>
-                  <p className="px-12 pt-6 text-6xl">{document.icon}</p>
-                </Twemoji>
-              )}
-              <h1 className="px-12 pb-2 pt-4 text-5xl font-bold text-[#3F3F3F] dark:text-[#CFCFCF]">
-                {document.title}
-              </h1>
-              <Editor onChange={() => {}} initialContent={document.content} editable={false} documentId={document._id as string} />
-            </div>
+            {content}
             <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean} />
           </div>
         </div>

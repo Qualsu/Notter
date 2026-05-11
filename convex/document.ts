@@ -285,19 +285,26 @@ export const getById = query({
 })
 
 export const getByShortId = query({
-  args: {shortId: v.optional(v.string())},
+  args: { shortId: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity()
-    
-    if (!identity) {
+    if (!args.shortId) {
       return null
     }
 
-    const documents = await ctx.db.query("documents")
+    const document = await ctx.db
+      .query("documents")
       .filter((q) => q.eq(q.field("shortId"), args.shortId))
-      .collect()
-    
-    return documents[0]
+      .first()
+
+    if (!document) {
+      return null
+    }
+
+    if (document.isPublished && !document.isAcrhived) {
+      return document
+    }
+
+    return null
   }
 })
 

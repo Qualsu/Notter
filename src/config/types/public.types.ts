@@ -4,6 +4,7 @@ export interface PublicDocumentComponentProps {
   params: {
     documentId: string
   }
+  iframe?: boolean
 }
 
 export interface UserInterface {

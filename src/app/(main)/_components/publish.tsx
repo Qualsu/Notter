@@ -4,16 +4,16 @@ import { useState, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { Check, Copy, Eye, Globe } from "lucide-react"
-import { Doc } from "../../../../convex/_generated/dataModel"
 import { api } from "../../../../convex/_generated/api"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useOrigin } from "../../../components/hooks/use-origin"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
 import { getById as getUserByID, updateUser } from "../../api/users/user"
 import { getById as getOrgByID, updateOrg } from "../../api/orgs/org"
-import type { PublishProps } from "@/config/types/main.types";
-import type { Org, User } from "@/config/types/api.types";
+import type { PublishProps } from "@/config/types/main.types"
+import type { Org, User } from "@/config/types/api.types"
 import Link from "next/link"
+import { IframeModal } from "./iframe-modal"
 
 export function Publish({ initialData }: PublishProps) {
   const origin = useOrigin()
@@ -30,8 +30,8 @@ export function Publish({ initialData }: PublishProps) {
   const [userData, setUserData] = useState<User | Org | null>(null)
 
   const [isShortUrl, setIsShortUrl] = useState<boolean>(Boolean(initialData.isShort))
-  const [customShortId, setCustomShortId] = useState<string>(initialData.shortId || '')
-  const [previousShortId, setPreviousShortId] = useState<string>(initialData.shortId || '')
+  const [customShortId, setCustomShortId] = useState<string>(initialData.shortId || "")
+  const [previousShortId, setPreviousShortId] = useState<string>(initialData.shortId || "")
   const [editingShortId, setEditingShortId] = useState<boolean>(false)
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function Publish({ initialData }: PublishProps) {
   }, [initialData.isShort])
 
   const currentPublicDocuments = useQuery(api.document.getPublicDocumentCount, {
-    userId: orgId
+    userId: orgId,
   })
 
   const fetchUserData = async () => {
@@ -62,7 +62,7 @@ export function Publish({ initialData }: PublishProps) {
     if (userData?.premium === 0 && next) {
       setIsShortUrl(false)
       setCustomShortId(initialData.shortId)
-      toast.error("Для использования сокращенных ссылок требуется премиум уровень 1 или 2")
+      toast.error("Для использования коротких ссылок нужен премиум уровня 1 или 2")
       return
     }
 
@@ -113,7 +113,7 @@ export function Publish({ initialData }: PublishProps) {
       toast.success("Ссылка успешно обновлена!")
     } catch (error: any) {
       if (error.message.includes("Short ID already exists")) {
-        toast.error("Эта ссылка уже существует")
+        toast.error("Такая ссылка уже существует")
         setCustomShortId(previousShortId)
       } else {
         toast.error("Не удалось обновить ссылку")
@@ -140,6 +140,7 @@ export function Publish({ initialData }: PublishProps) {
     ? `${origin}/${customShortId}`
     : `${origin}/view/${initialData._id}`
 
+  const iframeUrl = `${url}/iframe`
   const onPublish = async () => {
     if (currentPublicDocuments !== undefined && (currentPublicDocuments as number) >= publicDocumentLimit) {
       toast.error(`Вы достигли лимита на публикацию в ${publicDocumentLimit} публичных заметок`)
@@ -181,7 +182,7 @@ export function Publish({ initialData }: PublishProps) {
 
     toast.promise(promise, {
       loading: "Отменяем публикацию...",
-      success: "Заметка убрана с публикации!",
+      success: "Заметка снята с публикации!",
       error: "Не удалось отменить публикацию",
     })
   }
@@ -219,7 +220,7 @@ export function Publish({ initialData }: PublishProps) {
                 className="h-9 flex-1 rounded-l-lg border border-border/60 bg-background/70 px-3 text-xs"
                 onClick={() => {
                   if (isShortUrl && canUseCustomShort) {
-                    setEditingShortId(true);
+                    setEditingShortId(true)
                   }
                 }}
                 onBlur={handleBlur}
@@ -234,7 +235,7 @@ export function Publish({ initialData }: PublishProps) {
             </div>
 
             <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/10 px-2 py-1 text-xs text-sky-700 dark:text-sky-200">
-              <Eye className="w-4 h-4"/> Просмотров: {initialData.views ?? 0}
+              <Eye className="w-4 h-4" /> Просмотров: {initialData.views ?? 0}
             </span>
 
             <div className="flex items-center rounded-lg border border-border/60 bg-background/60 px-2.5 py-2">
@@ -262,16 +263,18 @@ export function Publish({ initialData }: PublishProps) {
                 Отменить публикацию
               </Button>
             </Protect>
-            
+
             <Link href={url}>
-              <Button 
+              <Button
                 className="h-9 w-full rounded-xl text-xs"
                 size="sm"
-                variant={"outline"}
+                variant="outline"
               >
                 Перейти
               </Button>
             </Link>
+
+            <IframeModal iframeUrl={iframeUrl} />
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/70 bg-background/50 p-4 text-center">
@@ -280,7 +283,7 @@ export function Publish({ initialData }: PublishProps) {
             <Protect
               condition={(check) => check({ role: "org:admin" }) || organization?.id === undefined}
               fallback={
-                <span className="text-[0.7rem] text-muted-foreground text-center w-full block">
+                <span className="text-center w-full block text-[0.7rem] text-muted-foreground">
                   Публиковать могут только администраторы организации
                 </span>
               }

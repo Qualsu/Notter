@@ -6,6 +6,8 @@ export const pages = {
   DASHBOARD: (id?: string) => (id ? `/dashboard/${id}` : "/dashboard"),
   VIEW: (id: string) => `/view/${id}`,
   VIEW_URL: (id: string) => `https://notter.su${pages.VIEW(id)}`,
+  VIEW_IFRAME: (id: string) => `${pages.VIEW(id)}/iframe`,
+  VIEW_IFRAME_URL: (id: string) => `https://notter.su${pages.VIEW_IFRAME(id)}`,
   PROFILE: (team: boolean, id: string) => (team ? `/profile/org/${id}` : `/profile/${id}`),
   PROFILE_URL: (team: boolean, id: string) => `https://notter.su${pages.PROFILE(team, id)}`,
 }
