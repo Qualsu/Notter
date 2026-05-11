@@ -65,7 +65,7 @@ export default function Editor({ onChange, initialContent, editable, documentId 
         theme={resolvedTheme === "dark" ? "dark" : "light"}
         onChange={handleEditorChange}
         data-theming-css-variables-demo
-        className="z-0"
+        className="z-10"
       />
     </div>
   ) 

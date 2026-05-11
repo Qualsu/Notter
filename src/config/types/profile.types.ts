@@ -37,3 +37,14 @@ export interface UsernameProps {
     username: string;
   }>;
 }
+
+export interface ProfilePageProps {
+  params: Promise<{
+    username: string;
+  }>;
+}
+
+export interface ProfilePageComponentProps {
+  kind: "user" | "org";
+  slug: string;
+}

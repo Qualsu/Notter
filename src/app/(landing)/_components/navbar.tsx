@@ -32,7 +32,7 @@ export function Navbar({ logo = true }: NavbarProps) {
       <div className="container mx-3 flex items-center justify-between md:mx-auto">
         <Link href={pages.ROOT}>
           <Image
-            src={images.IMAGE.ICON}
+            src={images.IMAGE.LIGHT_ICON}
             height={35}
             width={35}
             alt="Notter"

@@ -11,11 +11,43 @@ import { images } from "@/config/routing/image.route"
 const font = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Notter",
-  description: "Новый уровень построения задач. Встречайте Notter",
+  title: {
+    default: "Notter",
+    template: "%s | Notter",
+  },
+  description: "A better way to organize tasks. Meet Notter.",
   manifest: images.MANIFEST,
   icons: {
-    icon: images.IMAGE.ICON,
+    icon: [
+      {
+        url: images.IMAGE.DARK_ICON,
+        type: "image/png",
+      },
+      {
+        url: images.IMAGE.LIGHT_ICON,
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: images.IMAGE.DARK_ICON,
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+    shortcut: [
+      {
+        url: images.IMAGE.DARK_ICON,
+      },
+      {
+        url: images.IMAGE.LIGHT_ICON,
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: images.IMAGE.DARK_ICON,
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+    apple: [images.IMAGE.DARK_ICON],
   },
 }
 
@@ -36,6 +68,9 @@ export default function RootLayout({
           >
             <Toaster
               position="bottom-center"
+              containerStyle={{
+                zIndex: 100000,
+              }}
               toastOptions={{
                 style: {
                   color: "black",

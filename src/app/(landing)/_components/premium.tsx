@@ -27,8 +27,7 @@ export function Premium() {
   return (
     <div className="p-6">
       <h1 className="text-5xl font-bold drop-shadow-sm">
-        <span className="text-logo-yellow">N</span>
-        <span className="text-logo-light-yellow">otter </span>
+        <span className="bg-gradient-to-r from-logo-yellow to-logo-light-yellow bg-clip-text text-transparent">Notter </span>
         <span className="text-logo-cyan">Gem</span>
       </h1>
 

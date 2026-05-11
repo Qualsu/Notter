@@ -265,7 +265,7 @@ export function Publish({ initialData }: PublishProps) {
             
             <Link href={url}>
               <Button 
-                className="h-9 w-full rounded-xl text-xs mt-2"
+                className="h-9 w-full rounded-xl text-xs"
                 size="sm"
                 variant={"outline"}
               >

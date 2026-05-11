@@ -1,9 +1,10 @@
-import type { Metadata } from 'next'
-import { Navbar } from '../(landing)/_components/navbar'
+import type { Metadata } from "next"
+
+import { Navbar } from "../(landing)/_components/navbar"
 
 export const metadata: Metadata = {
-  title: 'Profile',
-  description: 'Страницы профилей пользователей и организаций',
+  title: "Profile",
+  description: "User and organization profile pages",
 }
 
 export default function ProfileLayout({
@@ -13,8 +14,8 @@ export default function ProfileLayout({
 }) {
   return (
     <main className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        {children}
+      <Navbar />
+      {children}
     </main>
   )
 }

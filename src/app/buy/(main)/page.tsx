@@ -118,8 +118,7 @@ export default function BuyPremium() {
                 <section className="space-y-4">
                     <div className="flex items-center gap-3">
                         <h1 className="text-3xl font-extrabold">
-                            <span className="text-logo-yellow">N</span>
-                            <span className="text-logo-light-yellow">otter</span>
+                            <span className="bg-gradient-to-r from-logo-yellow to-logo-light-yellow bg-clip-text text-transparent">Notter </span>
                             <span className="text-logo-cyan"> Gem</span>
                         </h1>
                         <Image src={images.BADGE.DIAMOND} alt="Notter Gem" width={36} height={36} />
@@ -192,7 +191,7 @@ export default function BuyPremium() {
 
 function PlanCard({ id, title, price, icon, selected, onSelect }: { id: string; title: string; price: number; icon?: string; selected: boolean; onSelect: () => void }) {
     return (
-        <div onClick={onSelect} className={`cursor-pointer p-4 rounded-xl border transition ${selected ? "border-logo-yellow shadow-lg" : "border-border/50 hover:shadow-md"} bg-card/70 dark:bg-zinc-900/60`}> 
+        <div onClick={onSelect} className={`cursor-pointer p-4 rounded-xl border transition ${selected ? "border-white shadow-lg" : "border-border/50 hover:shadow-md"} bg-card/70 dark:bg-zinc-900/60`}> 
             <div className="flex items-center gap-3">
                 {icon && <Image src={icon} alt={title} width={40} height={40} />}
                 <div>

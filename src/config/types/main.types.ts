@@ -46,6 +46,6 @@ export interface PublishProps {
 
 export interface DashboardDocumentIdPageProps {
   params: Promise<{
-    documentId: Id<"documents">
+    documentId: string
   }>
 }

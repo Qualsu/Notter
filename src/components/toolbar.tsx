@@ -92,7 +92,7 @@ export function Toolbar({ initialData, preview }: ToolbarProps) {
         {!!initialData.icon && preview && (
           <p className="pt-6 text-6xl">{initialData.icon}</p>
         )}
-        <div className="flex items-center gap-x-1 py-1 mt-1 group-hover:opacity-100 md:opacity-0">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 py-1 my-2 group-hover:opacity-100 md:opacity-0">
           {!initialData.icon && !preview && (
             <IconPicker asChild onChange={onIconSelect}>
               <Button

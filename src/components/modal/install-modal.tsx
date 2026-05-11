@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Download, Globe, Globe2, Laptop, MonitorDown } from "lucide-react";
+import { Download, Globe, Laptop, MonitorDown } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import {
@@ -43,13 +43,16 @@ export const InstallModal = ({
 
         <div className="grid gap-4 px-6 pb-6 md:grid-cols-[1.05fr_0.95fr]">
           <section className="flex min-h-[320px] flex-col overflow-hidden rounded-lg border bg-muted/30">
-            <div className="relative h-44 w-full overflow-hidden border-b bg-background">
+            <div className="relative flex min-h-44 w-full items-center justify-center overflow-hidden border-b bg-background p-2">
               <Image
                 src={images.IMAGE.INSTALL_PWA}
                 alt="Установка Notter как PWA в браузере"
-                fill
-                className="object-cover"
+                width={354}
+                height={156}
+                className="h-auto max-h-full w-full object-contain"
                 sizes="(min-width: 768px) 380px, 100vw"
+                quality={100}
+                unoptimized
               />
             </div>
 
@@ -76,8 +79,7 @@ export const InstallModal = ({
 
               {!canInstallPwa ? (
                 <p className="text-xs text-muted-foreground">
-                  Если кнопка недоступна, проверьте HTTPS/localhost или значок
-                  установки в адресной строке браузера.
+                  Недоступно в вашем браузере
                 </p>
               ) : null}
             </div>

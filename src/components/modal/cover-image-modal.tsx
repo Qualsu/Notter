@@ -11,16 +11,19 @@ import { useMutation } from "convex/react"
 import { useParams } from "next/navigation" 
 import { useCoverImage } from "../hooks/use-cover-image" 
 import { api } from "../../../convex/_generated/api" 
-import { Id } from "../../../convex/_generated/dataModel" 
 import { DragAndDrop } from "../drag-and-drop" 
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { uploadFile } from "../../app/api/files/file"
 import { getById as getUserById } from "../../app/api/users/user";
 import { getById as getOrgById } from "../../app/api/orgs/org";
 import toast from "react-hot-toast"
+import { isValidConvexId } from "@/lib/convex-id"
 
 export function CoverImageModal(){
   const params = useParams() 
+  const documentId = typeof params.documentId === "string" && isValidConvexId(params.documentId)
+    ? params.documentId
+    : null
 
   const [file, setFile] = useState<File>()
   const [isSubmitting, setIsSubmitting] = useState(false) 
@@ -31,7 +34,7 @@ export function CoverImageModal(){
   const { user } = useUser()
   const { organization } = useOrganization()
   const isOrg = organization?.id !== undefined
-  const orgId = isOrg ? organization?.id as string : user?.id as string
+  const orgId = isOrg ? organization?.id : user?.id
   const avatar = user?.imageUrl || ""
   const username = user?.username || ""
 
@@ -42,7 +45,7 @@ export function CoverImageModal(){
   } 
 
   const onChange = async (file?: File) => {
-    if (!file) return;
+    if (!file || !documentId || !orgId) return;
 
     const userdata = isOrg ? 
       await getOrgById(orgId) : 
@@ -63,7 +66,7 @@ export function CoverImageModal(){
     setIsSubmitting(true);
     setFile(file);
 
-    const fileUrl = await uploadFile(orgId, params.documentId as string, avatar, username, file);
+    const fileUrl = await uploadFile(orgId, documentId, avatar, username, file);
     if (!fileUrl) {
       toast.error("Не удалось загрузить обложку");
       setIsSubmitting(false);
@@ -71,7 +74,7 @@ export function CoverImageModal(){
     }
 
     await update({
-      id: params.documentId as Id<"documents">,
+      id: documentId,
       coverImage: fileUrl,
       userId: orgId,
       lastEditor: user?.username as string

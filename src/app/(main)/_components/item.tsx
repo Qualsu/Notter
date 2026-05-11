@@ -224,12 +224,17 @@ Item.Skeleton = function ItemSkeleton({level}: {level?: number}){
     return (
         <div
             style={{
-                paddingLeft: level ? `${(level * 12) + 25}px` : "12px"
+                paddingLeft: level ? `${(level * 12) + 12}px` : "12px"
             }}
-            className="flex gap-x-2 py-[3px]"
+            className="my-1"
         >
-            <Skeleton className="h-4 w-4"/>
-            <Skeleton className="h-4 w-[30%]"/>
+            <div className="flex min-h-[34px] items-center gap-x-2 rounded-xl px-2 py-1.5">
+                <Skeleton className="h-4 w-4 rounded-md bg-primary/8" />
+                <div className="flex flex-1 items-center gap-x-2">
+                    <Skeleton className="h-4 w-[58%] rounded-full bg-primary/8" />
+                    <Skeleton className="ml-auto h-5 w-9 rounded-md bg-primary/8" />
+                </div>
+            </div>
         </div>
     )
 }

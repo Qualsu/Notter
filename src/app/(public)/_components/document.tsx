@@ -11,7 +11,6 @@ import { Cover } from "@/components/cover"
 import Error404 from "@/app/not-found"
 import { Separator } from "@/components/ui/separator"
 import { api } from "../../../../convex/_generated/api"
-import { Id } from "../../../../convex/_generated/dataModel"
 import { Navbar } from "../../(landing)/_components/navbar"
 import { getByUsername as getByOrgname } from "../../api/orgs/org"
 import { getById, getByUsername } from "../../api/users/user"
@@ -20,6 +19,7 @@ import { pages } from "@/config/routing/pages.route"
 import type { PublicDocumentComponentProps as DocumentIdPageProps, UserInterface } from "@/config/types/public.types"
 import type { Org, User } from "@/config/types/api.types"
 import { useOrganization, useUser } from "@clerk/nextjs"
+import { isValidConvexId } from "@/lib/convex-id"
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false })
 
@@ -48,6 +48,7 @@ function Footer({ name, team, logo }: UserInterface) {
 
 export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   const isShort = params.documentId.length >= 4 && params.documentId.length <= 30
+  const documentId = isValidConvexId(params.documentId) ? params.documentId : null
   const [profile, setProfile] = useState<User | Org | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const { user: clerkUser } = useUser()
@@ -59,11 +60,13 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     isShort ? api.document.getByShortId : api.document.getById,
     isShort
       ? { shortId: params.documentId }
-      : {
-          documentId: params.documentId as Id<"documents">,
-          alwaysView: user?.moderator,
-          userId: organization?.id ?? clerkUser?.id,
-        }
+      : documentId
+        ? {
+            documentId,
+            alwaysView: user?.moderator,
+            userId: organization?.id ?? clerkUser?.id,
+          }
+        : "skip"
   )
 
   useEffect(() => {
@@ -91,6 +94,15 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     fetchProfile()
   }, [document, clerkUser])
 
+  if (!isShort && documentId === null) {
+    return (
+      <>
+        <Navbar />
+        <Error404 />
+      </>
+    )
+  }
+
   if (document === undefined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
@@ -114,7 +126,6 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
   if ((!document?.isPublished && !canModerate) || document === null || (isShort && !document.isShort && !canModerate)) {
     return (
       <>
-        <title>Not Found</title>
         <Navbar />
         <Error404 />
       </>
@@ -125,7 +136,6 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps) {
     <>
       <Navbar logo={profile?.watermark as boolean | undefined} />
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
-        <title>{document.title}</title>
         <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
         <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
 

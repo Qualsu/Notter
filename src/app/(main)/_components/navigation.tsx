@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Archive, ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings2 } from "lucide-react"
+import { Archive, Check, ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings2 } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { ElementRef, useEffect, useRef, useState } from "react"
 import { useMediaQuery } from 'usehooks-ts'
@@ -23,6 +23,7 @@ import { Navbar } from "./navbar"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { pages } from "@/config/routing/pages.route"
+import { links } from "@/config/routing/links.route"
 
 export function Navigation() {
     const router = useRouter()
@@ -214,67 +215,69 @@ export function Navigation() {
     return (
         <>
             <aside ref={sidebarRef} className={cn(
-                "group/sidebar relative z-50 flex h-full w-60 flex-col overflow-y-auto border-r border-white/50 bg-white/65 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/70 custom-scrollbar",
+                "group/sidebar relative z-50 flex h-full w-60 flex-col overflow-hidden border-r border-white/50 bg-white/65 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/70",
                 isResetting && "transition-all ease-in-out duration-300",
                 isMobile && "w-0"
             )}>
-                <div onClick={collapse} role="button" className={cn(
-                    "absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg border border-transparent text-muted-foreground opacity-0 transition hover:border-border hover:bg-background/70 group-hover/sidebar:opacity-100",
-                    isMobile && "opacity-100"
-                )}>
-                    <ChevronsLeft className="h-4 w-4" />
-                </div>
-
-                <div className="border-b border-black/5 px-2 pb-3 pt-2 dark:border-white/10">
-                    <UserItem />
-                    <Item label="Поиск" icon={Search} isSearch onClick={seacrh.onOpen} />
-                    <Item label="Настройки" icon={Settings2} onClick={settings.onOpen} shortcut="k" />
-                    <Item onClick={handleCreate} label="Новая заметка" icon={PlusCircle} />
-                </div>
-
-                <div className="mt-2 px-2">
-                    <DocumentList />
-                    <Item onClick={handleCreate} icon={Plus} label="Добавить заметку" />
-                    <Popover>
-                        <PopoverTrigger className="mt-2 w-full">
-                            <Item label="Архив" icon={Archive} />
-                        </PopoverTrigger>
-                        <PopoverContent className="z-[99999] w-80 rounded-2xl border-white/60 bg-white/90 p-0 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/90" side={isMobile ? "bottom" : "right"}>
-                            <TrashBox />
-                        </PopoverContent>
-                    </Popover>
-                </div>
-
-                <div className="mx-3 mt-4 rounded-2xl border border-black/5 bg-background/60 p-3 dark:border-white/10 dark:bg-zinc-900/60">
-                    <div className="text-xs uppercase tracking-wide text-muted-foreground">
-                        Лимиты пространства
+                <div className="h-full overflow-y-auto custom-scrollbar">
+                    <div onClick={collapse} role="button" className={cn(
+                        "absolute right-0.5 top-3 flex h-7 w-7 items-center justify-center rounded-lg border border-transparent text-muted-foreground opacity-0 transition hover:border-border hover:bg-background/70 group-hover/sidebar:opacity-100",
+                        isMobile && "opacity-100"
+                    )}>
+                        <ChevronsLeft className="h-4 w-4" />
                     </div>
-                    <div className="mt-3 text-sm text-muted-foreground">
-                        <span className="font-semibold text-foreground">Заметки:</span> {documentCount}/{documentLimit}
-                    </div>
-                    <Progress value={documentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(documentProgress)}`} />
 
-                    <div className="mt-4 text-sm text-muted-foreground">
-                        <span className="font-semibold text-foreground">Публичные:</span> {documentPublicCount}/{publicDocumentLimit}
+                    <div className="border-b border-black/5 px-2 pb-3 pt-2 dark:border-white/10">
+                        <UserItem />
+                        <Item label="Поиск" icon={Search} isSearch onClick={seacrh.onOpen} />
+                        <Item label="Настройки" icon={Settings2} onClick={settings.onOpen} shortcut="k" />
+                        {/* <Item label="Notter ToDo" icon={Check} onClick={() => {router.push(links.TODO)}} /> */}
+                        <Item onClick={handleCreate} label="Новая заметка" icon={PlusCircle} />
                     </div>
-                    <Progress value={publicDocumentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(publicDocumentProgress)}`} />
 
-                    {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) ? (
-                        <div className="mt-3 rounded-xl border border-red-300/50 bg-red-50/70 p-2 text-xs text-red-700 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-200">
-                            <span>Достигнут лимит по заметкам. Оформите{" "}</span>
-                            <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
-                                <span className="group-hover:text-logo-yellow transition-colors duration-300">N</span>
-                                <span className="group-hover:text-logo-light-yellow transition-colors duration-300 mr-1">otter</span>
-                                <span className="group-hover:text-logo-cyan transition-colors duration-300">Gem</span>
-                            </Link>
+                    <div className="mt-2 px-2">
+                        <DocumentList />
+                        <Item onClick={handleCreate} icon={Plus} label="Добавить заметку" />
+                        <Popover>
+                            <PopoverTrigger className="mt-2 w-full">
+                                <Item label="Архив" icon={Archive} />
+                            </PopoverTrigger>
+                            <PopoverContent className="z-[99999] w-80 rounded-2xl border-white/60 bg-white/90 p-0 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/90" side={isMobile ? "bottom" : "right"}>
+                                <TrashBox />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+
+                    <div className="mx-3 mt-4 rounded-2xl border border-black/5 bg-background/60 p-3 dark:border-white/10 dark:bg-zinc-900/60">
+                        <div className="text-xs uppercase tracking-wide text-muted-foreground">
+                            Лимиты пространства
                         </div>
-                    ) : (
-                        <div className="mt-2">
-                            <Link className="text-sm text-primary/50 hover:text-primary transition-colors duration-200" href={pages.BUY}>
-                                Увеличить лимиты
-                            </Link>
+                        <div className="mt-3 text-sm text-muted-foreground">
+                            <span className="font-semibold text-foreground">Заметки:</span> {documentCount}/{documentLimit}
                         </div>
-                    )}
+                        <Progress value={documentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(documentProgress)}`} />
+
+                        <div className="mt-4 text-sm text-muted-foreground">
+                            <span className="font-semibold text-foreground">Публичные:</span> {documentPublicCount}/{publicDocumentLimit}
+                        </div>
+                        <Progress value={publicDocumentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(publicDocumentProgress)}`} />
+
+                        {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) ? (
+                            <div className="mt-3 rounded-xl border border-red-300/50 bg-red-50/70 p-2 text-xs text-red-700 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-200">
+                                <span>Достигнут лимит по заметкам. Оформите{" "}</span>
+                                <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
+                                    <span className="group-hover:bg-gradient-to-r group-hover:from-[#facd00] group-hover:to-[#f4db7a] bg-clip-text text-transparent transition-colors duration-300">Notter</span>
+                                    <span className="group-hover:text-logo-cyan transition-colors duration-300">Gem</span>
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="mt-2">
+                                <Link className="text-sm text-primary/50 hover:text-primary transition-colors duration-200" href={pages.BUY}>
+                                    Увеличить лимиты
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div onMouseDown={handleMouseDown} onClick={resetWidth} className="absolute right-0 top-0 h-full w-1 cursor-ew-resize bg-transparent opacity-0 transition group-hover/sidebar:opacity-100 resize-handle" />
             </aside>

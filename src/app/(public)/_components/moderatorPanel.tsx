@@ -310,7 +310,6 @@ export function ModeratorPanel({
             </Button>
           </div>
         </DialogDescription>
-        <DialogClose onClick={() => setDialogOpen(false)} className="rounded-lg border border-border/70 px-3 py-1 text-sm hover:bg-background/70">Закрыть</DialogClose>
       </DialogContent>
     </Dialog>
   );

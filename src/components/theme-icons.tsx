@@ -10,10 +10,12 @@ export function ThemeIcons() {
 
   useEffect(() => {
     const href =
-      resolvedTheme === "dark" ? images.IMAGE.DARK_ICON : images.IMAGE.ICON
+      resolvedTheme === "light" ? images.IMAGE.LIGHT_ICON : images.IMAGE.DARK_ICON
 
     document
-      .querySelectorAll<HTMLLinkElement>('link[rel="icon"]')
+      .querySelectorAll<HTMLLinkElement>(
+        'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
+      )
       .forEach((link) => {
         link.href = href
       })

@@ -273,7 +273,7 @@ export const getById = query({
       }
   
       if (!identity) {
-        throw new Error("Not authenticated")
+        return null
       }
     
       if (document.userId !== args.userId && args.alwaysView === false) {
@@ -287,10 +287,16 @@ export const getById = query({
 export const getByShortId = query({
   args: {shortId: v.optional(v.string())},
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+    
+    if (!identity) {
+      return null
+    }
+
     const documents = await ctx.db.query("documents")
       .filter((q) => q.eq(q.field("shortId"), args.shortId))
       .collect()
-
+    
     return documents[0]
   }
 })

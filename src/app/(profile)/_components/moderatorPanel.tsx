@@ -261,9 +261,6 @@ export function ModeratorPanel({ user }: UserProps) {
               />
             </div>
           </DialogDescription>
-          <DialogClose onClick={handleCloseDialog} className="rounded-lg border border-border/70 px-3 py-1 text-sm hover:bg-background/70">
-            Закрыть
-          </DialogClose>
         </DialogContent>
       </Dialog>
     </>
