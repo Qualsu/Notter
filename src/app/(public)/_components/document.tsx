@@ -21,6 +21,7 @@ import type { Org, User } from "@/config/types/api.types"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { isValidConvexId } from "@/lib/convex-id"
 import { IframeModal } from "@/app/(main)/_components/iframe-modal"
+import { useOrigin } from "@/components/hooks/use-origin"
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false })
 
@@ -48,6 +49,7 @@ function Footer({ name, team, logo }: UserInterface) {
 }
 
 export default function DocumentIdPage({ params, iframe = false }: PublicDocumentComponentProps) {
+  const origin = useOrigin()
   const isShort = params.documentId.length >= 4 && params.documentId.length <= 30
   const documentId = isValidConvexId(params.documentId) ? params.documentId : null
   const [profile, setProfile] = useState<User | Org | null>(null)
@@ -153,6 +155,8 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
     )
   }
 
+  const iframeUrl = pages.DOCUMENT_IFRAME_URL(origin, document._id, document.isShort, document.shortId)
+
   const content = (
     <div className={iframe ? "min-h-screen bg-background px-4 py-6 text-foreground" : "rounded-2xl border border-black/10 bg-background/70 pt-4 shadow-sm dark:border-white/10"}>
       {document.coverImage && (
@@ -211,7 +215,7 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
             <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean} />
           </div>
         </div>
-        <IframeModal iframeUrl={"wef"}/>
+        <IframeModal iframeUrl={iframeUrl}/>
       </div>
     </>
   )

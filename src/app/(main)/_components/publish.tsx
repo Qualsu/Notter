@@ -14,6 +14,7 @@ import type { PublishProps } from "@/config/types/main.types"
 import type { Org, User } from "@/config/types/api.types"
 import Link from "next/link"
 import { IframeModal } from "./iframe-modal"
+import { pages } from "@/config/routing/pages.route"
 
 export function Publish({ initialData }: PublishProps) {
   const origin = useOrigin()
@@ -136,11 +137,8 @@ export function Publish({ initialData }: PublishProps) {
     }
   }
 
-  const url = isShortUrl
-    ? `${origin}/${customShortId}`
-    : `${origin}/view/${initialData._id}`
-
-  const iframeUrl = `${url}/iframe`
+  const url = pages.DOCUMENT_URL(origin, initialData._id, isShortUrl, customShortId)
+  const iframeUrl = pages.DOCUMENT_IFRAME_URL(origin, initialData._id, isShortUrl, customShortId)
   const onPublish = async () => {
     if (currentPublicDocuments !== undefined && (currentPublicDocuments as number) >= publicDocumentLimit) {
       toast.error(`Вы достигли лимита на публикацию в ${publicDocumentLimit} публичных заметок`)

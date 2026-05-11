@@ -17,6 +17,7 @@ import { sendMail } from "../../api/mail/mail";
 import { pages } from "@/config/routing/pages.route";
 import type { ModeratorPanelDocumentProps as DocumentProps } from "@/config/types/public.types";
 import type { User } from "@/config/types/api.types";
+import { useOrigin } from "@/components/hooks/use-origin";
 
 export function ModeratorPanel({
   _id,
@@ -38,6 +39,7 @@ export function ModeratorPanel({
   const remove = useMutation(api.document.remove);
   const update = useMutation(api.document.update);
   const router = useRouter();
+  const origin = useOrigin();
 
   const [localShortId, setLocalShortId] = useState(shortId || "");
   const [localIsShort, setLocalIsShort] = useState(!!isShort);
@@ -73,7 +75,7 @@ export function ModeratorPanel({
     try {
       let subject = "";
       let message = "";
-      const viewUrl = pages.VIEW_URL(_id);
+      const viewUrl = pages.VIEW_URL(origin, _id);
 
       switch (action) {
         case "публикация":

@@ -26,6 +26,7 @@ import { ModeratorPanel } from "./moderatorPanel";
 import VerifedBadge from "./verifed";
 import type { Org, User } from "@/config/types/api.types";
 import type { ProfilePageComponentProps } from "@/config/types/profile.types";
+import { useOrigin } from "@/components/hooks/use-origin";
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -127,6 +128,7 @@ function ProfileSkeleton() {
 }
 
 export default function ProfilePage({ kind, slug }: ProfilePageComponentProps) {
+  const origin = useOrigin();
   const { isLoaded, user } = useUser();
   const [profile, setProfile] = useState<ProfileEntity | null>(null);
   const [account, setAccount] = useState<User | null>(null);
@@ -174,7 +176,7 @@ export default function ProfilePage({ kind, slug }: ProfilePageComponentProps) {
     try {
       if (profile.username && navigator) {
         await navigator.clipboard.writeText(
-          link ? pages.PROFILE_URL(profileKind === "org", profile.username) : profile.username
+          link ? pages.PROFILE_URL(origin, profileKind === "org", profile.username) : profile.username
         );
         toast.success(link ? "Ссылка скопирована!" : "Юзернейм скопирован!");
       }
@@ -184,7 +186,7 @@ export default function ProfilePage({ kind, slug }: ProfilePageComponentProps) {
   };
 
   const shareProfile = async () => {
-    const profileUrl = pages.PROFILE_URL(profileKind === "org", profile.username);
+    const profileUrl = pages.PROFILE_URL(origin, profileKind === "org", profile.username);
 
     try {
       if (navigator.share) {
