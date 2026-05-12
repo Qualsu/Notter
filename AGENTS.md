@@ -19,6 +19,7 @@ Russian-first note-taking app on Next.js App Router.
 - `not-found.tsx` is used inline, not only as a route.
 - UI text is Russian-first; keep edits narrow and avoid broad re-encoding.
 - Don't run `npm run build` or `npm start` yourself!
+- Write the Russian language according to the UTF-8 encoding so that you don’t end up with any gibberis
 
 ## Commands
 - `npm run dev`

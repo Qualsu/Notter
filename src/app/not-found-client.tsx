@@ -14,8 +14,6 @@ export default function NotFoundClient() {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="flex flex-col items-center gap-8 rounded-3xl border border-black/10 bg-white/70 p-8 dark:border-white/10 dark:bg-zinc-950/70 md:flex-row">
-        <div className="pointer-events-none absolute -left-16 -top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 right-10 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
         <div className="flex-shrink-0">
           <Image
             src={images.IMAGE.ERROR}

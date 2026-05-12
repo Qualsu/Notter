@@ -262,7 +262,7 @@ export function Publish({ initialData }: PublishProps) {
               </Button>
             </Protect>
 
-            <Link href={url}>
+            <Link href={url} target="_blank">
               <Button
                 className="h-9 w-full rounded-xl text-xs"
                 size="sm"

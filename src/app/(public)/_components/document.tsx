@@ -11,7 +11,6 @@ import { Cover } from "@/components/cover"
 import Error404 from "@/app/not-found"
 import { Separator } from "@/components/ui/separator"
 import { api } from "../../../../convex/_generated/api"
-import { Navbar } from "../../(landing)/_components/navbar"
 import { getByUsername as getByOrgname } from "../../api/orgs/org"
 import { getById, getByUsername } from "../../api/users/user"
 import { ModeratorPanel } from "./moderatorPanel"
@@ -22,6 +21,8 @@ import { useOrganization, useUser } from "@clerk/nextjs"
 import { isValidConvexId } from "@/lib/convex-id"
 import { IframeModal } from "@/app/(main)/_components/iframe-modal"
 import { useOrigin } from "@/components/hooks/use-origin"
+import BackButton from "@/components/back-button"
+import { usePublicNavbar } from "./public-layout"
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false })
 
@@ -58,6 +59,7 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
   const { organization } = useOrganization()
   const incrementViews = useMutation(api.document.incrementViews)
   const canModerate = user?.moderator === true
+  const setNavbarLogo = usePublicNavbar()
 
   const document = useQuery(
     isShort ? api.document.getByShortId : api.document.getById,
@@ -101,13 +103,21 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
     fetchProfile()
   }, [document, clerkUser])
 
+  useEffect(() => {
+    setNavbarLogo(profile?.watermark !== false)
+
+    return () => setNavbarLogo(true)
+  }, [profile?.watermark, setNavbarLogo])
+
+  useEffect(() => {
+    if (!document?.title) return
+
+    const title = `${document.title}${iframe ? " | iframe" : ""}`
+    globalThis.document.title = profile?.watermark === false ? title : `${title} | Notter`
+  }, [document?.title, iframe, profile?.watermark])
+
   if (!isShort && documentId === null) {
-    return iframe ? <Error404 /> : (
-      <>
-        <Navbar />
-        <Error404 />
-      </>
-    )
+    return <Error404 />
   }
 
   if (document === undefined) {
@@ -123,43 +133,40 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
     }
 
     return (
-      <>
-        <Navbar logo={profile?.watermark as boolean | undefined} />
-        <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
-        <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
-          <div className="mx-auto w-full max-w-[1380px] rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
-            <div className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
+      <main className="relative z-10 min-h-screen px-4 pb-10 pt-20">
+        <div className="relative mx-auto w-full max-w-[1380px]">
+          <BackButton className="mb-4 2xl:absolute 2xl:-left-14 2xl:top-20 2xl:mb-0 xl:-left-16" />
+          <div className="rounded-2xl border border-black/10 bg-background/70 pt-4 shadow-sm dark:border-white/10">
+            <div className="overflow-hidden rounded-2xl border border-black/10 shadow-2xl dark:border-white/10 mx-4">
               <Cover.Skeleton />
             </div>
-            <div className="mx-auto mt-8 w-full max-w-5xl px-2 sm:px-4">
-              <div className="space-y-4">
-                <Skeleton className="h-10 w-1/2" />
-                <Skeleton className="h-4 w-4/5" />
-                <Skeleton className="h-4 w-2/5" />
-                <Skeleton className="h-4 w-3/5" />
+            <div className="mx-auto my-8 w-full max-w-6xl rounded-2xl border border-black/10 bg-background/70 p-4 shadow-sm dark:border-white/10 sm:p-8">
+              <div className="space-y-5 px-0 sm:px-6">
+                <Skeleton className="h-16 w-16 rounded-xl bg-primary/8 sm:h-20 sm:w-20" />
+                <Skeleton className="h-10 w-1/5 max-w-xl rounded-xl bg-primary/8" />
+                <div className="space-y-3 pt-2">
+                  <Skeleton className="h-4 w-full max-w-4xl rounded-full bg-primary/8" />
+                  <Skeleton className="h-4 w-4/5 max-w-3xl rounded-full bg-primary/8" />
+                  <Skeleton className="h-4 w-2/3 max-w-2xl rounded-full bg-primary/8" />
+                </div>
               </div>
             </div>
           </div>
+          <Skeleton className="mx-auto mt-3 h-8 max-w-[1380px] w-full rounded-xl bg-primary/8" />
         </div>
-      </>
+      </main>
     )
   }
 
   if ((!document?.isPublished && !canModerate) || document === null || (isShort && !document.isShort && !canModerate)) {
-    return iframe ? <Error404 /> : (
-      <>
-        <Navbar />
-        <Error404 />
-      </>
-    )
+    return <Error404 />
   }
 
   const iframeUrl = pages.DOCUMENT_IFRAME_URL(origin, document._id, document.isShort, document.shortId)
 
   const content = (
     <div className={iframe ? "min-h-screen bg-background px-4 py-6 text-foreground" : "rounded-2xl border border-black/10 bg-background/70 pt-4 shadow-sm dark:border-white/10"}>
-      {document.coverImage && (
+      {iframe && document.coverImage && (
         <div className={iframe ? "mb-4 overflow-hidden rounded-2xl border border-black/10 dark:border-white/10" : "overflow-hidden rounded-2xl border border-black/10 dark:border-white/10"}>
           <Cover url={document.coverImage} preview />
         </div>
@@ -203,20 +210,27 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
     return content
   }
 
+  const showWatermark = profile?.watermark !== false
+
   return (
-    <>
-      <Navbar logo={profile?.watermark as boolean | undefined} />
-      <div className="pointer-events-none absolute left-0 top-24 h-72 w-72 rounded-full bg-logo-light-yellow/20 blur-3xl" />
-      <div className="pointer-events-none absolute right-0 top-64 h-72 w-72 rounded-full bg-logo-cyan/15 blur-3xl" />
-      <div className="min-h-screen flex justify-content items-center flex-col bg-gradient-to-br from-background via-background to-logo-yellow/10 px-4 pb-10 pt-20 dark:to-logo-cyan/10">
-        <div className="relative mx-auto flex w-full max-w-[1380px] flex-col rounded-3xl border border-white/50 bg-white/75 p-3 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/75">
-          <div className="mx-auto mt-6 w-full max-w-5xl flex-grow px-2 sm:px-4">
+    <main className="relative z-10 flex min-h-screen flex-col items-center px-4 pb-10 pt-20">
+      <div className="relative mx-auto w-full max-w-[1380px]">
+        <BackButton className="mb-4 2xl:absolute 2xl:-left-14 2xl:top-0 2xl:mb-0 xl:-left-16" />
+        <div className="rounded-3xl border border-black/10 bg-background/70 shadow-sm dark:border-white/10 p-3">
+          {document.coverImage && (
+            <div className="mb-8 overflow-hidden rounded-2xl border border-black/10 shadow-2xl dark:border-white/10">
+              <Cover url={document.coverImage} preview />
+            </div>
+          )}
+          <div className="mx-auto w-full max-w-6xl flex-grow px-2 sm:px-4">
             {content}
-            <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean} />
+            {showWatermark && (
+              <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean} />
+            )}
           </div>
         </div>
-        <IframeModal iframeUrl={iframeUrl}/>
       </div>
-    </>
+      <IframeModal iframeUrl={iframeUrl}/>
+    </main>
   )
 }

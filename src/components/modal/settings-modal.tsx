@@ -225,7 +225,7 @@ export function SettingsModal() {
             <div className="flex flex-col gap-y-1">
               <Label>Логотип Notter</Label>
               <span className="text-[0.8rem] text-muted-foreground">
-                Убрать логотип с публичных заметок
+                Показывать логотип на публичных заметках
               </span>
             </div>
             <Switch
