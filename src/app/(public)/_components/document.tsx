@@ -39,8 +39,7 @@ function Footer({ name, team, logo }: UserInterface) {
           <>
             <span> в</span>
             <Link className="group ml-1 font-bold opacity-60 transition-opacity duration-200 hover:opacity-100" href={pages.ROOT}>
-              <span className="text-logo-yellow">N</span>
-              <span className="text-logo-light-yellow">otter</span>
+              <span className="bg-gradient-to-r from-logo-yellow to-logo-light-yellow bg-clip-text text-transparent">Notter</span>
             </Link>
           </>
         )}

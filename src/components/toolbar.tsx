@@ -11,6 +11,7 @@ import { Button } from "./ui/button"
 import { api } from "../../convex/_generated/api"
 import { IconPicker } from "./icon-picker"
 import { useCoverImage } from "./hooks/use-cover-image"
+import { getCurrentEditTime } from "@/lib/last-edit-time"
 import type { ToolbarProps } from "@/config/types/components.types"
 
 export function Toolbar({ initialData, preview }: ToolbarProps) {
@@ -43,6 +44,7 @@ export function Toolbar({ initialData, preview }: ToolbarProps) {
       title: value || "Новая заметка",
       userId: orgId,
       lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime(),
     })
   }
 
@@ -59,6 +61,7 @@ export function Toolbar({ initialData, preview }: ToolbarProps) {
       icon,
       userId: orgId,
       lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime(),
     })
   }
 

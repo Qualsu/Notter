@@ -92,6 +92,7 @@ export const create = mutation({
         parentDocument: v.optional(v.id("documents")),
         userId: v.string(),
         lastEditor: v.string(),
+        lastEditTime: v.optional(v.string()),
         creatorName: v.string()
     },
     handler: async(ctx, args) => {
@@ -110,7 +111,8 @@ export const create = mutation({
             creatorName: args.creatorName,
             isAcrhived: false,
             isPublished: false,
-            lastEditor: args.lastEditor
+            lastEditor: args.lastEditor,
+            lastEditTime: args.lastEditTime ?? new Date().toISOString()
         })
 
         return document
@@ -381,6 +383,7 @@ export const update = mutation({
       parentDocument: v.optional(v.union(v.id("documents"), v.null())),
       userId: v.string(),
       lastEditor: v.optional(v.string()),
+      lastEditTime: v.optional(v.string()),
       isShort: v.optional(v.boolean()),
       shortId: v.optional(v.string()),
       verifed: v.optional(v.boolean()),

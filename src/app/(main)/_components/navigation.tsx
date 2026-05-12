@@ -23,6 +23,7 @@ import { useSettings } from "../../../components/hooks/use-settings"
 import { Navbar } from "./navbar"
 import Link from "next/link"
 import { pages } from "@/config/routing/pages.route"
+import { getCurrentEditTime } from "@/lib/last-edit-time"
 
 export function Navigation() {
     const router = useRouter()
@@ -145,6 +146,7 @@ export function Navigation() {
             userId: orgId,
             lastEditor: user?.username as string,
             creatorName: isOrg ? organization?.slug as string : user?.username as string,
+            lastEditTime: getCurrentEditTime(),
         })
             .then((documentId) => {
                 router.push(pages.DASHBOARD(documentId))

@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { pages } from "@/config/routing/pages.route"
 import { images } from "@/config/routing/image.route"
+import { getCurrentEditTime } from "@/lib/last-edit-time"
 
 export default function Dashboard() {
     const create = useMutation(api.document.create)
@@ -24,7 +25,8 @@ export default function Dashboard() {
             title: "Новая заметка",
             userId: orgId,
             creatorName: isOrg ? organization?.slug as string : user?.username as string,
-            lastEditor: user?.username as string
+            lastEditor: user?.username as string,
+            lastEditTime: getCurrentEditTime()
         })
             .then((documentId) => {
                 router.push(pages.DASHBOARD(documentId));

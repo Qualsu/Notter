@@ -15,6 +15,7 @@ import type { Org, User } from "@/config/types/api.types"
 import Link from "next/link"
 import { IframeModal } from "./iframe-modal"
 import { pages } from "@/config/routing/pages.route"
+import { getCurrentEditTime } from "@/lib/last-edit-time"
 
 export function Publish({ initialData }: PublishProps) {
   const origin = useOrigin()
@@ -75,6 +76,7 @@ export function Publish({ initialData }: PublishProps) {
       isPublished: initialData.isPublished,
       userId: orgId,
       lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime(),
       isShort: next,
     }).catch(() => toast.error("Не удалось обновить параметр ссылки"))
   }
@@ -108,6 +110,7 @@ export function Publish({ initialData }: PublishProps) {
         isPublished: initialData.isPublished,
         userId: orgId,
         lastEditor: user?.username as string,
+        lastEditTime: getCurrentEditTime(),
         shortId: customShortId,
         isShort: true,
       })
@@ -150,6 +153,7 @@ export function Publish({ initialData }: PublishProps) {
       isPublished: true,
       userId: orgId,
       lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime(),
       isShort: isShortUrl,
     }).finally(() => setIsSubmitting(false))
 
@@ -167,6 +171,7 @@ export function Publish({ initialData }: PublishProps) {
       isPublished: false,
       userId: orgId,
       lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime(),
       isShort: isShortUrl,
     }).finally(() => setIsSubmitting(false))
 

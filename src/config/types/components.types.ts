@@ -53,3 +53,9 @@ export type BeforeInstallPromptEvent = Event & {
 export type NavigatorWithStandalone = Navigator & {
   standalone?: boolean
 }
+
+export type NavigatorWithUserAgentData = Navigator & {
+  userAgentData?: {
+    mobile?: boolean
+  }
+}

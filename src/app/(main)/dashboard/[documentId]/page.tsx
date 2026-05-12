@@ -13,6 +13,7 @@ import { useOrganization, useUser } from "@clerk/nextjs"
 import type { DashboardDocumentIdPageProps as DocumentIdPageProps } from "@/config/types/main.types";
 import Error404 from "@/app/not-found"
 import { isValidConvexId } from "@/lib/convex-id"
+import { getCurrentEditTime } from "@/lib/last-edit-time"
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false })
 
@@ -46,7 +47,8 @@ export default function DocumentIdPage({ params }: DocumentIdPageProps){
       id: normalizedDocumentId,
       content,
       userId: orgId,
-      lastEditor: user?.username as string
+      lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime()
     }) 
   } 
 

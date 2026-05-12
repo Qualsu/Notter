@@ -18,6 +18,7 @@ import { pages } from "@/config/routing/pages.route";
 import type { ModeratorPanelDocumentProps as DocumentProps } from "@/config/types/public.types";
 import type { User } from "@/config/types/api.types";
 import { useOrigin } from "@/components/hooks/use-origin";
+import { formatLastEditTime, getCurrentEditTime } from "@/lib/last-edit-time";
 
 export function ModeratorPanel({
   _id,
@@ -29,6 +30,7 @@ export function ModeratorPanel({
   isAcrhived,
   creatorName,
   lastEditor,
+  lastEditTime,
   verifed,
   content
 }: DocumentProps) {
@@ -144,6 +146,7 @@ export function ModeratorPanel({
         id: _id,
         userId,
         [field]: value,
+        lastEditTime: getCurrentEditTime(),
       });
       toast.success("Обновлено успешно");
       await sendNotification(actionDescription, true, details);
@@ -255,6 +258,7 @@ export function ModeratorPanel({
           </p>
           <p>Creator: {creatorName}</p>
           <p>Last editor: {lastEditor}</p>
+          <p>Last edit time: {formatLastEditTime(lastEditTime)}</p>
 
           <hr className="my-3 border-black/10 dark:border-white/10" />
 

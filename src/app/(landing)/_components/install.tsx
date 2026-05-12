@@ -9,15 +9,25 @@ import { InstallModal } from "@/components/modal/install-modal";
 import type {
   BeforeInstallPromptEvent,
   NavigatorWithStandalone,
+  NavigatorWithUserAgentData,
 } from "@/config/types/components.types";
+
+const PHONE_USER_AGENT_REGEXP =
+  /Android.+Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini|BlackBerry|BB10/i;
 
 const isIosStandalone = () =>
   Boolean((navigator as NavigatorWithStandalone).standalone);
 
-const isMobileDevice = () => {
+const isPhoneDevice = () => {
   if (typeof window === "undefined") return false;
 
-  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  const userAgentData = (navigator as NavigatorWithUserAgentData).userAgentData;
+
+  if (typeof userAgentData?.mobile === "boolean") {
+    return userAgentData.mobile;
+  }
+
+  return PHONE_USER_AGENT_REGEXP.test(navigator.userAgent);
 };
 
 const InstallPWA = () => {
@@ -84,7 +94,7 @@ const InstallPWA = () => {
   const onClick = async (event: React.MouseEvent) => {
     event.preventDefault();
 
-    if (isMobileDevice()) {
+    if (isPhoneDevice()) {
       await installPwa();
       return;
     }

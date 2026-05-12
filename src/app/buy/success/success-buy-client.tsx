@@ -99,8 +99,7 @@ export function SuccessBuyClient() {
       <div className="w-full max-w-2xl rounded-3xl border border-white/40 bg-white/70 dark:border-white/10 dark:bg-zinc-950/70 p-8 shadow-lg">
         <div className="flex items-center gap-3 mb-4">
           <h1 className="text-3xl font-extrabold">
-            <span className="text-logo-yellow">N</span>
-            <span className="text-logo-light-yellow">otter</span>
+            <span className="bg-gradient-to-r from-logo-yellow to-logo-light-yellow bg-clip-text text-transparent">Notter</span>
             <span className="text-logo-cyan"> Gem</span>
           </h1>
         </div>

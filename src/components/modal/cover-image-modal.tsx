@@ -18,6 +18,7 @@ import { getById as getUserById } from "../../app/api/users/user";
 import { getById as getOrgById } from "../../app/api/orgs/org";
 import toast from "react-hot-toast"
 import { isValidConvexId } from "@/lib/convex-id"
+import { getCurrentEditTime } from "@/lib/last-edit-time"
 
 export function CoverImageModal(){
   const params = useParams() 
@@ -77,7 +78,8 @@ export function CoverImageModal(){
       id: documentId,
       coverImage: fileUrl,
       userId: orgId,
-      lastEditor: user?.username as string
+      lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime()
     });
 
     onClose();

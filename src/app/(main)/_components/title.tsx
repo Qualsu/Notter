@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import VerifedBadge from "@/app/(profile)/_components/verifed"
+import { getCurrentEditTime } from "@/lib/last-edit-time"
 import type { TitleProps } from "@/config/types/main.types"
 
 export function Title({ initialData }: TitleProps) {
@@ -41,6 +42,7 @@ export function Title({ initialData }: TitleProps) {
       title: event.target.value || "Новая заметка",
       userId: orgId,
       lastEditor: user?.username as string,
+      lastEditTime: getCurrentEditTime(),
     })
   }
 

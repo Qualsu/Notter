@@ -11,6 +11,7 @@ import { api } from "../../../../convex/_generated/api"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Protect, useOrganization, useUser } from "@clerk/nextjs"
 import { pages } from "@/config/routing/pages.route"
+import { formatLastEditTime, getCurrentEditTime } from "@/lib/last-edit-time"
 import type { ItemProps } from "@/config/types/main.types";
 
 export function Item({
@@ -25,6 +26,7 @@ export function Item({
     onExpand,
     expanded,
     lastEditor,
+    lastEditTime,
     shortcut
 }: ItemProps){
     const router = useRouter()
@@ -45,7 +47,8 @@ export function Item({
             id: id,
             isPublished: false,
             userId: orgId,
-            lastEditor: user?.username as string
+            lastEditor: user?.username as string,
+            lastEditTime: getCurrentEditTime()
         })
         const promise = archive({
             id, 
@@ -76,7 +79,8 @@ export function Item({
             parentDocument: id,
             userId: orgId,
             lastEditor: user?.username as string,
-            creatorName: isOrg ? organization?.slug ?? "" : user?.username ?? ""
+            creatorName: isOrg ? organization?.slug ?? "" : user?.username ?? "",
+            lastEditTime: getCurrentEditTime()
         }).then((documentId) => {
             if (!expanded) {
                 onExpand?.()
@@ -119,7 +123,8 @@ export function Item({
                 id: draggedId as Id<"documents">, 
                 parentDocument: id as Id<"documents">,
                 userId: orgId,
-                lastEditor: user?.username as string
+                lastEditor: user?.username as string,
+                lastEditTime: getCurrentEditTime()
             })
             
             toast.promise(promise, {
@@ -203,6 +208,9 @@ export function Item({
                             </Protect>
                                 <div className="text-xs text-muted-foreground p-2">
                                     Последнее изменение от: {lastEditor}
+                                </div>
+                                <div className="text-xs text-muted-foreground px-2 pb-2">
+                                    Последние изменение в: {formatLastEditTime(lastEditTime)}
                                 </div>
                         </DropdownMenuContent>
                     </DropdownMenu>

@@ -23,6 +23,7 @@ export interface ModeratorPanelDocumentProps {
   isAcrhived?: boolean;
   creatorName?: string;
   lastEditor?: string;
+  lastEditTime?: string;
   verifed?: boolean;
   content?: string;
 }
