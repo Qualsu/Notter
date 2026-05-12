@@ -112,7 +112,7 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
   useEffect(() => {
     if (!document?.title) return
 
-    const title = `${document.title}${iframe ? " | iframe" : ""}`
+    const title = `${document.title}${iframe ? " (iframe)" : ""}`
     globalThis.document.title = profile?.watermark === false ? title : `${title} | Notter`
   }, [document?.title, iframe, profile?.watermark])
 
@@ -125,8 +125,13 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
       return (
         <div className="min-h-screen bg-background px-4 py-6">
           <div className="mx-auto w-full max-w-5xl space-y-4">
-            <Skeleton className="h-10 w-1/2" />
-            <Skeleton className="h-[640px] w-full rounded-2xl" />
+            <Skeleton className="h-16 w-16 rounded-xl bg-primary/8 sm:h-20 sm:w-20" />
+            <Skeleton className="h-10 w-1/5 max-w-xl rounded-xl bg-primary/8" />
+            <div className="space-y-3 pt-2">
+              <Skeleton className="h-4 w-full max-w-4xl rounded-full bg-primary/8" />
+              <Skeleton className="h-4 w-4/5 max-w-3xl rounded-full bg-primary/8" />
+              <Skeleton className="h-4 w-2/3 max-w-2xl rounded-full bg-primary/8" />
+            </div>
           </div>
         </div>
       )
@@ -202,6 +207,9 @@ export default function DocumentIdPage({ params, iframe = false }: PublicDocumen
         </h1>
 
         <Editor onChange={() => {}} initialContent={document.content} editable={false} documentId={document._id as string}/>
+        {iframe && (
+          <Footer name={document.creatorName as string} team={document.userId.startsWith("org_")} logo={profile?.watermark as boolean} />
+        )}
       </div>
     </div>
   )
