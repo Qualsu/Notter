@@ -257,50 +257,52 @@ export function Navigation() {
                             Лимиты пространства
                         </div>
                         {isLimitsLoading ? (
-                            <div className="mt-3 space-y-4">
+                            <div className="mt-3 space-y-2">
                                 <div>
-                                    <div className="flex items-center gap-2">
-                                        <Skeleton className="h-4 w-16 rounded-full bg-primary/8" />
+                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                        <span className="font-semibold text-foreground text-sm">Заметки:</span>
                                         <Skeleton className="h-4 w-14 rounded-full bg-primary/8" />
                                     </div>
                                     <Skeleton className="mt-2 h-3 w-full rounded-2xl bg-primary/8" />
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <Skeleton className="h-4 w-20 rounded-full bg-primary/8" />
+                                        <span className="font-semibold text-foreground text-sm">Публичные:</span>
                                         <Skeleton className="h-4 w-14 rounded-full bg-primary/8" />
                                     </div>
                                     <Skeleton className="mt-2 h-3 w-full rounded-2xl bg-primary/8" />
                                 </div>
-                                <Skeleton className="h-3 w-20 rounded-full bg-primary/8" />
-                            </div>
-                        ) : (
-                            <>
-                        <div className="mt-3 text-sm text-muted-foreground">
-                            <span className="font-semibold text-foreground">Заметки:</span> {documentCount}/{documentLimit}
-                        </div>
-                        <Progress value={documentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(documentProgress)}`} />
-
-                        <div className="mt-4 text-sm text-muted-foreground">
-                            <span className="font-semibold text-foreground">Публичные:</span> {documentPublicCount}/{publicDocumentLimit}
-                        </div>
-                        <Progress value={publicDocumentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(publicDocumentProgress)}`} />
-
-                        {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) ? (
-                            <div className="mt-3 rounded-xl border border-red-300/50 bg-red-50/70 p-2 text-xs text-red-700 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-200">
-                                <span>Достигнут лимит по заметкам. Оформите{" "}</span>
-                                <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
-                                    <span className="group-hover:bg-gradient-to-r group-hover:from-[#facd00] group-hover:to-[#f4db7a] bg-clip-text text-transparent transition-colors duration-300">Notter</span>
-                                    <span className="group-hover:text-logo-cyan transition-colors duration-300">Gem</span>
-                                </Link>
-                            </div>
-                        ) : (
-                            <div className="mt-2">
                                 <Link className="text-sm text-primary/50 hover:text-primary transition-colors duration-200" href={pages.BUY}>
                                     Увеличить лимиты
                                 </Link>
                             </div>
-                        )}
+                        ) : (
+                            <>
+                                <div className="mt-3 text-sm text-muted-foreground">
+                                    <span className="font-semibold text-foreground">Заметки:</span> {documentCount}/{documentLimit}
+                                </div>
+                                <Progress value={documentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(documentProgress)}`} />
+
+                                <div className="mt-4 text-sm text-muted-foreground">
+                                    <span className="font-semibold text-foreground">Публичные:</span> {documentPublicCount}/{publicDocumentLimit}
+                                </div>
+                                <Progress value={publicDocumentProgress} max={100} className={`mt-2 h-2 ${getProgressColor(publicDocumentProgress)}`} />
+
+                                {(documentCount >= documentLimit || documentPublicCount >= publicDocumentLimit) ? (
+                                    <div className="mt-3 rounded-xl border border-red-300/50 bg-red-50/70 p-2 text-xs text-red-700 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-200">
+                                        <span>Достигнут лимит по заметкам. Оформите{" "}</span>
+                                        <Link href={pages.BUY} className="group inline-flex transition-all duration-300">
+                                            <span className="group-hover:bg-gradient-to-r group-hover:from-[#facd00] group-hover:to-[#f4db7a] bg-clip-text text-transparent transition-colors duration-300">Notter</span>
+                                            <span className="group-hover:text-logo-cyan transition-colors duration-300">Gem</span>
+                                        </Link>
+                                    </div>
+                                ) : (
+                                    <div className="mt-2">
+                                        <Link className="text-sm text-primary/50 hover:text-primary transition-colors duration-200" href={pages.BUY}>
+                                            Увеличить лимиты
+                                        </Link>
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
