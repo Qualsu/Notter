@@ -3,8 +3,9 @@ import { useUser } from "@clerk/nextjs"
 
 import { createUser, getById, updateUser } from "./user"
 import { useDocumentStats } from "../use-document-stats"
+import type { UseRequestUserFunction } from "@/config/types/api.types"
 
-export function useRequestUser() {
+export const useRequestUser: UseRequestUserFunction = () => {
   const { user, isLoaded, isSignedIn } = useUser()
   const { documentCount, documentPublicCount, documentVerifiedCount, isReady } = useDocumentStats(user?.id)
 

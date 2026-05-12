@@ -3,8 +3,9 @@ import { useOrganization, useUser } from "@clerk/nextjs"
 
 import { createOrg, getById, updateOrg } from "./org"
 import { useDocumentStats } from "../use-document-stats"
+import type { UseRequestOrgFunction } from "@/config/types/api.types"
 
-export function useRequestOrg() {
+export const useRequestOrg: UseRequestOrgFunction = () => {
   const { organization, isLoaded } = useOrganization()
   const { isSignedIn } = useUser()
   const { documentCount, documentPublicCount, documentVerifiedCount, isReady } = useDocumentStats(organization?.id)

@@ -38,12 +38,6 @@ export interface UsernameProps {
   }>;
 }
 
-export interface ProfilePageProps {
-  params: Promise<{
-    username: string;
-  }>;
-}
-
 export interface ProfilePageComponentProps {
   kind: "user" | "org";
   slug: string;

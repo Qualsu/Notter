@@ -1,14 +1,19 @@
 import { apiGet, apiPost, apiPut, removeNullish } from "../client"
 import { apiRoutes } from "@/config/routing/api.route"
-import type { Order } from "@/config/types/api.types"
+import type {
+  CheckOrderFunction,
+  CreateOrderFunction,
+  Order,
+  SuccessOrderFunction,
+} from "@/config/types/api.types"
 
-export function createOrder(
-  _id: string,
-  userid: string | null = null,
-  premium: number | null = null,
-  status: string | null = null,
-  amount: number | null = null
-): Promise<Order | null> {
+export const createOrder: CreateOrderFunction = (
+  _id,
+  userid = null,
+  premium = null,
+  status = null,
+  amount = null
+) => {
   void _id
 
   return apiPost<Order>(
@@ -22,10 +27,10 @@ export function createOrder(
   )
 }
 
-export function checkOrder(_id: string): Promise<Order | null> {
+export const checkOrder: CheckOrderFunction = (_id) => {
   return apiGet<Order>(apiRoutes.ORDER.CHECK(_id))
 }
 
-export function success(_id: string): Promise<Order | null> {
+export const success: SuccessOrderFunction = (_id) => {
   return apiPut<Order>(apiRoutes.ORDER.SUCCESS(_id))
 }

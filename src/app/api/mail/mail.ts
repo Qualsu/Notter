@@ -1,7 +1,7 @@
 import { apiPost } from "../client"
 import { apiRoutes } from "@/config/routing/api.route"
-import type { Mail } from "@/config/types/api.types"
+import type { MessageResponse, SendMailFunction } from "@/config/types/api.types"
 
-export function sendMail(mail: Mail) {
-  return apiPost(apiRoutes.MAIL.SEND, mail)
+export const sendMail: SendMailFunction = (mail) => {
+  return apiPost<MessageResponse>(apiRoutes.MAIL.SEND, mail)
 }

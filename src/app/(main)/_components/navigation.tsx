@@ -10,6 +10,7 @@ import { api } from "../../../../convex/_generated/api"
 import { getById as getUserById } from "../../api/users/user"
 import { getById as getOrgById } from "../../api/orgs/org"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "react-hot-toast"
 import { useOrganization, useUser } from "@clerk/clerk-react"
 import { UserItem } from "./user-item"
@@ -21,9 +22,7 @@ import { useSearch } from "../../../components/hooks/use-search"
 import { useSettings } from "../../../components/hooks/use-settings"
 import { Navbar } from "./navbar"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { pages } from "@/config/routing/pages.route"
-import { links } from "@/config/routing/links.route"
 
 export function Navigation() {
     const router = useRouter()
@@ -66,44 +65,47 @@ export function Navigation() {
     const [documentCount, setDocumentCount] = useState<number>(0)
     const [documentPublicCount, setDocumentPublicCount] = useState<number>(0)
     const [premiumLevel, setPremiumLevel] = useState<number>(0)
-    const [isPromoHidden, setIsPromoHidden] = useState<boolean>(() => {
-        try {
-            return typeof window !== "undefined" && localStorage.getItem("gem_banner") === "true"
-        } catch {
-            return false
-        }
-    })
-
-    const hidePromo = () => {
-        try {
-            localStorage.setItem("gem_banner", "true")
-        } catch { }
-        setIsPromoHidden(true)
-    }
+    const [isLimitsLoading, setIsLimitsLoading] = useState<boolean>(true)
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (isOrg && organization?.id) {
-                const orgData = await getOrgById(organization.id)
-                if (orgData) {
-                    setDocumentCount(orgData.documents || 0)
-                    setDocumentPublicCount(orgData.publicDocuments || 0)
-                    setPremiumLevel(orgData.premium || 0)
-                }
-                return
-            }
+        let isMounted = true
 
-            if (!isOrg && user?.id) {
-                const userData = await getUserById(user.id)
-                if (userData) {
-                    setDocumentCount(userData.documents || 0)
-                    setDocumentPublicCount(userData.publicDocuments || 0)
-                    setPremiumLevel(userData.premium || 0)
+        const fetchData = async () => {
+            setIsLimitsLoading(true)
+
+            try {
+                if (isOrg && organization?.id) {
+                    const orgData = await getOrgById(organization.id)
+                    if (orgData && isMounted) {
+                        setDocumentCount(orgData.documents || 0)
+                        setDocumentPublicCount(orgData.publicDocuments || 0)
+                        setPremiumLevel(orgData.premium || 0)
+                    }
+                    return
+                }
+
+                if (!isOrg && user?.id) {
+                    const userData = await getUserById(user.id)
+                    if (userData && isMounted) {
+                        setDocumentCount(userData.documents || 0)
+                        setDocumentPublicCount(userData.publicDocuments || 0)
+                        setPremiumLevel(userData.premium || 0)
+                    }
+                }
+            } catch {
+                // src/app/api/client.ts returns null on request errors, but keep this guarded
+            } finally {
+                if (isMounted) {
+                    setIsLimitsLoading((isOrg && !organization?.id) || (!isOrg && !user?.id))
                 }
             }
         }
 
         fetchData()
+
+        return () => {
+            isMounted = false
+        }
     }, [isOrg, organization?.id, user?.id])
 
     useEffect(() => {
@@ -252,6 +254,26 @@ export function Navigation() {
                         <div className="text-xs uppercase tracking-wide text-muted-foreground">
                             Лимиты пространства
                         </div>
+                        {isLimitsLoading ? (
+                            <div className="mt-3 space-y-4">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <Skeleton className="h-4 w-16 rounded-full bg-primary/8" />
+                                        <Skeleton className="h-4 w-14 rounded-full bg-primary/8" />
+                                    </div>
+                                    <Skeleton className="mt-2 h-3 w-full rounded-2xl bg-primary/8" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <Skeleton className="h-4 w-20 rounded-full bg-primary/8" />
+                                        <Skeleton className="h-4 w-14 rounded-full bg-primary/8" />
+                                    </div>
+                                    <Skeleton className="mt-2 h-3 w-full rounded-2xl bg-primary/8" />
+                                </div>
+                                <Skeleton className="h-3 w-20 rounded-full bg-primary/8" />
+                            </div>
+                        ) : (
+                            <>
                         <div className="mt-3 text-sm text-muted-foreground">
                             <span className="font-semibold text-foreground">Заметки:</span> {documentCount}/{documentLimit}
                         </div>
@@ -276,6 +298,8 @@ export function Navigation() {
                                     Увеличить лимиты
                                 </Link>
                             </div>
+                        )}
+                            </>
                         )}
                     </div>
                 </div>

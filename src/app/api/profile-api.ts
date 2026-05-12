@@ -1,16 +1,7 @@
 import { apiGet, apiPost, apiPut, removeNullish } from "./client"
+import type { MessageResponse, ProfileApi, ProfileRoutes } from "@/config/types/api.types"
 
-type ProfileRoutes = {
-  ADD: (_id: string) => string
-  BY_USERNAME: (username: string) => string
-  BY_ID: (_id: string) => string
-  UPDATE: (_id: string) => string
-  UPDATE_BADGE: (_id: string) => string
-}
-
-type MessageResponse = { message: string }
-
-export function createProfileApi<TProfile>(routes: ProfileRoutes) {
+export function createProfileApi<TProfile>(routes: ProfileRoutes): ProfileApi<TProfile> {
   return {
     create(_id: string, payload: Record<string, unknown>) {
       return apiPost<TProfile>(routes.ADD(_id), removeNullish(payload))

@@ -1,7 +1,8 @@
 import { useQuery } from "convex/react"
 import { api } from "../../../convex/_generated/api"
+import type { UseDocumentStatsFunction } from "@/config/types/api.types"
 
-export function useDocumentStats(userId?: string | null) {
+export const useDocumentStats: UseDocumentStatsFunction = (userId) => {
   const args = userId ? { userId } : "skip"
 
   const documentCount = useQuery(api.document.getDocumentCount, args)
